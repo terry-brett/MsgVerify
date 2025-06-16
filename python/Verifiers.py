@@ -25,7 +25,7 @@ class URLVerifier:
         pattern = r'(?i)\b(?:http|https|ftp)://(?:\d{1,3}\.){3}\d{1,3}(?::\d+)?(?:/[^\s]*)?'
 
         result = re.match(pattern,self.url)
-        return True if (result == None) else False
+        return False if (result == None) else True
     
     def calculate_score(self):
         return
