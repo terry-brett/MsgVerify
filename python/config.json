@@ -1,0 +1,4 @@
+{
+    "mode" : "offline",
+    "domain_blocklist_file_path" : "domain_blocklist.csv"
+}
