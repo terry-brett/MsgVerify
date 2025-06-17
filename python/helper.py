@@ -16,6 +16,7 @@ def get_url_components(url):
         'query': parsed.query,
         'query_dict': parse_qs(parsed.query),
         'fragment': parsed.fragment,
+        'netloc' : parsed.netloc
     }
 
     return components

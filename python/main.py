@@ -1,12 +1,8 @@
 from verifiers import URLVerifier
 
 
-url = "https://www.google.com"
+url = "https://tinyurl.com/bdfpfyur"
 
-verifier = URLVerifier(url, True)
+verifier = URLVerifier(url)
 
-print(verifier.is_scheme_secured())
-print(verifier.is_domain_blocklisted())
-print(verifier.is_url_ip_based())
-
-
+verifier.print_evaluation_report()
