@@ -1,4 +1,5 @@
 {
     "mode" : "offline",
-    "domain_blocklist_file_path" : "domain_blocklist.csv"
+    "domain_blocklist_file_path" : "domain_blocklist.csv",
+    "url_classifier_model_path" : "--coming soon--"
 }
