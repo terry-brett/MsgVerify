@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
+    id("de.jensklingenberg.ktorfit") version "2.5.0"
+    id("com.google.devtools.ksp") version "2.1.21-2.0.2"
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.1.21"
 }
 
 kotlin {
