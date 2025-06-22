@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    id("de.jensklingenberg.ktorfit") version "2.5.1"
+    id("com.google.devtools.ksp") version "2.1.21-2.0.2"
 }
 
 kotlin {
@@ -44,6 +46,7 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation("de.jensklingenberg.ktorfit:ktorfit-lib:2.5.1")
             implementation(project(":ContextGuard"))
         }
         commonTest.dependencies {

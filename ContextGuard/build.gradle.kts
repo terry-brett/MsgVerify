@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
-    id("de.jensklingenberg.ktorfit") version "2.5.0"
+    id("de.jensklingenberg.ktorfit") version "2.5.1"
     id("com.google.devtools.ksp") version "2.1.21-2.0.2"
     id("org.jetbrains.kotlin.plugin.serialization") version "2.1.21"
 }
@@ -63,6 +63,8 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.stdlib)
                 // Add KMP dependencies here
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+                implementation("de.jensklingenberg.ktorfit:ktorfit-lib:2.5.1")
             }
         }
 
