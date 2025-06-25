@@ -1,9 +1,7 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
-    id("de.jensklingenberg.ktorfit") version "2.5.1"
-    id("com.google.devtools.ksp") version "2.1.21-2.0.2"
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.1.21"
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -14,7 +12,7 @@ kotlin {
     androidLibrary {
         namespace = "org.contextguard.lib"
         compileSdk = 36
-        minSdk = 33
+        minSdk = 30
 
         withHostTestBuilder {
         }
@@ -62,9 +60,17 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
-                // Add KMP dependencies here
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
-                implementation("de.jensklingenberg.ktorfit:ktorfit-lib:2.5.1")
+
+                // ktor client
+                implementation(libs.ktor.client.core)
+                implementation(libs.ktor.client.content.negotiation)
+                implementation(libs.ktor.serialization.json)  // ktor's kotlinx.serialization integration
+
+                // kotlinx.serialization
+                implementation(libs.kotlinx.serialization.json) // the core JSON serialization library
+
+                // Kotlin Coroutines
+                implementation(libs.kotlinx.coroutines.core)
             }
         }
 
@@ -79,6 +85,7 @@ kotlin {
                 // Add Android-specific dependencies here. Note that this source set depends on
                 // commonMain by default and will correctly pull the Android artifacts of any KMP
                 // dependencies declared in commonMain.
+                implementation(libs.ktor.client.android)
             }
         }
 
@@ -97,6 +104,7 @@ kotlin {
                 // part of KMP’s default source set hierarchy. Note that this source set depends
                 // on common by default and will correctly pull the iOS artifacts of any
                 // KMP dependencies declared in commonMain.
+                implementation(libs.ktor.client.ios)
             }
         }
     }
