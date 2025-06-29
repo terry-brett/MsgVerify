@@ -1,14 +1,32 @@
 from urllib.parse import urlparse, parse_qs
 import tldextract # type: ignore
 import csv
+import torch
+import pandas as pd
+import re
+from sklearn.preprocessing import StandardScaler
+import joblib
+from nnmodel import URLBinaryClassifier  # type: ignore
 
+def validate_url(func):
+    def wrapper_validate_url(*args, **kwargs):
+        self = args[0]
+        url = self.url    
+        url_regex = r"https?://[^\s/$.?#].[^\s]*"
+        result = re.match(url_regex, url)
+
+        if (result == None):
+            raise ValueError("URL is not set or valid.")
+        else: 
+            return func(*args, **kwargs)
+        
+    return wrapper_validate_url
 
 def get_url_components(url):
     parsed = urlparse(url)
     extracted = tldextract.extract(url)
 
     components = {
-        'scheme': parsed.scheme,
         'subdomain': extracted.subdomain,
         'domain': extracted.domain,
         'tld': extracted.suffix,
@@ -16,24 +34,47 @@ def get_url_components(url):
         'query': parsed.query,
         'query_dict': parse_qs(parsed.query),
         'fragment': parsed.fragment,
-        'netloc' : parsed.netloc
+        'netloc' : parsed.netloc,
+        'scheme': parsed.scheme,
     }
 
     return components
 
-def word_exists_in_csv(word, csv_file_path, column_index=0, case_sensitive=False):
-    target = word if case_sensitive else word.lower()
+def get_model_predictions(model_path, scaler_path, url):
+    model = URLBinaryClassifier(25)
+    model_weights = torch.load(model_path, weights_only=True)
+    model.load_state_dict(model_weights)
+    scaler = joblib.load(scaler_path)
 
-    with open(csv_file_path, mode='r', newline='', encoding='utf-8') as file:
-        reader = csv.reader(file)
-        for row in reader:
-            if len(row) > column_index:
-                cell_value = row[column_index]
-                if not case_sensitive:
-                    cell_value = cell_value.lower()
-                if cell_value == target:
-                    return True
-    return False
+    feature_dict = extract_url_features(url)
 
-def count_matching_phrases():
-    return
+    feature_df = pd.DataFrame([feature_dict])
+    feature_df = scaler.transform(feature_df)
+    X = feature_df
+
+    model.eval()
+    with torch.no_grad():
+        logits = model(torch.tensor(X, dtype=torch.float32))
+        probs = torch.sigmoid(logits)
+        return probs
+
+def extract_url_features(url):
+    url_components = get_url_components(url)
+
+    features_to_iterate = ["subdomain", "domain", "tld", "path", "query", "fragment", "netloc"]
+    feature_dict = {}
+
+    feature_dict["url_length"] = len(url)
+    feature_dict["url_punctuations_count"] = len(re.findall(r"[^\w\s]", url))
+    feature_dict["url_digits_count"] = len(re.findall(r"\d", url))
+    
+    for feature in features_to_iterate:
+        key = feature + "_length"
+        feature_dict[key] = len(url_components[feature])
+        key = feature + "_punctuations_count"
+        feature_dict[key] = len(re.findall(r"[^\w\s]", url_components[feature]))
+        key = feature + "_digits_count"
+        feature_dict[key] = len(re.findall(r"\d", url_components[feature]))
+
+    feature_dict["secured_scheme"] = 1 if url_components["scheme"] == "https" else 0
+    return feature_dict
