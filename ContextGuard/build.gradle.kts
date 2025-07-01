@@ -71,6 +71,9 @@ kotlin {
 
                 // Kotlin Coroutines
                 implementation(libs.kotlinx.coroutines.core)
+                implementation(libs.pytorch.lite.multiplatform)
+
+                resources.srcDirs("src/commonMain/resources")
             }
         }
 
