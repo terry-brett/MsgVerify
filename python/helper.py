@@ -41,10 +41,10 @@ def get_url_components(url):
     return components
 
 def get_model_predictions(model_path, scaler_path, url):
-    model = URLBinaryClassifier(25)
-    model_weights = torch.load(model_path, weights_only=True)
-    model.load_state_dict(model_weights)
-    scaler = joblib.load(scaler_path)
+    model = URLBinaryClassifier(25)  # initialising the neural network model
+    model_weights = torch.load(model_path, weights_only=True) # getting model weights
+    model.load_state_dict(model_weights) # loading model weights in the model
+    scaler = joblib.load(scaler_path) # getting standard scaler
 
     feature_dict = extract_url_features(url)
 
