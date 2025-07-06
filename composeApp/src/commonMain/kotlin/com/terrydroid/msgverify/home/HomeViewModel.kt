@@ -14,27 +14,54 @@ class HomeViewModel(
 ) : ViewModel() {
 
     private val _linkVerificationState: MutableStateFlow<LinkVerificationState> = MutableStateFlow(
-        LinkVerificationState.Idle
+        LinkVerificationState.Idle(emptyList())
     )
 
     val linkVerificationState: StateFlow<LinkVerificationState>
         get() = _linkVerificationState.asStateFlow()
 
+
     fun onVerifyClicked(inputLink: String) {
         if (!isValidUrl(inputLink)) {
-            _linkVerificationState.value = LinkVerificationState.Error("Is not a valid url")
+            _linkVerificationState.value = LinkVerificationState.Error(
+                errorMessage = "Is not a valid url",
+                verifiedLinkHistory = _linkVerificationState.value.verifiedLinkHistory
+            )
         } else {
             viewModelScope.launch {
                 msgVerifyRepository.verifyLink(inputLink).collect { result ->
                     result.fold(
                         onSuccess = {
                             val maliciousScorePercent = it.maliciousScore * 100
+
+                            //TODO: Change these when we agree on threshold
+                            val classificationColor = if (maliciousScorePercent < 40) {
+                                ClassificationColor.Green
+                            } else if (maliciousScorePercent >= 40 && maliciousScorePercent < 70) {
+                                ClassificationColor.Yellow
+                            } else {
+                                ClassificationColor.Red
+                            }
+                            val linkResult = LinkResult(
+                                linkMaliciousPercentage = maliciousScorePercent,
+                                classificationColor = classificationColor,
+                                url = inputLink
+                            )
+                            val newVerifierLinkHistory = listOf(linkResult) + _linkVerificationState
+                                .value
+                                .verifiedLinkHistory
+
                             _linkVerificationState.value =
-                                LinkVerificationState.Success("$maliciousScorePercent")
+                                LinkVerificationState.Success(
+                                    linkResult = linkResult,
+                                    verifiedLinkHistory = newVerifierLinkHistory
+                                )
                         },
                         onFailure = {
-                            _linkVerificationState.value =
-                                LinkVerificationState.Error("Could not get score")
+                            _linkVerificationState.value = LinkVerificationState.Error(
+                                errorMessage = "Could not get the score for this link",
+                                verifiedLinkHistory = _linkVerificationState.value.verifiedLinkHistory
+                            )
                         }
                     )
                 }

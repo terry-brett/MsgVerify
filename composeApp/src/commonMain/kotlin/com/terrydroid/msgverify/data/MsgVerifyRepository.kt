@@ -10,7 +10,7 @@ class MsgVerifyRepository : KoinComponent {
     suspend fun verifyLink(url: String): Flow<Result<LinkVerificationResponse>> {
 
         //TODO: Integrate with model. Now it will just return a mock score
-        return flowOf(Result.success(LinkVerificationResponse(maliciousScore = 0.64f)))
+        return flowOf(Result.success(LinkVerificationResponse(maliciousScore = 0.45f)))
     }
 }
 

@@ -1,13 +1,24 @@
 package com.terrydroid.msgverify.home
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.Policy
+import androidx.compose.material.icons.filled.Shield
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -32,82 +43,145 @@ internal fun HomeScreen(
             .collectAsStateWithLifecycle()
             .value
 
-    Column(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = "MsgVerify",
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onBackground,
-            textAlign = TextAlign.Center
-        )
-        Spacer(modifier = Modifier.size(64.dp))
-        val textFieldValue = remember { mutableStateOf("") }
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(70f),
-            value = textFieldValue.value,
-            onValueChange = {
-                textFieldValue.value = it
-            },
-            placeholder = {
-                Text(text = "Enter Url you want to verify")
-            },
-            isError = linkVerificationState is LinkVerificationState.Error,
-            label = {
-                if (linkVerificationState is LinkVerificationState.Error) {
-                    Text(linkVerificationState.errorMessage)
-                }
-            },
-            maxLines = 1
-        )
-
-        Button(
-            modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 16.dp),
-            onClick = {
-                homeViewModel.onVerifyClicked(textFieldValue.value)
-            },
-            enabled = textFieldValue.value.isNotEmpty()
-        ) {
-            Text(text = "Verify")
+    LazyColumn(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+        item {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = "MsgVerify",
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Center
+            )
+        }
+        item {
+            Spacer(modifier = Modifier.size(64.dp))
         }
 
-        Spacer(modifier = Modifier.size(16.dp))
+        item {
+            val textFieldValue = remember { mutableStateOf("") }
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(70f),
+                value = textFieldValue.value,
+                onValueChange = {
+                    textFieldValue.value = it
+                },
+                placeholder = {
+                    Text(text = "Enter Url you want to verify")
+                },
+                isError = linkVerificationState is LinkVerificationState.Error,
+                label = {
+                    if (linkVerificationState is LinkVerificationState.Error) {
+                        Text(linkVerificationState.errorMessage)
+                    } else {
+                        Text("Input a url to verify")
+                    }
+                },
+                maxLines = 1,
+                shape = RoundedCornerShape(8.dp),
+                trailingIcon = {
+                    Icon(imageVector = Icons.Default.Policy, contentDescription = null)
+                }
+            )
+
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                onClick = {
+                    homeViewModel.onVerifyClicked(textFieldValue.value)
+                },
+                enabled = textFieldValue.value.isNotEmpty()
+            ) {
+                Text(
+                    modifier = Modifier.padding(8.dp),
+                    text = "Verify"
+                )
+            }
+        }
+
+        item {
+            Spacer(modifier = Modifier.size(16.dp))
+        }
 
         when (linkVerificationState) {
             is LinkVerificationState.Error -> {
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = linkVerificationState.errorMessage,
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.displaySmall,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
+                /* Handled in the text field */
             }
 
-            LinkVerificationState.Idle -> {
+            is LinkVerificationState.Idle -> {
                 /* NO-OP */
             }
 
-            LinkVerificationState.LoadingVerification -> {
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = "Processing link",
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.displaySmall,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
+            is LinkVerificationState.LoadingVerification -> {
+                item {
+                    CircularProgressIndicator()
+                }
             }
 
             is LinkVerificationState.Success -> {
-                Spacer(Modifier.size(24.dp))
+
+                item {
+                    //TODO: Implement warning and success colors
+                    val textColor = when (linkVerificationState.linkResult.classificationColor) {
+                        ClassificationColor.Red -> MaterialTheme.colorScheme.error
+                        ClassificationColor.Yellow -> MaterialTheme.colorScheme.onBackground
+                        ClassificationColor.Green -> MaterialTheme.colorScheme.onBackground
+                    }
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = "There is a ${linkVerificationState.linkResult.linkMaliciousPercentage} % " +
+                                "chance it's malicious",
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.labelMedium,
+                        color = textColor
+                    )
+                }
+            }
+        }
+
+        item {
+            if (linkVerificationState.verifiedLinkHistory.isNotEmpty()) {
                 Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = "There is a ${linkVerificationState.linkMaliciousPercentage} % " +
-                            "chance its malicious",
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.displaySmall,
+                    modifier = Modifier.padding(top = 24.dp),
+                    text = "Previously verified links",
+                    style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onBackground
                 )
             }
         }
+
+        items(linkVerificationState.verifiedLinkHistory) { item ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = item.url,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Spacer(modifier = Modifier.size(8.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    val icon = when (item.classificationColor) {
+                        ClassificationColor.Red -> Icons.Default.Error
+                        ClassificationColor.Yellow -> Icons.Default.Warning
+                        ClassificationColor.Green -> Icons.Default.Shield
+                    }
+                    Icon(
+                        modifier = Modifier.padding(4.dp),
+                        imageVector = icon,
+                        contentDescription = null
+                    )
+                    Text(
+                        text = "${item.linkMaliciousPercentage} %",
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                }
+            }
+        }
+
     }
 }

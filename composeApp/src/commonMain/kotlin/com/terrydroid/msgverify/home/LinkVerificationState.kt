@@ -1,8 +1,34 @@
 package com.terrydroid.msgverify.home
 
-sealed class LinkVerificationState {
-    data object Idle : LinkVerificationState()
-    data object LoadingVerification : LinkVerificationState()
-    data class Error(val errorMessage: String) : LinkVerificationState()
-    data class Success(val linkMaliciousPercentage: String) : LinkVerificationState()
+sealed interface LinkVerificationState {
+    val verifiedLinkHistory: List<LinkResult>
+
+    data class Idle(
+        override val verifiedLinkHistory: List<LinkResult>
+    ) : LinkVerificationState
+
+    data class LoadingVerification(
+        override val verifiedLinkHistory: List<LinkResult>
+    ) : LinkVerificationState
+
+    data class Error(
+        val errorMessage: String,
+        override val verifiedLinkHistory: List<LinkResult>
+    ) : LinkVerificationState
+
+    data class Success(
+        val linkResult: LinkResult,
+        override val verifiedLinkHistory: List<LinkResult>
+    ) : LinkVerificationState
 }
+
+data class LinkResult(
+    val linkMaliciousPercentage: Float,
+    val classificationColor: ClassificationColor,
+    val url: String
+)
+
+enum class ClassificationColor {
+    Red, Yellow, Green
+}
+
