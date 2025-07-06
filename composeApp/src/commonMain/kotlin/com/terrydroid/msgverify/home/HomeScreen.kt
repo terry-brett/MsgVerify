@@ -43,7 +43,7 @@ internal fun HomeScreen(
         Spacer(modifier = Modifier.size(64.dp))
         val textFieldValue = remember { mutableStateOf("") }
         OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(80f),
+            modifier = Modifier.fillMaxWidth(70f),
             value = textFieldValue.value,
             onValueChange = {
                 textFieldValue.value = it
