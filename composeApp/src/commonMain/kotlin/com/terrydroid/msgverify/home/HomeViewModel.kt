@@ -2,10 +2,7 @@ package com.terrydroid.msgverify.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.terrydroid.msgverify.data.LinkVerificationResponse
 import com.terrydroid.msgverify.data.MsgVerifyRepository
-import io.ktor.http.URLParserException
-import io.ktor.http.Url
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,18 +21,23 @@ class HomeViewModel(
         get() = _linkVerificationState.asStateFlow()
 
     fun onVerifyClicked(inputLink: String) {
-
-        //TODO: Do verification that it is actually a link
-        viewModelScope.launch {
-            try {
-                val url = Url(inputLink)
-                msgVerifyRepository.verifyLink(url).collect { result ->
-                    if (result.isSuccess) {
-                        _linkVerificationState.value = LinkVerificationState.Success()
-                    }
+        if (!isValidUrl(inputLink)) {
+            _linkVerificationState.value = LinkVerificationState.Error("Is not a valid url")
+        } else {
+            viewModelScope.launch {
+                msgVerifyRepository.verifyLink(inputLink).collect { result ->
+                    result.fold(
+                        onSuccess = {
+                            val maliciousScorePercent = it.maliciousScore * 100
+                            _linkVerificationState.value =
+                                LinkVerificationState.Success("$maliciousScorePercent")
+                        },
+                        onFailure = {
+                            _linkVerificationState.value =
+                                LinkVerificationState.Error("Could not get score")
+                        }
+                    )
                 }
-            } catch (e: URLParserException) {
-                _linkVerificationState.value = LinkVerificationState.Error("Not a valid url")
             }
         }
 
@@ -43,5 +45,13 @@ class HomeViewModel(
 
 }
 
-
+//TODO: Change to some common url checking that works on CMP
+private fun isValidUrl(url: String): Boolean {
+    return Regex(
+        "^https?://[\\w\\-]+(\\.[\\w\\-]+)+[/#?]?.*\$",
+        RegexOption.IGNORE_CASE
+    ).matches(
+        url
+    )
+}
 

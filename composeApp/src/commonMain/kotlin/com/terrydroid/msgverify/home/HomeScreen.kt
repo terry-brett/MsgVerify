@@ -56,7 +56,8 @@ internal fun HomeScreen(
                 if (linkVerificationState is LinkVerificationState.Error) {
                     Text(linkVerificationState.errorMessage)
                 }
-            }
+            },
+            maxLines = 1
         )
 
         Button(
@@ -69,9 +70,17 @@ internal fun HomeScreen(
             Text(text = "Verify")
         }
 
+        Spacer(modifier = Modifier.size(16.dp))
+
         when (linkVerificationState) {
             is LinkVerificationState.Error -> {
-                Text(linkVerificationState.errorMessage)
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = linkVerificationState.errorMessage,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.displaySmall,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
             }
 
             LinkVerificationState.Idle -> {
@@ -83,7 +92,7 @@ internal fun HomeScreen(
                     modifier = Modifier.fillMaxWidth(),
                     text = "Processing link",
                     textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.labelMedium,
+                    style = MaterialTheme.typography.displaySmall,
                     color = MaterialTheme.colorScheme.onBackground
                 )
             }
@@ -95,7 +104,7 @@ internal fun HomeScreen(
                     text = "There is a ${linkVerificationState.linkMaliciousPercentage} % " +
                             "chance its malicious",
                     textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.labelMedium,
+                    style = MaterialTheme.typography.displaySmall,
                     color = MaterialTheme.colorScheme.onBackground
                 )
             }
