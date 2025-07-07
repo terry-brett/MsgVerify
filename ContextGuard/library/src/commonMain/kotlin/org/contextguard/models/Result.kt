@@ -1,4 +1,4 @@
-package org.contextguard.data
+package org.contextguard.models
 
 /**
  * The result represents a score given to analysed message

@@ -13,6 +13,7 @@ pluginManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
+        mavenLocal()
     }
 }
 
@@ -27,8 +28,8 @@ dependencyResolutionManagement {
         }
         google()
         mavenCentral()
+        mavenLocal()
     }
 }
 
 include(":composeApp")
-include(":ContextGuard")

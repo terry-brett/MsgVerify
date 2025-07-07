@@ -1,3 +1,4 @@
 package org.contextguard.lib
 
-expect fun platform(): String
+class LoadModel {
+}

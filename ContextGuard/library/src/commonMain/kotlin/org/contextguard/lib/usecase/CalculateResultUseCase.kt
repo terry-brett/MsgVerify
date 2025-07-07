@@ -1,6 +1,8 @@
 package org.contextguard.lib.usecase
 
-import org.contextguard.data.Result
+import org.contextguard.googlesafebrowsing.service.SafeBrowseServiceImpl
+import org.contextguard.models.Result
+
 
 /**
  * Use case used to compute the result given the message content and optional sender and URL
@@ -9,6 +11,7 @@ import org.contextguard.data.Result
  * or email address where the message came from
  * @param url: Optional url
  */
+
 class CalculateResultUseCase(
     private val message: String,
     private val sender: String? = null,
@@ -27,8 +30,6 @@ class CalculateResultUseCase(
         sender: String?,
         url: String?
     ): Result {
-        // TODO: handle the score and reasons with ML and AI
-
         return Result(
             score = 0,
             reasons = null

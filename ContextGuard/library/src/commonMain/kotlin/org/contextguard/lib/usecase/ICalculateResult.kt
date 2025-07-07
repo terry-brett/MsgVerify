@@ -1,6 +1,6 @@
 package org.contextguard.lib.usecase
 
-import org.contextguard.data.Result
+import org.contextguard.models.Result
 
 interface ICalculateResult {
     fun calculateResult(
