@@ -1,7 +1,7 @@
 package org.contextguard.lib
 
 actual class LoadModel {
-    actual suspend fun loadModelFromAssets(): String {
+    actual suspend fun getModelPath(): String {
         return ""
     }
 }

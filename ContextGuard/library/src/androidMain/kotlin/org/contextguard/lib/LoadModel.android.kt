@@ -9,14 +9,12 @@ import java.io.File
 
 
 actual class LoadModel(private val context: Context) {
-    actual suspend fun loadModelFromAssets(): String {
+    actual suspend fun getModelPath(): String {
 
         val modelBytes = Res.readBytes("files/model_lite.ptl")
         val modelFilePath = getModelFilePath(modelBytes, "model_lite.ptl", context)
 
-        val module = TorchModule(path = modelFilePath)
-        println("module loaded $module")
-        return ""
+        return modelFilePath
     }
 }
 
