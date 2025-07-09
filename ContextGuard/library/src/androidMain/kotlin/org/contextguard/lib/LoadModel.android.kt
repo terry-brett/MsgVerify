@@ -1,7 +1,6 @@
 package org.contextguard.lib
 
 import android.content.Context
-import de.voize.pytorch_lite_multiplatform.TorchModule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.contextguard.lib.library.generated.resources.Res
