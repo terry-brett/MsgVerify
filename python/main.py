@@ -1,6 +1,8 @@
 from verifiers import URLVerifier
 
-url = "https://www.facebook.com"
+url = "https://l.wl.co/l?u=https://cpcalendars.64-226-105-5.cprapid.com/short/?Verification=a97trrybrett@yahoo.co.uk"
+
+
 
 verifier = URLVerifier(url)
 

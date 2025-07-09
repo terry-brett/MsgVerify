@@ -6,7 +6,7 @@ import pandas as pd
 import re
 from sklearn.preprocessing import StandardScaler
 import joblib
-from nnmodel import URLBinaryClassifier  # type: ignore
+from nnmodel import URLBinaryClassifier, URLBinaryClassifier2  # type: ignore
 
 def validate_url(func):
     def wrapper_validate_url(*args, **kwargs):
@@ -41,17 +41,17 @@ def get_url_components(url):
     return components
 
 def get_model_predictions(model_path, scaler_path, url):
-    model = URLBinaryClassifier(25)  # initialising the neural network model
-    model_weights = torch.load(model_path, weights_only=True) # getting model weights
-    model.load_state_dict(model_weights) # loading model weights in the model
     scaler = joblib.load(scaler_path) # getting standard scaler
 
-    feature_dict = extract_url_features(url)
+    feature_dict = extract_url_features_v2(url)
 
-    feature_df = pd.DataFrame([feature_dict])
-    feature_df = scaler.transform(feature_df)
-    X = feature_df
-
+    X = pd.DataFrame([feature_dict])
+    X = scaler.transform(X)
+    
+    model = URLBinaryClassifier2(65)  # initialising the neural network model
+    model_weights = torch.load(model_path, weights_only=True) # getting model weights
+    model.load_state_dict(model_weights) # loading model weights in the model
+    
     model.eval()
     with torch.no_grad():
         logits = model(torch.tensor(X, dtype=torch.float32))
@@ -78,3 +78,83 @@ def extract_url_features(url):
 
     feature_dict["secured_scheme"] = 1 if url_components["scheme"] == "https" else 0
     return feature_dict
+
+def extract_url_features_v2(url):
+    url_components = get_url_components(url)
+    netloc = url_components["netloc"]
+    subdomain = url_components["subdomain"]
+    tld = url_components["tld"]
+    path = url_components["path"]
+    query = url_components["query"]
+    domain = url_components["domain"]
+    fragment = url_components["fragment"]
+    scheme = url_components["scheme"]
+    return {
+        'scheme_secured' : 1 if scheme == "https" else 0,
+        'url_length' : len(url),
+        #'subdomain_length' : len(subdomain),
+        'domain_length' : len(domain),
+        'tld_length' : len(tld),
+        'path_length' : len(path),
+        'query_length' : len(query),
+        #'fragment_length' : len(fragment),
+        'url_digits_count' : sum(c.isdigit() for c in url),
+        'url_percent_count' : sum(c == '%' for c in url),
+        'url_hash_count' : sum(c == '#' for c in url),
+        'url_tilde_count' : sum(c == '~' for c in url),
+        'url_quote_count' : sum(c == "'" for c in url),
+        'url_leftsquare_count' : sum(c == '[' for c in url),
+        'url_rightbracket_count' : sum(c == ']' for c in url),
+        'url_dollar_count' : sum(c == '$' for c in url),
+        'url_amp_count' : sum(c == '&' for c in url),
+        'url_forwardslash_count' : sum(c == "\\" for c in url),
+        'url_colon_count' : sum(c == ':' for c in url),
+        'url_at_count' : sum(c == '@' for c in url),
+        'url_plus_count' : sum(c == '+' for c in url),
+        'url_coma_count' : sum(c == ',' for c in url),
+        'url_semicolon_count' : sum(c == ';' for c in url),
+        'url_equal_count' : sum(c == '=' for c in url),
+        'url_question_count' : sum(c == '?' for c in url),
+        'url_dots_count' : sum(c == '.' for c in url),
+        'url_hyphen_count' : sum(c == '-' for c in url),
+        'subdomain_digits_count' : sum(c.isdigit() for c in subdomain),
+        'subdomain_plus_count' : sum(c == '+' for c in subdomain),
+        'subdomain_dots_count' : sum(c == '.' for c in subdomain),
+        'subdomain_hyphen_count' : sum(c == '-' for c in subdomain),
+        'domain_digits_count' : sum(c.isdigit() for c in domain),
+        'domain_dots_count' : sum(c == '.' for c in domain),
+        'domain_hyphen_count' : sum(c == '-' for c in domain),
+        'tld_digits_count' : sum(c.isdigit() for c in tld),
+        'tld_dots_count' : sum(c == '.' for c in tld),
+        'tld_hyphen_count' : sum(c == '-' for c in tld),
+        'path_digits_count' : sum(c.isdigit() for c in path),
+        'path_percent_count' : sum(c == '%' for c in path),
+        'path_tilde_count' : sum(c == '~' for c in path),
+        'path_quote_count' : sum(c == "'" for c in path),
+        'path_dollar_count' : sum(c == '$' for c in path),
+        'path_amp_count' : sum(c == '&' for c in path),
+        'path_colon_count' : sum(c == ":" for c in path),
+        'path_at_count' : sum(c == '@' for c in path),
+        'path_plus_count' : sum(c == '+' for c in path),
+        'path_coma_count' : sum(c == ',' for c in path),
+        'path_semicolon_count' : sum(c == ';' for c in path),
+        'path_equal_count' : sum(c == '=' for c in path),
+        'path_dots_count' : sum(c == '.' for c in path),
+        'path_hyphen_count' : sum(c == '-' for c in path),
+        'query_digits_count' : sum(c.isdigit() for c in query),
+        'query_percent_count' : sum(c == '%' for c in query),
+        'query_tilde_count' : sum(c == '~' for c in query),
+        'query_quote_count' : sum(c == "'" for c in query),
+        'query_dollar_count' : sum(c == '$' for c in query),
+        'query_amp_count' : sum(c == '&' for c in query),
+        'query_forwardslash_count' : sum(c == "\\" for c in query),
+        'query_colon_count' : sum(c == ':' for c in query),
+        'query_at_count' : sum(c == '@' for c in query),
+        'query_plus_count' : sum(c == '+' for c in query),
+        'query_coma_count' : sum(c == ',' for c in query),
+        'query_semicolon_count' : sum(c == ';' for c in query),
+        'query_equal_count' : sum(c == '=' for c in query),
+        'query_question_count' : sum(c == '?' for c in query),
+        'query_dots_count' : sum(c == '.' for c in query),
+        'query_hyphen_count' : sum(c == '-' for c in query),
+    }
