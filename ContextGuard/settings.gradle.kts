@@ -1,5 +1,4 @@
-rootProject.name = "MsgVerify"
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+rootProject.name = "ContextGuard"
 
 pluginManagement {
     repositories {
@@ -32,4 +31,5 @@ dependencyResolutionManagement {
     }
 }
 
-include(":composeApp")
+include(":library")
+
