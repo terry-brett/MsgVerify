@@ -1,5 +1,5 @@
 from urllib.parse import urlparse, parse_qs
-import tldextract # type: ignore
+import tldextract
 import csv
 import torch
 import pandas as pd
@@ -26,6 +26,7 @@ def get_url_components(url):
     parsed = urlparse(url)
     extracted = tldextract.extract(url)
 
+    print("extracted: ", extracted)
     components = {
         'subdomain': extracted.subdomain,
         'domain': extracted.domain,
@@ -77,6 +78,7 @@ def extract_url_features(url):
         feature_dict[key] = len(re.findall(r"\d", url_components[feature]))
 
     feature_dict["secured_scheme"] = 1 if url_components["scheme"] == "https" else 0
+<<<<<<< Updated upstream
     return feature_dict
 
 def extract_url_features_v2(url):
@@ -158,3 +160,7 @@ def extract_url_features_v2(url):
         'query_dots_count' : sum(c == '.' for c in query),
         'query_hyphen_count' : sum(c == '-' for c in query),
     }
+=======
+    print(feature_dict)
+    return feature_dict
+>>>>>>> Stashed changes

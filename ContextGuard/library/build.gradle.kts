@@ -41,6 +41,9 @@ kotlin {
                 // kotlinx.serialization
                 implementation(libs.kotlinx.serialization.json) // the core JSON serialization library
 
+                // pytorch
+                implementation(libs.pytorch.lite.multiplatform)
+
                 // for resources
                 implementation(compose.runtime)
                 implementation(compose.components.resources)

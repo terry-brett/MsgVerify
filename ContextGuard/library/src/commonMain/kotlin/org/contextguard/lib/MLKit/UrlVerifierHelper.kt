@@ -1,7 +1,7 @@
 package org.contextguard.lib.MLKit
 
 import io.ktor.http.Url
-import io.ktor.http.formUrlEncode
+import io.ktor.http.hostWithPortIfSpecified
 import org.contextguard.lib.MLKit.models.UrlComponents
 
 class UrlVerifierHelper(val url: String) {
@@ -13,13 +13,14 @@ class UrlVerifierHelper(val url: String) {
         validateUrl()
     }
 
-    private fun validateUrl(){
+    private fun validateUrl() {
         val regex = Regex("https?://[^\\s/\$.?#].[^\\s]*")
-        if (!regex.matches(url)){
+        if (!regex.matches(url)) {
             throw IllegalArgumentException("Url is not set or valid")
         }
     }
-    private fun getUrlComponents(url: String) : UrlComponents {
+
+    private fun getUrlComponents(url: String): UrlComponents {
         val parsed = Url(url)
         val hostParts = parsed.host.split(".")
         val subdomain = if (hostParts.size > 2) hostParts.dropLast(2).joinToString(".") else ""
@@ -31,15 +32,11 @@ class UrlVerifierHelper(val url: String) {
             domain = domain,
             tld = tld,
             path = parsed.encodedPath,
-            query = parsed.parameters.formUrlEncode(),
-            fragment = parsed.fragment ?: "",
-            netloc = parsed.host + if (parsed.port != -1) ":${parsed.port}" else "",
+            query = parsed.encodedQuery,
+            fragment = parsed.fragment,
+            netloc = parsed.hostWithPortIfSpecified,
             scheme = parsed.protocol.name
         )
-    }
-
-    fun isSchemeSecured(): Boolean {
-        return components.scheme == "https"
     }
 
     fun extractUrlFeatures(): Map<String, Int> {

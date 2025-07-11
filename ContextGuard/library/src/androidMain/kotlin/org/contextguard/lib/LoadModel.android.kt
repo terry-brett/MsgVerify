@@ -17,12 +17,14 @@ actual class LoadModel(private val context: Context) {
     }
 }
 
-suspend fun getModelFilePath(modelBytes: ByteArray, filename: String, context: Context): String = withContext(
-    Dispatchers.IO) {
-    val file = File(
-        context.applicationContext.cacheDir,
-        filename
-    ) // Use cacheDir for temporary files
-    file.writeBytes(modelBytes)
-    file.absolutePath
-}
+suspend fun getModelFilePath(modelBytes: ByteArray, filename: String, context: Context): String =
+    withContext(
+        Dispatchers.IO
+    ) {
+        val file = File(
+            context.applicationContext.cacheDir,
+            filename
+        ) // Use cacheDir for temporary files
+        file.writeBytes(modelBytes)
+        file.absolutePath
+    }
