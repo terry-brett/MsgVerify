@@ -10,15 +10,26 @@ class MsgVerifyRepository : KoinComponent {
     suspend fun verifyLink(url: String): Flow<Result<LinkVerificationResponse>> {
 
         //TODO: Integrate with model. Now it will just return a mock score
-        return flowOf(Result.success(LinkVerificationResponse(maliciousScore = 0.45f)))
+        return flowOf(
+            Result.success(
+                LinkVerificationResponse(
+                    maliciousScore = 0.45f,
+                    description = "This url might be malicious since it contains http and " +
+                            "not a https scheme"
+                )
+            )
+        )
     }
 }
 
 /**
  * After asking the machine learning model if the link is malicious,
- * it will return a score. This is the @property maliciousScore. This is a pecentage
- * 0 - 1
+ * it will return a score.
+ * This is the @property maliciousScore. This is a percentage 0 - 1
+ *
+ * @property description - Description of why the model thinks it has this score
  */
 data class LinkVerificationResponse(
-    val maliciousScore: Float
+    val maliciousScore: Float,
+    val description: String
 )
