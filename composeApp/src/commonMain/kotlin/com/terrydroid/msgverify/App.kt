@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.terrydroid.msgverify.di.commonModule
 import com.terrydroid.msgverify.home.HomeScreen
 import com.terrydroid.msgverify.home.HomeViewModel
+import com.terrydroid.msgverify.theme.MsgVerifyTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinApplication
 import org.koin.compose.viewmodel.koinViewModel
@@ -29,12 +30,12 @@ fun App() {
 
 @Composable
 private fun AppScreen() {
-    MaterialTheme(colorScheme = MaterialTheme.colorScheme) {
+    MsgVerifyTheme {
         Column(
             modifier = Modifier
+                .background(color = MaterialTheme.colorScheme.background)
                 .safeContentPadding()
-                .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.background),
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Scaffold(
@@ -51,7 +52,7 @@ private fun AppScreen() {
 @Preview
 @Composable
 private fun AppPreview() {
-    MaterialTheme {
+    MsgVerifyTheme {
         AppScreen()
     }
 }
