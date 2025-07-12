@@ -50,8 +50,7 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.material.icons)
-            implementation("io.ktor:ktor-client-core:3.2.0")
-            implementation("org.contextguard.lib:ContextGuard:1.0.0")
+            // implementation("org.contextguard.lib:ContextGuard:1.0.0")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

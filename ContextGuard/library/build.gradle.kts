@@ -17,7 +17,6 @@ plugins {
 group = "org.contextguard.lib"
 version = "1.0.0"
 kotlin {
-    jvm()
     androidTarget {
         publishLibraryVariants("release")
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
