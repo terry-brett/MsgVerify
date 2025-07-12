@@ -14,18 +14,35 @@ class HomeViewModel(
 ) : ViewModel() {
 
     private val _linkVerificationState: MutableStateFlow<LinkVerificationState> = MutableStateFlow(
-        LinkVerificationState.Idle(emptyList())
+        LinkVerificationState.Idle(
+            verifiedLinkHistory = emptyList(),
+            bottomSheetInformation = null
+        )
     )
 
     val linkVerificationState: StateFlow<LinkVerificationState>
         get() = _linkVerificationState.asStateFlow()
 
+    fun onShowBottomSheetDescription(linkResult: LinkResult) {
+        viewModelScope.launch {
+            _linkVerificationState.value =
+                _linkVerificationState.value.copyWithBottomSheetInformation(linkResult)
+        }
+    }
+
+    fun onHideBottomSheet() {
+        viewModelScope.launch {
+            _linkVerificationState.value =
+                _linkVerificationState.value.copyWithBottomSheetInformation(null)
+        }
+    }
 
     fun onVerifyClicked(inputLink: String) {
         if (!isValidUrl(inputLink)) {
             _linkVerificationState.value = LinkVerificationState.Error(
                 errorMessage = "Is not a valid url",
-                verifiedLinkHistory = _linkVerificationState.value.verifiedLinkHistory
+                verifiedLinkHistory = _linkVerificationState.value.verifiedLinkHistory,
+                bottomSheetInformation = _linkVerificationState.value.bottomSheetInformation
             )
         } else {
             viewModelScope.launch {
@@ -45,7 +62,8 @@ class HomeViewModel(
                             val linkResult = LinkResult(
                                 linkMaliciousPercentage = maliciousScorePercent,
                                 classificationColor = classificationColor,
-                                url = inputLink
+                                url = inputLink,
+                                description = it.description
                             )
                             val newVerifierLinkHistory = listOf(linkResult) + _linkVerificationState
                                 .value
@@ -54,13 +72,15 @@ class HomeViewModel(
                             _linkVerificationState.value =
                                 LinkVerificationState.Success(
                                     linkResult = linkResult,
-                                    verifiedLinkHistory = newVerifierLinkHistory
+                                    verifiedLinkHistory = newVerifierLinkHistory,
+                                    bottomSheetInformation = linkResult
                                 )
                         },
                         onFailure = {
                             _linkVerificationState.value = LinkVerificationState.Error(
                                 errorMessage = "Could not get the score for this link",
-                                verifiedLinkHistory = _linkVerificationState.value.verifiedLinkHistory
+                                verifiedLinkHistory = _linkVerificationState.value.verifiedLinkHistory,
+                                bottomSheetInformation = _linkVerificationState.value.bottomSheetInformation
                             )
                         }
                     )

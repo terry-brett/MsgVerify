@@ -1,5 +1,6 @@
 package com.terrydroid.msgverify
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,8 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.terrydroid.msgverify.di.commonModule
 import com.terrydroid.msgverify.home.HomeScreen
+import com.terrydroid.msgverify.home.HomeViewModel
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinApplication
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun App() {
@@ -26,19 +29,19 @@ fun App() {
 
 @Composable
 private fun AppScreen() {
-    MaterialTheme {
+    MaterialTheme(colorScheme = MaterialTheme.colorScheme) {
         Column(
             modifier = Modifier
                 .safeContentPadding()
-                .fillMaxSize(),
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.background),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-
             Scaffold(
-                contentWindowInsets = WindowInsets(0.dp)
+                contentWindowInsets = WindowInsets(0.dp),
             ) { innerPadding ->
                 HomeScreen(
-                    paddingValues = innerPadding
+                    paddingValues = innerPadding,
                 )
             }
         }

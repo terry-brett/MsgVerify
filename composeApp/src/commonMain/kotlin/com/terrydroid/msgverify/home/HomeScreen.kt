@@ -1,5 +1,6 @@
 package com.terrydroid.msgverify.home
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -18,11 +19,14 @@ import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -30,8 +34,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.terrydroid.msgverify.home.components.LinkDescriptionBottomSheet
 import org.koin.compose.viewmodel.koinViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun HomeScreen(
     homeViewModel: HomeViewModel = koinViewModel(),
@@ -42,6 +48,36 @@ internal fun HomeScreen(
             .linkVerificationState
             .collectAsStateWithLifecycle()
             .value
+    HomeScreen(
+        linkVerificationState = linkVerificationState,
+        paddingValues = paddingValues,
+        onHideBottomSheet = homeViewModel::onHideBottomSheet,
+        onShowBottomSheet = homeViewModel::onShowBottomSheetDescription,
+        onVerifyClicked = homeViewModel::onVerifyClicked
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun HomeScreen(
+    linkVerificationState: LinkVerificationState,
+    paddingValues: PaddingValues,
+    onHideBottomSheet: () -> Unit,
+    onShowBottomSheet: (linkResult: LinkResult) -> Unit,
+    onVerifyClicked: (link: String) -> Unit,
+) {
+    val sheetState = rememberModalBottomSheetState()
+
+    LaunchedEffect(linkVerificationState) {
+        sheetState.currentValue
+    }
+    if (linkVerificationState.bottomSheetInformation != null) {
+        LinkDescriptionBottomSheet(
+            description = linkVerificationState.bottomSheetInformation?.description ?: "",
+            onHideBottomSheet = onHideBottomSheet,
+            sheetState = sheetState
+        )
+    }
 
     LazyColumn(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
         item {
@@ -88,7 +124,7 @@ internal fun HomeScreen(
                     .fillMaxWidth()
                     .padding(16.dp),
                 onClick = {
-                    homeViewModel.onVerifyClicked(textFieldValue.value)
+                   onVerifyClicked.invoke(textFieldValue.value)
                 },
                 enabled = textFieldValue.value.isNotEmpty()
             ) {
@@ -152,7 +188,9 @@ internal fun HomeScreen(
 
         items(linkVerificationState.verifiedLinkHistory) { item ->
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().clickable(onClick = {
+                   onShowBottomSheet.invoke(item)
+                }),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -182,6 +220,5 @@ internal fun HomeScreen(
                 }
             }
         }
-
     }
 }
