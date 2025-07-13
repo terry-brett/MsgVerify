@@ -21,13 +21,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.terrydroid.msgverify.home.ClassificationColor
+import com.terrydroid.msgverify.home.components.LinkVerificationColors.getColorForLinkScore
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun LinkDescriptionBottomSheet(
     description: String,
+    maliciousPercentScore: Float,
     onHideBottomSheet: () -> Unit,
-    sheetState: SheetState
+    sheetState: SheetState,
+    classificationColor: ClassificationColor
 ) {
     ModalBottomSheet(
         onDismissRequest = {
@@ -52,6 +56,18 @@ internal fun LinkDescriptionBottomSheet(
             modifier = Modifier.padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            //TODO: Implement warning and success colors
+            val textColor = getColorForLinkScore(classificationColor)
+
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = "There is a $maliciousPercentScore % " +
+                        "chance it's malicious",
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.labelMedium,
+                color = textColor
+            )
+            Spacer(modifier = Modifier.height(16.dp))
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = description,
