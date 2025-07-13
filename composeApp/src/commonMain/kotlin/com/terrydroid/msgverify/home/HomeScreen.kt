@@ -19,7 +19,6 @@ import com.terrydroid.msgverify.home.components.historicalLinkResults
 import com.terrydroid.msgverify.home.components.inputField
 import com.terrydroid.msgverify.home.components.linkHistoryHeader
 import com.terrydroid.msgverify.home.components.linkVerificationSuccessField
-import com.terrydroid.msgverify.home.components.title
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -65,8 +64,6 @@ private fun HomeScreen(
     }
 
     LazyColumn(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
-        title()
-
         item {
             Spacer(modifier = Modifier.size(64.dp))
         }
