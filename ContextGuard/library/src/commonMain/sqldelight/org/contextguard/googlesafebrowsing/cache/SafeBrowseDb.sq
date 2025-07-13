@@ -1,0 +1,21 @@
+-- SafeBrowseCache.sq
+CREATE TABLE SafeUrlCache (
+    url TEXT NOT NULL PRIMARY KEY,
+    threatType TEXT NOT NULL,
+    platformType TEXT NOT NULL,
+    threatEntryType TEXT NOT NULL,
+    cacheExpiryEpochSeconds INTEGER NOT NULL -- Unix timestamp for expiry
+);
+
+insertOrReplace:
+INSERT OR REPLACE INTO SafeUrlCache(url, threatType, platformType, threatEntryType, cacheExpiryEpochSeconds)
+VALUES (?, ?, ?, ?, ?);
+
+selectByUrl:
+SELECT *
+FROM SafeUrlCache
+WHERE url = ?;
+
+deleteExpired:
+DELETE FROM SafeUrlCache
+WHERE cacheExpiryEpochSeconds < ?;

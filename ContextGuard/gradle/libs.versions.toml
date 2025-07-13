@@ -1,40 +1,14 @@
 [versions]
 agp = "8.10.1"
-androidx-activity = "1.10.1"
-androidx-appcompat = "1.7.0"
-androidx-constraintlayout = "2.2.1"
-androidx-core = "1.16.0"
-androidx-espresso = "3.6.1"
-androidx-lifecycle = "2.9.0"
-androidx-testExt = "1.2.1"
 composeMultiplatform = "1.8.1"
-junit = "4.13.2"
 kotlin = "2.1.21"
-kotlinStdlib = "2.1.21"
-runner = "1.5.2"
-core = "1.5.0"
-kotlinGradlePlugin = "2.1.21"
 ktor = "3.2.0"
 kotlinx-serialization = "1.6.3"
 kotlinx-coroutines = "1.8.0"
 pytorchLiteMultiplatform = "0.7.0"
+sqlDelight = "2.1.0"
 
 [libraries]
-kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
-kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
-junit = { module = "junit:junit", version.ref = "junit" }
-androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
-androidx-testExt-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-testExt" }
-androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "androidx-espresso" }
-androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
-androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraintlayout" }
-androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
-androidx-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
-androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
-kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlinStdlib" }
-androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
-androidx-core = { group = "androidx.test", name = "core", version.ref = "core" }
-
 # ktor
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
 ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
@@ -45,6 +19,11 @@ ktor-client-ios = { group = "io.ktor", name = "ktor-client-darwin", version.ref 
 # kotlinx
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+
+# sql delight
+sqldelight-runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sqlDelight" }
+sqldelight-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqlDelight" }
+sqldelight-native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sqlDelight" } # ios sql delight driver
 
 # pytorch-lite-multiplatform
 pytorch-lite-multiplatform = { group = "de.voize", name = "pytorch-lite-multiplatform", version.ref = "pytorchLiteMultiplatform" }
@@ -57,3 +36,4 @@ composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "k
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 vanniktech-mavenPublish = { id = "com.vanniktech.maven.publish", version = "0.29.0" }
+sqldelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
