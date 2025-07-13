@@ -54,6 +54,8 @@ kotlin {
 
             dependencies {
                 implementation(libs.pytorch.lite.multiplatform)
+                implementation(libs.ktor.client.ios)
+                implementation(libs.pytorch.lite.multiplatform)
             }
         }
         // Link the platform-specific iOS source sets to iosMain
@@ -70,6 +72,7 @@ kotlin {
         val androidMain by getting {
             dependsOn(commonMain)
             dependencies {
+                implementation(libs.ktor.client.android)
                 implementation(libs.pytorch.lite.multiplatform)
             }
         }
