@@ -2,6 +2,7 @@ package com.terrydroid.msgverify.di
 
 import com.terrydroid.msgverify.data.MsgVerifyRepository
 import com.terrydroid.msgverify.home.HomeViewModel
+import com.terrydroid.msgverify.settings.SettingsViewModel
 import org.koin.compose.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.singleOf
@@ -21,4 +22,5 @@ fun initKoin() = initKoin {}
 fun commonModule() = module {
     singleOf(::MsgVerifyRepository)
     viewModel { HomeViewModel(msgVerifyRepository = get()) }
+    viewModel { SettingsViewModel() }
 }
