@@ -59,7 +59,11 @@ private fun HomeScreen(
         LinkDescriptionBottomSheet(
             description = linkVerificationState.bottomSheetInformation?.description ?: "",
             onHideBottomSheet = onHideBottomSheet,
-            sheetState = sheetState
+            sheetState = sheetState,
+            maliciousPercentScore = linkVerificationState.bottomSheetInformation?.linkMaliciousPercentage
+                ?: 0f,
+            classificationColor = linkVerificationState.bottomSheetInformation?.classificationColor
+                ?: ClassificationColor.Yellow
         )
     }
 
@@ -93,15 +97,15 @@ private fun HomeScreen(
 
             is LinkVerificationState.Success -> {
 
-               linkVerificationSuccessField(linkVerificationState)
+                linkVerificationSuccessField(linkVerificationState)
             }
         }
 
-       linkHistoryHeader(linkVerificationState)
+        linkHistoryHeader(linkVerificationState)
 
-       historicalLinkResults(
-           linkVerificationState = linkVerificationState,
-           onShowBottomSheet = onShowBottomSheet
-       )
+        historicalLinkResults(
+            linkVerificationState = linkVerificationState,
+            onShowBottomSheet = onShowBottomSheet
+        )
     }
 }
