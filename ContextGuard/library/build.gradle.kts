@@ -53,7 +53,6 @@ kotlin {
             dependsOn(commonMain)
 
             dependencies {
-                implementation(libs.pytorch.lite.multiplatform)
                 implementation(libs.ktor.client.ios)
                 implementation(libs.pytorch.lite.multiplatform)
             }
