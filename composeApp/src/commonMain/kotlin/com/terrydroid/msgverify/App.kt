@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -17,12 +18,15 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.terrydroid.msgverify.di.commonModule
 import com.terrydroid.msgverify.home.HomeScreen
+import com.terrydroid.msgverify.settings.SettingsScreen
 import com.terrydroid.msgverify.theme.MsgVerifyTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinApplication
@@ -50,37 +54,81 @@ private fun AppScreen() {
             val scrollBehavior =
                 TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
-            Scaffold(
-                contentWindowInsets = WindowInsets(0.dp),
-                topBar = {
-                    CenterAlignedTopAppBar(
-                        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-                        title = {
-                            Text(
-                                text = "MsgVerify",
-                                style = MaterialTheme.typography.headlineMedium,
-                                color = MaterialTheme.colorScheme.onBackground,
+            //TODO: Improve navigation with decompose or something when it gets a bit more complex
+            val route = rememberSaveable { mutableStateOf(Routes.Home) }
+            when (route.value) {
+                Routes.Settings -> {
+                    Scaffold(
+                        topBar = {
+                            CenterAlignedTopAppBar(
+                                modifier = Modifier.nestedScroll(
+                                    scrollBehavior.nestedScrollConnection
+                                ),
+                                title = {
+                                    Text(
+                                        text = "Settings",
+                                        style = MaterialTheme.typography.headlineMedium,
+                                        color = MaterialTheme.colorScheme.onBackground,
+                                    )
+                                },
+                                scrollBehavior = scrollBehavior,
+                                navigationIcon = {
+                                    IconButton(
+                                        onClick = {
+                                            route.value = Routes.Home
+                                        }
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                            contentDescription = "Navigate Back"
+                                        )
+                                    }
+                                }
                             )
                         },
-                        scrollBehavior = scrollBehavior,
-                        actions = {
-                            IconButton(
-                                onClick = {
-                                    // TODO: Navigate to settings
-                                }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Settings,
-                                    contentDescription = "Go to settings"
-                                )
-                            }
-                        }
-                    )
+                    ) { innerPadding ->
+                        SettingsScreen(
+                            paddingValues = innerPadding
+                        )
+                    }
                 }
-            ) { innerPadding ->
-                HomeScreen(
-                    paddingValues = innerPadding,
-                )
+
+                Routes.Home -> {
+                    Scaffold(
+                        contentWindowInsets = WindowInsets(0.dp),
+                        topBar = {
+                            CenterAlignedTopAppBar(
+                                modifier = Modifier.nestedScroll(
+                                    scrollBehavior.nestedScrollConnection
+                                ),
+                                title = {
+                                    Text(
+                                        text = "MsgVerify",
+                                        style = MaterialTheme.typography.headlineMedium,
+                                        color = MaterialTheme.colorScheme.onBackground,
+                                    )
+                                },
+                                scrollBehavior = scrollBehavior,
+                                actions = {
+                                    IconButton(
+                                        onClick = {
+                                            route.value = Routes.Settings
+                                        }
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Settings,
+                                            contentDescription = "Go to settings"
+                                        )
+                                    }
+                                }
+                            )
+                        }
+                    ) { innerPadding ->
+                        HomeScreen(
+                            paddingValues = innerPadding,
+                        )
+                    }
+                }
             }
         }
     }
