@@ -7,7 +7,7 @@ import org.koin.core.component.KoinComponent
 
 class MsgVerifyRepository : KoinComponent {
 
-    suspend fun verifyLink(url: String): Flow<Result<LinkVerificationResponse>> {
+    fun verifyLink(url: String): Flow<Result<LinkVerificationResponse>> {
 
         //TODO: Integrate with model. Now it will just return a mock score
         return flowOf(
@@ -18,6 +18,13 @@ class MsgVerifyRepository : KoinComponent {
                             "not a https scheme"
                 )
             )
+        )
+    }
+
+    fun getSafeBrowserUrls(): Flow<Result<Unit>> {
+        //TODO: Integrate this with a service to get the Urls. I guess it will come from context guard
+        return flowOf(
+            Result.success(Unit)
         )
     }
 }
