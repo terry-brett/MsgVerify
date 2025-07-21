@@ -22,5 +22,5 @@ fun initKoin() = initKoin {}
 fun commonModule() = module {
     singleOf(::MsgVerifyRepository)
     viewModel { HomeViewModel(msgVerifyRepository = get()) }
-    viewModel { SettingsViewModel() }
+    viewModel { SettingsViewModel(msgVerifyRepository = get()) }
 }

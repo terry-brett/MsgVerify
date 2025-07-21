@@ -67,7 +67,9 @@ private fun HomeScreen(
         )
     }
 
-    LazyColumn(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize().padding(paddingValues).padding(horizontal = 8.dp)
+    ) {
         item {
             Spacer(modifier = Modifier.size(64.dp))
         }

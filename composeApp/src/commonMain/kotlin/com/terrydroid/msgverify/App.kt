@@ -47,7 +47,6 @@ private fun AppScreen() {
         Column(
             modifier = Modifier
                 .background(color = MaterialTheme.colorScheme.background)
-                .safeContentPadding()
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
