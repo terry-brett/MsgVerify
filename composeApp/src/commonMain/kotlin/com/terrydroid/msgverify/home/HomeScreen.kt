@@ -14,11 +14,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.terrydroid.msgverify.AppContext
 import com.terrydroid.msgverify.home.components.LinkDescriptionBottomSheet
 import com.terrydroid.msgverify.home.components.historicalLinkResults
 import com.terrydroid.msgverify.home.components.inputField
 import com.terrydroid.msgverify.home.components.linkHistoryHeader
 import com.terrydroid.msgverify.home.components.linkVerificationSuccessField
+import org.contextguard.lib.MLKit.UrlPrediction
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,6 +53,13 @@ private fun HomeScreen(
     onVerifyClicked: (link: String) -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState()
+
+    LaunchedEffect("init"){
+        val test = UrlPrediction(
+            AppContext
+        )
+        test.makePrediction("https://www.google.com")
+    }
 
     LaunchedEffect(linkVerificationState) {
         sheetState.currentValue

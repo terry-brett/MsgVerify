@@ -6,6 +6,7 @@ import org.gradle.plugins.signing.SigningExtension
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.kotlin.cocoapods)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.vanniktech.mavenPublish)
     alias(libs.plugins.kotlinSerialization)
@@ -30,6 +31,23 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
+    cocoapods {
+        version = "1.0"
+        summary = "Some description for a Kotlin/Native module"
+        homepage = "Link to a Kotlin/Native module homepage"
+
+        name = "ComposeApp"
+
+        framework {
+            baseName = "ComposeApp"
+            isStatic = true
+            export(libs.decompose.core)
+            export(libs.essenty.lifecycle)
+        }
+
+        ios.deploymentTarget = "13.0"
+    }
+
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -50,6 +68,12 @@ kotlin {
 
                 // sql delight
                 implementation(libs.sqldelight.runtime)
+
+                // core module, contains Interpreter, Tensor and other core classes and functions
+                implementation("dev.kursor.ktensorflow:ktensorflow-core:0.2")
+
+                // moko module, contains extensions for loading models from moko-resources
+                implementation("dev.kursor.ktensorflow:ktensorflow-moko:0.2")
             }
         }
 

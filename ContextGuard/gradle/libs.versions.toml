@@ -7,6 +7,8 @@ kotlinx-serialization = "1.6.3"
 kotlinx-coroutines = "1.8.0"
 pytorchLiteMultiplatform = "0.7.0"
 sqlDelight = "2.1.0"
+essenty = "2.5.0"
+decompose = "3.3.0"
 
 [libraries]
 # ktor
@@ -28,12 +30,17 @@ sqldelight-native-driver = { module = "app.cash.sqldelight:native-driver", versi
 # pytorch-lite-multiplatform
 pytorch-lite-multiplatform = { group = "de.voize", name = "pytorch-lite-multiplatform", version.ref = "pytorchLiteMultiplatform" }
 
+decompose-core = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
+decompose-compose = { module = "com.arkivanov.decompose:extensions-compose", version.ref = "decompose" }
+essenty-lifecycle = { group = "com.arkivanov.essenty", name = "lifecycle", version.ref = "essenty" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 vanniktech-mavenPublish = { id = "com.vanniktech.maven.publish", version = "0.29.0" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }

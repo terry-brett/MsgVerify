@@ -50,7 +50,12 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.material.icons)
-            // implementation("org.contextguard.lib:ContextGuard:1.0.0")
+            implementation("org.contextguard.lib:ContextGuard:1.0.0")
+            // core module, contains Interpreter, Tensor and other core classes and functions
+            implementation("dev.kursor.ktensorflow:ktensorflow-core:0.2")
+
+            // moko module, contains extensions for loading models from moko-resources
+            implementation("dev.kursor.ktensorflow:ktensorflow-moko:0.2")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
