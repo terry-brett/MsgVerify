@@ -29,6 +29,7 @@ sqldelight-native-driver = { module = "app.cash.sqldelight:native-driver", versi
 pytorch-lite-multiplatform = { group = "de.voize", name = "pytorch-lite-multiplatform", version.ref = "pytorchLiteMultiplatform" }
 
 [plugins]
+kotlin-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }

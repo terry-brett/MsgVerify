@@ -1,0 +1,9 @@
+platform :ios, '18.0'
+
+inhibit_all_warnings!
+
+target 'iosApp' do
+  use_frameworks!
+  pod 'TensorFlowLiteSwift' # explicitly include it for Xcode as well
+  pod 'ComposeApp', :path => '../composeApp'
+end
