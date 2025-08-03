@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
@@ -24,20 +23,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
-import com.terrydroid.msgverify.di.commonModule
 import com.terrydroid.msgverify.home.HomeScreen
 import com.terrydroid.msgverify.settings.SettingsScreen
 import com.terrydroid.msgverify.theme.MsgVerifyTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.KoinApplication
 
 @Composable
 fun App() {
-    KoinApplication(application = {
-        modules(commonModule())
-    }) {
-        AppScreen()
-    }
+    AppScreen()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -9,10 +9,10 @@ class MsgVerifyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        initKoin {
+        initKoin(PlatformContext(this@MsgVerifyApplication)) {
             androidContext(this@MsgVerifyApplication)
 
-            modules(appModules)
+            modules(appModules(PlatformContext(this@MsgVerifyApplication)))
         }
     }
 }

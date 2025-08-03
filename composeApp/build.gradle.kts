@@ -51,6 +51,8 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.material.icons)
             // implementation("org.contextguard.lib:ContextGuard:1.0.0")
+            implementation(libs.context.guard)
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
