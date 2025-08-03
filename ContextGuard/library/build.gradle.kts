@@ -50,6 +50,12 @@ kotlin {
 
                 // sql delight
                 implementation(libs.sqldelight.runtime)
+
+                // core module, contains Interpreter, Tensor and other core classes and functions
+                implementation("dev.kursor.ktensorflow:ktensorflow-core:0.2")
+
+                // moko module, contains extensions for loading models from moko-resources
+                implementation("dev.kursor.ktensorflow:ktensorflow-moko:0.2")
             }
         }
 
