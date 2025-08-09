@@ -14,7 +14,7 @@ import platform.Foundation.getBytes
 import kotlin.experimental.ExperimentalNativeApi
 
 actual class UrlPrediction actual constructor(platformContext: Any) {
-    actual suspend fun makePrediction(url: String): String {
+    actual suspend fun makePrediction(url: String): Float {
         val loadAssets = LoadModel()
         val modelDesc = loadAssets.getModelDesc()
 
@@ -32,9 +32,8 @@ actual class UrlPrediction actual constructor(platformContext: Any) {
             modelDesc = modelDesc,
             data = floatArrayToByteArray(scaler.transform(rawFeatures))
         )
-        val isSafe = if (result > 0.5f) "Phishing" else "Safe"
 
-        return "Prediction: $isSafe Probability of URL being a Phished URL: $result"
+        return result
     }
 }
 

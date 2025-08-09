@@ -11,7 +11,7 @@ import java.nio.ByteOrder
 actual class UrlPrediction actual constructor(private val platformContext: Any) {
     private val context: Context = platformContext as Context
 
-    actual suspend fun makePrediction(url: String): String {
+    actual suspend fun makePrediction(url: String): Float {
         val loadAssets = LoadModel(context)
         val modelDesc = loadAssets.getModelDesc()
 
@@ -29,12 +29,8 @@ actual class UrlPrediction actual constructor(private val platformContext: Any) 
             modelDesc = modelDesc,
             data = floatArrayToByteArray(scaler.transform(rawFeatures)),
         )
-        val isSafe = if (result > 0.5f) "Phishing" else "Safe"
 
-        val roundedNum = String.format("%.2f", result).toDouble()
-        val s = "Prediction: $isSafe Probability of URL being a Phished URL: $roundedNum"
-        println(s)
-        return "Prediction: $isSafe Probability of URL being a Phished URL: $roundedNum"
+       return result
     }
 }
 

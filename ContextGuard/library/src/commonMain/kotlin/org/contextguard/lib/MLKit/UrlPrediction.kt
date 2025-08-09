@@ -12,5 +12,5 @@ expect class UrlPrediction(platformContext: Any) {
      * @param url The URL string to make a prediction for.
      * @return A string representing the prediction result.
      */
-    suspend fun makePrediction(url: String): String
+    suspend fun makePrediction(url: String): Float
 }
