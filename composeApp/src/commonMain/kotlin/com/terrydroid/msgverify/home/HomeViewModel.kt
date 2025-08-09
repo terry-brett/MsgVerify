@@ -49,7 +49,7 @@ class HomeViewModel(
                 msgVerifyRepository.verifyLink(inputLink).collect { result ->
                     result.fold(
                         onSuccess = {
-                            val maliciousScorePercent = it.maliciousScore * 100
+                            val maliciousScorePercent = it.maliciousScore
 
                             //TODO: Change these when we agree on threshold
                             val classificationColor = if (maliciousScorePercent > 70) {
