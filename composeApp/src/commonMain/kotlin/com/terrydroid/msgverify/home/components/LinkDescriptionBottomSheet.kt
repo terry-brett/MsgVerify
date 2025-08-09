@@ -62,7 +62,7 @@ internal fun LinkDescriptionBottomSheet(
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = "There is a $maliciousPercentScore % " +
-                        "chance it's malicious",
+                        "chance it's safe",
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.labelMedium,
                 color = textColor
