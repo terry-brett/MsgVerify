@@ -52,7 +52,7 @@ class HomeViewModel(
                             val maliciousScorePercent = it.maliciousScore * 100
 
                             //TODO: Change these when we agree on threshold
-                            val classificationColor = if (maliciousScorePercent < 40) {
+                            val classificationColor = if (maliciousScorePercent > 70) {
                                 ClassificationColor.Green
                             } else if (maliciousScorePercent >= 40 && maliciousScorePercent < 70) {
                                 ClassificationColor.Yellow
@@ -87,9 +87,7 @@ class HomeViewModel(
                 }
             }
         }
-
     }
-
 }
 
 //TODO: Change to some common url checking that works on CMP

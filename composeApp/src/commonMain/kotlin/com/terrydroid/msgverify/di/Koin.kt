@@ -1,5 +1,6 @@
 package com.terrydroid.msgverify.di
 
+import com.terrydroid.msgverify.PlatformContext
 import com.terrydroid.msgverify.data.MsgVerifyRepository
 import com.terrydroid.msgverify.home.HomeViewModel
 import com.terrydroid.msgverify.settings.SettingsViewModel
@@ -10,16 +11,19 @@ import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.module
 
 
-fun initKoin(appDeclaration: KoinAppDeclaration = {}) =
-    startKoin {
-        modules(commonModule())
+fun initKoin(
+    platformContext: PlatformContext,
+    appDeclaration: KoinAppDeclaration = {}
+) = startKoin {
+        modules(commonModule(platformContext))
         appDeclaration()
     }
 
 // called by iOS client
-fun initKoin() = initKoin {}
+fun initKoin(platformContext: PlatformContext) = initKoin(platformContext) {}
 
-fun commonModule() = module {
+fun commonModule(platformContext: PlatformContext) = module {
+    single { platformContext }
     singleOf(::MsgVerifyRepository)
     viewModel { HomeViewModel(msgVerifyRepository = get()) }
     viewModel { SettingsViewModel(msgVerifyRepository = get()) }

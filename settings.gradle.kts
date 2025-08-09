@@ -33,3 +33,14 @@ dependencyResolutionManagement {
 }
 
 include(":composeApp")
+
+private val testLocally = false
+if (testLocally) {
+    includeBuild("ContextGuard/") {
+        dependencySubstitution {
+            substitute(module("org.contextguard.lib:library"))
+                .using(project(":library"))
+                .because("Testing Context guard locally")
+        }
+    }
+}

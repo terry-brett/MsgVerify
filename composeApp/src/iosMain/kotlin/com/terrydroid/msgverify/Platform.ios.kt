@@ -1,5 +1,6 @@
 package com.terrydroid.msgverify
 
+import platform.UIKit.UIApplication
 import platform.UIKit.UIDevice
 
 class IOSPlatform: Platform {
@@ -7,3 +8,6 @@ class IOSPlatform: Platform {
 }
 
 actual fun getPlatform(): Platform = IOSPlatform()
+actual class PlatformContext {
+    actual fun getNativeContext(): Any = UIApplication.sharedApplication
+}
