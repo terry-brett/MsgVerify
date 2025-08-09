@@ -34,8 +34,10 @@ actual class UrlPrediction actual constructor(platformContext: Any) {
         )
         val isSafe = if (result > 0.5f) "Phishing" else "Safe"
 
+        println("hello from iOS")
+
         // val roundedNum = String.format("%.2f", result).toDouble()
-        val s = "Prediction: $isSafe Probability of URL being a Phished URL: $result"
+        val s = "Prediction: Safe Probability of URL being a Phished URL: $result"
         println(s)
         return "Prediction: $isSafe Probability of URL being a Phished URL: $result"
     }

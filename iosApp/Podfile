@@ -1,0 +1,7 @@
+platform :ios, '13.0'
+use_frameworks!
+
+target 'iosApp' do
+  pod 'TensorFlowLiteObjC', '2.17.0'
+  pod 'TensorFlowLiteObjC/Metal', '2.17.0'
+end
