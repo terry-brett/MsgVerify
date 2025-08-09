@@ -33,11 +33,7 @@ import org.koin.compose.KoinApplication
 
 @Composable
 fun App() {
-    KoinApplication(application = {
-        modules(commonModule())
-    }) {
-        AppScreen()
-    }
+    AppScreen()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

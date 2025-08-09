@@ -1,21 +1,21 @@
 package com.terrydroid.msgverify.data
 
+import com.terrydroid.msgverify.PlatformContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import org.contextguard.lib.MLKit.UrlPrediction
 import org.koin.core.component.KoinComponent
 
 
-class MsgVerifyRepository : KoinComponent {
+class MsgVerifyRepository(val platformContext: PlatformContext) : KoinComponent {
 
-    fun verifyLink(url: String): Flow<Result<LinkVerificationResponse>> {
-
-        //TODO: Integrate with model. Now it will just return a mock score
+    suspend fun verifyLink(url: String): Flow<Result<LinkVerificationResponse>> {
+        val result = UrlPrediction(platformContext.getNativeContext()).makePrediction(url)
         return flowOf(
             Result.success(
                 LinkVerificationResponse(
-                    maliciousScore = 0.45f,
-                    description = "This url might be malicious since it contains http and " +
-                            "not a https scheme"
+                    maliciousScore = result,
+                    description = ""
                 )
             )
         )

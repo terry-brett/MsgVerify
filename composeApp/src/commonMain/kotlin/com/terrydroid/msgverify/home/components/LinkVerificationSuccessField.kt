@@ -19,7 +19,7 @@ internal fun LazyListScope.linkVerificationSuccessField(
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = "There is a ${linkVerificationState.linkResult.linkMaliciousPercentage} % " +
-                    "chance it's malicious",
+                    "chance it's safe",
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.labelMedium,
             color = textColor
