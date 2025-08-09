@@ -5,8 +5,8 @@ kotlin = "2.1.21"
 ktor = "3.2.0"
 kotlinx-serialization = "1.6.3"
 kotlinx-coroutines = "1.8.0"
-pytorchLiteMultiplatform = "0.7.0"
 sqlDelight = "2.1.0"
+ktensorflow = "0.2"
 
 [libraries]
 # ktor
@@ -25,8 +25,8 @@ sqldelight-runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sq
 sqldelight-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqlDelight" }
 sqldelight-native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sqlDelight" } # ios sql delight driver
 
-# pytorch-lite-multiplatform
-pytorch-lite-multiplatform = { group = "de.voize", name = "pytorch-lite-multiplatform", version.ref = "pytorchLiteMultiplatform" }
+# ktensorflow
+ktensorflow-core = { module = "dev.kursor.ktensorflow:ktensorflow-core", version.ref = "ktensorflow"}
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

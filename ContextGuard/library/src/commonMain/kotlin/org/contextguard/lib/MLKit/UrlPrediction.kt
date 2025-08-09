@@ -1,7 +1,5 @@
 package org.contextguard.lib.MLKit
 
-import org.contextguard.lib.LoadModel
-
 /**
  * Expect declaration for the URL prediction class.
  * The constructor takes a platform-specific context, which is then passed

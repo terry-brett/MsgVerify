@@ -1,5 +1,7 @@
 package org.contextguard.lib
 
+import dev.kursor.ktensorflow.api.ModelDesc
+
 /**
  * Expect declaration for loading a model from assets.
  * The constructor takes a platform-specific context (e.g., Android's Context)
@@ -8,7 +10,7 @@ package org.contextguard.lib
 expect class LoadModel {
     /**
      * Suspended function to get the model path from assets.
-     * @return A string representing the loaded model's information or path.
+     * @return A Model description representing the loaded model's information
      */
-    suspend fun getModelPath(): String
+    suspend fun getModelDesc(): ModelDesc
 }

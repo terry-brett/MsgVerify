@@ -1,4 +1,3 @@
-import com.android.build.api.dsl.androidLibrary
 import com.vanniktech.maven.publish.SonatypeHost
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -41,15 +40,15 @@ kotlin {
                 // kotlinx.serialization
                 implementation(libs.kotlinx.serialization.json) // the core JSON serialization library
 
-                // pytorch
-                implementation(libs.pytorch.lite.multiplatform)
-
                 // for resources
                 implementation(compose.runtime)
                 implementation(compose.components.resources)
 
                 // sql delight
                 implementation(libs.sqldelight.runtime)
+
+                // ktensorflow
+                implementation(libs.ktensorflow.core)
             }
         }
 
@@ -58,7 +57,6 @@ kotlin {
 
             dependencies {
                 implementation(libs.ktor.client.ios)
-                implementation(libs.pytorch.lite.multiplatform)
                 implementation(libs.sqldelight.native.driver)
             }
         }
@@ -77,7 +75,6 @@ kotlin {
             dependsOn(commonMain)
             dependencies {
                 implementation(libs.ktor.client.android)
-                implementation(libs.pytorch.lite.multiplatform)
                 implementation(libs.sqldelight.android.driver)
             }
         }

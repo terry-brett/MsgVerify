@@ -1,44 +1,43 @@
 package org.contextguard.lib.MLKit
 
-import org.contextguard.lib.MLKit.constants.Constants
-import org.contextguard.lib.MLKit.models.Scaler
+import dev.kursor.ktensorflow.api.Interpreter
+import dev.kursor.ktensorflow.api.InterpreterOptions
+import dev.kursor.ktensorflow.api.ModelDesc
+import dev.kursor.ktensorflow.api.Tensor
+import dev.kursor.ktensorflow.api.TensorDataType
+import dev.kursor.ktensorflow.api.TensorShape
+import dev.kursor.ktensorflow.api.gpu.GpuDelegate
+import dev.kursor.ktensorflow.api.typedData
 import kotlin.math.exp
-import de.voize.pytorch_lite_multiplatform.IValue
-import de.voize.pytorch_lite_multiplatform.Tensor
-import de.voize.pytorch_lite_multiplatform.TorchModule
-import de.voize.pytorch_lite_multiplatform.plmScoped
 
 class UrlVerifier {
     fun makePrediction(
-        modelPath: String,
-        url: String
+        modelDesc: ModelDesc,
+        data: ByteArray
     ): Float {
-        val scaler = Scaler(mean = Constants.SCALER_MEAN, scale = Constants.SCALER_SCALE)
 
-        val model = TorchModule(modelPath)
 
-        // Extract features
-        val featuresMap = UrlVerifierHelper(url).extractUrlFeatures()
-
-        // Order the features to match model input
-        val orderedKeys = Constants.URL_FEATURE_KEYS
-
-        val rawFeatures = orderedKeys.map { featuresMap[it]?.toFloat() ?: 0f }
-        val input = scaler.transform(rawFeatures)
-
-        return plmScoped {
-            val inputTensor = Tensor.fromBlob(
-                data = input,
-                shape = longArrayOf(1, 25),
-                scope = this
+        val interpreter = Interpreter(
+            modelDesc = modelDesc,
+            options = InterpreterOptions(
+                numThreads = 4,
+                useXNNPACK = true,
+                delegates = listOf(GpuDelegate())
             )
-            val inputIValue = IValue.from(inputTensor)
-            val output = model.forward(inputIValue)
-            val outputTensor = output.toTensor()
-            val outputData = outputTensor.getDataAsFloatArray()
+        )
 
-            sigmoid(outputData.first()) * 100
-        }
+        val input = Tensor(
+            data = data,
+            shape = TensorShape(25),
+            dataType = TensorDataType.Float32
+        )
+
+        val output = Tensor(
+            shape = TensorShape(1),
+            dataType = TensorDataType.Float32
+        )
+        interpreter.run(listOf(input), listOf(output))
+        return sigmoid(output.typedData<FloatArray>().first()) * 100
     }
 }
 
