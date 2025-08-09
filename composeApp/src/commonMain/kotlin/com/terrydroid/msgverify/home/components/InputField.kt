@@ -1,13 +1,16 @@
 package com.terrydroid.msgverify.home.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Policy
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.mutableStateOf
@@ -42,7 +45,18 @@ internal fun LazyListScope.inputField(
             maxLines = 1,
             shape = RoundedCornerShape(8.dp),
             trailingIcon = {
-                Icon(imageVector = Icons.Default.Policy, contentDescription = null)
+                AnimatedVisibility(!textFieldValue.value.isEmpty()) {
+                    IconButton(
+                        onClick = {
+                            textFieldValue.value = ""
+                        }
+                    ) {
+                        Icon(imageVector = Icons.Default.Close, contentDescription = "Clear")
+                    }
+                }
+                AnimatedVisibility(textFieldValue.value.isEmpty()) {
+                    Icon(imageVector = Icons.Default.Policy, contentDescription = null)
+                }
             }
         )
 
