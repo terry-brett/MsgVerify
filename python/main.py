@@ -1,12 +1,6 @@
 from verifiers import URLVerifier
 
-<<<<<<< Updated upstream
-url = "https://l.wl.co/l?u=https://cpcalendars.64-226-105-5.cprapid.com/short/?Verification=a97trrybrett@yahoo.co.uk"
-
-
-=======
-url = "https://www.dnb.no"
->>>>>>> Stashed changes
+url = "https://amp.webengage.co/f/a/ANcz8OgDq0T1CCv2GM3_fg/AAQNhxA~/bc-RtcBYfDF3hJ736OcHn-v_Xkhz3nKRtkfKZ80NsgvV1Vd1dwN_OR9UOBPkFu2GiclU2kOZMtI9YkzSLb3klOlNG6N0XLB_yaVXRnB21BaFV1GA3hJS6AMZQrhepywPkA5ln9jCJTzY4H_pYgqMR6talU7BhSVOlBm0yk1WyMWAlK5F2dW3RghrMJbkbbCU3_jTaEr8r7Bi57ueXaUCykMc01jz_MnTeP798AvCqMyac7em86EN25Q6kOvMsvrB5fIJlx2ZYGAl_Z1IJWg_h-dqm5tlrChBbWKoO2g8dTA4g3G3yygft4yetuPmRAfc32XrCUDTVYJ8gbRk19PiVZ0-Y-D_E5nnbd9vnwqU5kqnogcN5X_VLmsS7jkybHTt1frgAy0saXQGdljJoUu6f6hg2bJhmr25h90v7zh9POlc3PmX33H7KmqE3SlqK9CFkSBqondGkcP7JATMHZmcaK9ORlrpth2kakEmAOr6Nh4gI1dg8nR9Ie9Aps6lk0UtwwtO6CzTaqEZxJkIy2ZUng69Yin1kVr7mEcZoe60DErgTVdCccU5LmbVlucQW1Fyn5FsGnkQt8n6ArP5wmV8yYovvBOxV6i-obpcj92VsH2MELqsrBx5GOwynrZTjBo9JF0BO0u7TaEhz5I4rBKmpZinX0UI0XJShMJ0vQW76Zpt_t3X8PYWzcJpU2mtEmwCwJzswgXU1dR13jaNh3sa_063Cx5R953vHI4C5YyjfALOHenvW2dCSKnUN6HFNQayRp6nZ_f32n0fY6ddS36dMa3N5AsavSdMOusgQFoxOtSp3Boo0jEK6q3dtKgkjWvB-BpgSlhM6VcsRgjEc4WbI_jEH2WNQXGuUN7msg4IqQcxhb5rf61oNYahHaar1ULz03--NUHnvZHzYavoddExZShz9I0D1c-F3CpOwLWtzQ4~"
 
 verifier = URLVerifier(url)
 
@@ -18,8 +12,4 @@ probs = round((float(probs[0]) * 100), 2)
 
 print("URL: ", url)
 print("Prediction: ", label)
-<<<<<<< Updated upstream
 print("Probability of URL being a Phished URL: ", probs, " %")
-=======
-print("Probability of URL being a Phished URL: ", probs, " %")
->>>>>>> Stashed changes
