@@ -1,4 +1,4 @@
-package org.contextguard.lib.MLKit
+package org.contextguard.lib.MLKit.urlClassification
 
 /**
  * Expect declaration for the URL prediction class.

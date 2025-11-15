@@ -1,13 +1,13 @@
-package org.contextguard.lib.MLKit
+package org.contextguard.lib.MLKit.urlClassification
 
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.allocArrayOf
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.usePinned
-import org.contextguard.lib.LoadModel
-import org.contextguard.lib.MLKit.constants.Constants
-import org.contextguard.lib.MLKit.models.Scaler
+import org.contextguard.lib.MLKit.urlClassification.LoadModel
+import org.contextguard.lib.MLKit.urlClassification.constants.Constants
+import org.contextguard.lib.MLKit.urlClassification.models.Scaler
 import platform.Foundation.NSData
 import platform.Foundation.create
 import platform.Foundation.getBytes

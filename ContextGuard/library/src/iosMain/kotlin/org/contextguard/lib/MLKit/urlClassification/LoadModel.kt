@@ -1,4 +1,4 @@
-package org.contextguard.lib
+package org.contextguard.lib.MLKit.urlClassification
 
 import dev.kursor.ktensorflow.api.ModelDesc
 import org.contextguard.lib.library.generated.resources.Res

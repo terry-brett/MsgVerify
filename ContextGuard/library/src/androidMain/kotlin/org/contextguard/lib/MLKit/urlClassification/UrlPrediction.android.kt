@@ -1,9 +1,9 @@
-package org.contextguard.lib.MLKit
+package org.contextguard.lib.MLKit.urlClassification
 
 import android.content.Context
-import org.contextguard.lib.LoadModel
-import org.contextguard.lib.MLKit.constants.Constants
-import org.contextguard.lib.MLKit.models.Scaler
+import org.contextguard.lib.MLKit.urlClassification.LoadModel
+import org.contextguard.lib.MLKit.urlClassification.constants.Constants
+import org.contextguard.lib.MLKit.urlClassification.models.Scaler
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 

@@ -1,5 +1,4 @@
-package org.contextguard.lib.MLKit.constants
-
+package org.contextguard.lib.MLKit.urlClassification.constants
 
 object Constants {
 

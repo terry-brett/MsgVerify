@@ -1,8 +1,8 @@
-package org.contextguard.lib.MLKit
+package org.contextguard.lib.MLKit.urlClassification
 
 import io.ktor.http.Url
 import io.ktor.http.hostWithPortIfSpecified
-import org.contextguard.lib.MLKit.models.UrlComponents
+import org.contextguard.lib.MLKit.urlClassification.models.UrlComponents
 
 class UrlVerifierHelper(val url: String) {
 

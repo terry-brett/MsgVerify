@@ -1,4 +1,4 @@
-package org.contextguard.lib.MLKit.models
+package org.contextguard.lib.MLKit.urlClassification.models
 
 data class UrlComponents(
     val subdomain: String,

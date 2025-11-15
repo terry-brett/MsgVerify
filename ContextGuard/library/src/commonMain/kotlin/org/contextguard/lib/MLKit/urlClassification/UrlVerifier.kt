@@ -1,4 +1,4 @@
-package org.contextguard.lib.MLKit
+package org.contextguard.lib.MLKit.urlClassification
 
 import dev.kursor.ktensorflow.api.Interpreter
 import dev.kursor.ktensorflow.api.InterpreterOptions

@@ -1,9 +1,7 @@
-package org.contextguard.lib
+package org.contextguard.lib.MLKit.urlClassification
 
 import android.content.Context
 import dev.kursor.ktensorflow.api.ModelDesc
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.contextguard.lib.library.generated.resources.Res
 import java.io.File
 

@@ -3,7 +3,7 @@ package com.terrydroid.msgverify.data
 import com.terrydroid.msgverify.PlatformContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import org.contextguard.lib.MLKit.UrlPrediction
+import org.contextguard.lib.MLKit.urlClassification.UrlPrediction
 import org.koin.core.component.KoinComponent
 
 
