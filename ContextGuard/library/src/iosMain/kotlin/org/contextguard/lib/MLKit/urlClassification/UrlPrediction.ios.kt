@@ -16,7 +16,7 @@ import kotlin.experimental.ExperimentalNativeApi
 actual class UrlPrediction actual constructor(platformContext: Any) {
     actual suspend fun makePrediction(url: String): Float {
         val loadAssets = LoadModel()
-        val modelDesc = loadAssets.getModelDesc()
+        val modelDesc = loadAssets.getUrlModelDesc()
 
         val scaler = Scaler(mean = Constants.SCALER_MEAN, scale = Constants.SCALER_SCALE)
 
