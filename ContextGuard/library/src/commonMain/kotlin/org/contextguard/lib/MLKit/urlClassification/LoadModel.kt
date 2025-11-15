@@ -12,5 +12,5 @@ expect class LoadModel {
      * Suspended function to get the model path from assets.
      * @return A Model description representing the loaded model's information
      */
-    suspend fun getModelDesc(): ModelDesc
+    suspend fun getUrlModelDesc(): ModelDesc
 }
