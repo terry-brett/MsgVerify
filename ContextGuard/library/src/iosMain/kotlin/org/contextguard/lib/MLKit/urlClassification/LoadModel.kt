@@ -6,7 +6,7 @@ import org.contextguard.lib.library.generated.resources.Res
 actual class LoadModel {
     actual suspend fun getUrlModelDesc(): ModelDesc {
         val modelDesc = ModelDesc.PathInBundle(
-            Res.getUri("files/model_lite.tflite")
+            Res.getUri("files/urlClassificationModel/model_lite.tflite")
                 .removePrefix("file://")
         )
         return modelDesc

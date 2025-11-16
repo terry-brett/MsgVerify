@@ -7,7 +7,7 @@ import java.io.File
 
 actual class LoadModel(private val context: Context) {
     actual suspend fun getUrlModelDesc(): ModelDesc {
-        val bytes = Res.readBytes("files/model_lite.tflite")
+        val bytes = Res.readBytes("files/urlClassificationModel/model_lite.tflite")
         val tmpFile = File.createTempFile("prefix", "suffix", context.cacheDir)
         tmpFile.writeBytes(bytes)
         val modelDesc = ModelDesc.File(tmpFile)
