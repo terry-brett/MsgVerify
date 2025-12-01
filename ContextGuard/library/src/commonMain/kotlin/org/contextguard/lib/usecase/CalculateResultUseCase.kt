@@ -19,7 +19,7 @@ class CalculateResultUseCase(
     private val sender: String? = null,
     private val url: String? = null,
     private val platformContext: Any
-) : ICalculateResult {
+) {
     suspend operator fun invoke() : Result {
         return calculateResult(
             message = message,
@@ -29,7 +29,7 @@ class CalculateResultUseCase(
         )
     }
 
-    override suspend fun calculateResult(
+    private suspend fun calculateResult(
         message: String,
         sender: String?,
         url: String?,
