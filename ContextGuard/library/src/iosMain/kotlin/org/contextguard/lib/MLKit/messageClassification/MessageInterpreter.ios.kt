@@ -1,5 +1,6 @@
 package org.contextguard.lib.MLKit.messageClassification
 
+import org.contextguard.lib.MLKit.messageClassification.constants.Labels
 import org.contextguard.lib.MLKit.messageClassification.tokenizer.WordPieceTokenizer
 import org.contextguard.lib.MLKit.messageClassification.tokenizer.loadVocab
 
@@ -27,7 +28,7 @@ actual class MessageInterpreter actual constructor(platformContext: Any) {
             attentionMask = attentionMask
         )
 
-        val labels = listOf("entailment", "neutral", "contradiction")
+        val labels = Labels.reasonLabels
         val predicted = labels[logits.indices.maxBy { logits[it] }]
 
         return listOf(predicted)
