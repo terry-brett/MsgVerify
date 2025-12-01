@@ -29,8 +29,16 @@ actual class MessageInterpreter actual constructor(platformContext: Any) {
         )
 
         val labels = Labels.reasonLabels
-        val predicted = labels[logits.indices.maxBy { logits[it] }]
+        val k = 3 // We want the top 3 predictions
 
-        return listOf(predicted)
+        val indexedLogits = logits.indices.map { index -> index to logits[index] }
+
+        val sortedLogits = indexedLogits.sortedByDescending { it.second }
+
+        val topKIndices = sortedLogits.take(k).map { it.first }
+
+        val predictedLabels = topKIndices.map { index -> labels[index] }
+
+        return predictedLabels
     }
 }

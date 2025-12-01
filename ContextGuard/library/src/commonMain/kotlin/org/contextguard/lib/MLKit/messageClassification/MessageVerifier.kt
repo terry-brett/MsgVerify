@@ -6,6 +6,9 @@ import dev.kursor.ktensorflow.api.ModelDesc
 import dev.kursor.ktensorflow.api.Tensor
 import dev.kursor.ktensorflow.api.TensorDataType
 import dev.kursor.ktensorflow.api.TensorShape
+import org.contextguard.lib.MLKit.messageClassification.constants.Labels
+
+private val NUM_CLASSES = Labels.reasonLabels.size
 
 class MessageVerifier {
 
@@ -36,8 +39,8 @@ class MessageVerifier {
         )
 
         val outputTensor = Tensor(
-            data = ByteArray(3 * 4),
-            shape = TensorShape(1, 3),
+            data = ByteArray(NUM_CLASSES * 4),
+            shape = TensorShape(1, NUM_CLASSES),
             dataType = TensorDataType.Float32
         )
 
