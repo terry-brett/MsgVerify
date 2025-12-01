@@ -1,6 +1,5 @@
 package org.contextguard.lib.usecase
 
-import org.contextguard.googlesafebrowsing.service.SafeBrowseServiceImpl
 import org.contextguard.models.Result
 
 

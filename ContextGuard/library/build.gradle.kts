@@ -10,7 +10,6 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.sqldelight)
     id("org.gradle.signing") // keep this for signing for local maven repository
 }
 
@@ -44,9 +43,6 @@ kotlin {
                 implementation(compose.runtime)
                 implementation(compose.components.resources)
 
-                // sql delight
-                implementation(libs.sqldelight.runtime)
-
                 // ktensorflow
                 implementation(libs.ktensorflow.core)
             }
@@ -57,7 +53,6 @@ kotlin {
 
             dependencies {
                 implementation(libs.ktor.client.ios)
-                implementation(libs.sqldelight.native.driver)
             }
         }
         // Link the platform-specific iOS source sets to iosMain
@@ -75,7 +70,6 @@ kotlin {
             dependsOn(commonMain)
             dependencies {
                 implementation(libs.ktor.client.android)
-                implementation(libs.sqldelight.android.driver)
             }
         }
     }
@@ -84,15 +78,6 @@ kotlin {
 android {
     namespace = "org.contextguard.lib"
     compileSdk = 36
-}
-
-// local database for caching Google Safe Browsing URLs
-sqldelight {
-    databases {
-        create("SafeBrowseDb"){
-            packageName.set("org.contextguard.googlesafebrowsing.cache")
-        }
-    }
 }
 
 //Publishing your Kotlin Multiplatform library to Maven Central
