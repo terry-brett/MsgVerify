@@ -3,9 +3,10 @@ package org.contextguard.lib.usecase
 import org.contextguard.models.Result
 
 interface ICalculateResult {
-    fun calculateResult(
+    suspend fun calculateResult(
         message: String,
         sender: String?,
-        url: String?
+        url: String?,
+        platformContext: Any
     ) : Result
 }

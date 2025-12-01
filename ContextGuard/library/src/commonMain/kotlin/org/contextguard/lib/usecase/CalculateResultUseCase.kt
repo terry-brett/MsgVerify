@@ -1,6 +1,9 @@
 package org.contextguard.lib.usecase
 
+import org.contextguard.lib.MLKit.messageClassification.MessageInterpreter
+import org.contextguard.lib.MLKit.urlClassification.UrlPrediction
 import org.contextguard.models.Result
+import org.contextguard.toListOfReasons
 
 
 /**
@@ -14,24 +17,36 @@ import org.contextguard.models.Result
 class CalculateResultUseCase(
     private val message: String,
     private val sender: String? = null,
-    private val url: String? = null
+    private val url: String? = null,
+    private val platformContext: Any
 ) : ICalculateResult {
-    operator fun invoke() : Result {
+    suspend operator fun invoke() : Result {
         return calculateResult(
             message = message,
             sender = sender,
-            url = url
+            url = url,
+            platformContext = platformContext
         )
     }
 
-    override fun calculateResult(
+    override suspend fun calculateResult(
         message: String,
         sender: String?,
-        url: String?
+        url: String?,
+        platformContext: Any
     ): Result {
+
+        val urlPrediction = url?.let {
+            UrlPrediction(platformContext).makePrediction(it)
+        }?.toInt() ?: -1
+
+        val listOfReasons = MessageInterpreter(platformContext).getListOfReasonsFromMessage(
+            message = message
+        )
+
         return Result(
-            score = 0,
-            reasons = null
+            score = urlPrediction,
+            reasons = listOfReasons.toListOfReasons()
         )
     }
 }
