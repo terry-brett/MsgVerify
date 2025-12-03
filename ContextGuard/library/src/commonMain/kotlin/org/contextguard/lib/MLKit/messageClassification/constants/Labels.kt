@@ -10,6 +10,7 @@ object Labels {
         "Too Good To Be True",
         "Payment Request",
         "Emotional Manipulation",
+        "Financial information request",
         "Fake Technical Language",
         "Generic Greeting",
         "Inconsistencies",

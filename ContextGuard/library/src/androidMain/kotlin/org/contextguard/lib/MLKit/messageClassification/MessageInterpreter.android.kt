@@ -31,7 +31,7 @@ actual class MessageInterpreter actual constructor(private val platformContext: 
         )
 
         val labels = Labels.reasonLabels
-        val k = 3 // We want the top 3 predictions
+        val k = 5 // We want the top 5 predictions
 
         val indexedLogits = logits.indices.map { index -> index to logits[index] }
 
