@@ -1,5 +1,6 @@
 package org.contextguard.lib.usecase
 
+import org.contextguard.addLinkWarningReason
 import org.contextguard.lib.MLKit.messageClassification.MessageInterpreter
 import org.contextguard.lib.MLKit.urlClassification.UrlPrediction
 import org.contextguard.models.Result
@@ -36,17 +37,19 @@ class CalculateResultUseCase(
         platformContext: Any
     ): Result {
 
-        val urlPrediction = url?.let {
+        val urlPredictionScore = url?.let {
             UrlPrediction(platformContext).makePrediction(it)
-        }?.toInt() ?: -1
+        } ?: -1f
 
         val listOfReasons = MessageInterpreter(platformContext).getListOfReasonsFromMessage(
             message = message
         )
 
         return Result(
-            score = urlPrediction,
-            reasons = listOfReasons.toListOfReasons()
+            score = 0,
+            reasons = listOfReasons.toListOfReasons().toMutableList().addLinkWarningReason(
+                urlPredictionScore = urlPredictionScore
+            )
         )
     }
 }
