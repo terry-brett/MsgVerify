@@ -6,9 +6,6 @@ import dev.kursor.ktensorflow.api.ModelDesc
 import dev.kursor.ktensorflow.api.Tensor
 import dev.kursor.ktensorflow.api.TensorDataType
 import dev.kursor.ktensorflow.api.TensorShape
-import org.contextguard.lib.MLKit.messageClassification.constants.Labels
-
-private val NUM_CLASSES = Labels.reasonLabels.size
 
 class MessageVerifier {
 
@@ -16,7 +13,7 @@ class MessageVerifier {
         modelDesc: ModelDesc,
         inputIds: IntArray,
         attentionMask: IntArray
-    ): ByteArray {
+    ): FloatArray {
 
         val interpreter = Interpreter(
             modelDesc = modelDesc,
@@ -39,8 +36,8 @@ class MessageVerifier {
         )
 
         val outputTensor = Tensor(
-            data = ByteArray(NUM_CLASSES * 4),
-            shape = TensorShape(1, NUM_CLASSES),
+            data = ByteArray(3 * 4),
+            shape = TensorShape(1, 3),
             dataType = TensorDataType.Float32
         )
 
@@ -52,7 +49,7 @@ class MessageVerifier {
             outputs = listOf(outputTensor)
         )
 
-        return outputTensor.data
+        return byteArrayToFloatArray(outputTensor.data)
     }
 }
 
@@ -68,4 +65,22 @@ private fun intArrayToByteArrayNativeOrder(ints: IntArray): ByteArray {
         byteArray[i * 4 + 3] = ((value shr 24) and 0xFF).toByte()
     }
     return byteArray
+}
+
+fun byteArrayToFloatArray(byteArray: ByteArray): FloatArray {
+    if (byteArray.size % 4 != 0) {
+        throw IllegalArgumentException("ByteArray size must be a multiple of 4 for Float32 conversion.")
+    }
+    val floatArray = FloatArray(byteArray.size / 4)
+    for (i in floatArray.indices) {
+        val byteIndex = i * 4
+        val intBits = (byteArray[byteIndex + 3].toInt() and 0xFF shl 24) or // MSB
+                (byteArray[byteIndex + 2].toInt() and 0xFF shl 16) or
+                (byteArray[byteIndex + 1].toInt() and 0xFF shl 8) or
+                (byteArray[byteIndex].toInt() and 0xFF)               // LSB
+
+        // Convert the 32-bit integer representation into a Float.
+        floatArray[i] = Float.fromBits(intBits)
+    }
+    return floatArray
 }
