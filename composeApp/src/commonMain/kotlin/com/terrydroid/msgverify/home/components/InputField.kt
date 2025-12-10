@@ -32,9 +32,8 @@ internal fun LazyListScope.inputField(
                 textFieldValue.value = it
             },
             placeholder = {
-                Text(text = "Enter Url you want to verify")
+                Text(text = "Enter Url or text you want to verify")
             },
-            isError = linkVerificationState is LinkVerificationState.Error,
             label = {
                 if (linkVerificationState is LinkVerificationState.Error) {
                     Text(linkVerificationState.errorMessage)
@@ -42,7 +41,6 @@ internal fun LazyListScope.inputField(
                     Text("Input a url to verify")
                 }
             },
-            maxLines = 1,
             shape = RoundedCornerShape(8.dp),
             trailingIcon = {
                 AnimatedVisibility(!textFieldValue.value.isEmpty()) {
