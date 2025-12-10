@@ -2,6 +2,7 @@ package com.terrydroid.msgverify.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.terrydroid.msgverify.data.LinkVerificationResponse
 import com.terrydroid.msgverify.data.MsgVerifyRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -45,43 +46,29 @@ class HomeViewModel(
         } catch (_: IllegalArgumentException) {
            false
         }
-        if (isValidUrl) {
-            _linkVerificationState.value = LinkVerificationState.Error(
-                errorMessage = "Is not a valid url",
-                verifiedLinkHistory = _linkVerificationState.value.verifiedLinkHistory,
-                bottomSheetInformation = _linkVerificationState.value.bottomSheetInformation
-            )
+        if (!isValidUrl) {
+            viewModelScope.launch {
+                msgVerifyRepository.verifyContent(inputLink).collect { result ->
+                    result.fold(
+                        onSuccess = {
+                            onSuccessResult(it, inputLink)
+                        },
+                        onFailure = {
+                            _linkVerificationState.value = LinkVerificationState.Error(
+                                errorMessage = "Is not a valid url",
+                                verifiedLinkHistory = _linkVerificationState.value.verifiedLinkHistory,
+                                bottomSheetInformation = _linkVerificationState.value.bottomSheetInformation
+                            )
+                        }
+                    )
+                }
+            }
         } else {
             viewModelScope.launch {
                 msgVerifyRepository.verifyLink(inputLink).collect { result ->
                     result.fold(
                         onSuccess = {
-                            val maliciousScorePercent = it.maliciousScore
-
-                            //TODO: Change these when we agree on threshold
-                            val classificationColor = if (maliciousScorePercent > 70) {
-                                ClassificationColor.Green
-                            } else if (maliciousScorePercent >= 40 && maliciousScorePercent < 70) {
-                                ClassificationColor.Yellow
-                            } else {
-                                ClassificationColor.Red
-                            }
-                            val linkResult = LinkResult(
-                                linkMaliciousPercentage = maliciousScorePercent,
-                                classificationColor = classificationColor,
-                                url = inputLink,
-                                description = it.description
-                            )
-                            val newVerifierLinkHistory = listOf(linkResult) + _linkVerificationState
-                                .value
-                                .verifiedLinkHistory
-
-                            _linkVerificationState.value =
-                                LinkVerificationState.Success(
-                                    linkResult = linkResult,
-                                    verifiedLinkHistory = newVerifierLinkHistory,
-                                    bottomSheetInformation = linkResult
-                                )
+                            onSuccessResult(it, inputLink)
                         },
                         onFailure = {
                             _linkVerificationState.value = LinkVerificationState.Error(
@@ -94,5 +81,37 @@ class HomeViewModel(
                 }
             }
         }
+    }
+
+    private fun onSuccessResult(
+        response: LinkVerificationResponse,
+        inputLink: String
+    ) {
+        val maliciousScorePercent = response.maliciousScore
+
+        //TODO: Change these when we agree on threshold
+        val classificationColor = if (maliciousScorePercent > 70) {
+            ClassificationColor.Green
+        } else if (maliciousScorePercent >= 40 && maliciousScorePercent < 70) {
+            ClassificationColor.Yellow
+        } else {
+            ClassificationColor.Red
+        }
+        val linkResult = LinkResult(
+            linkMaliciousPercentage = maliciousScorePercent,
+            classificationColor = classificationColor,
+            url = inputLink,
+            description = response.description
+        )
+        val newVerifierLinkHistory = listOf(linkResult) + _linkVerificationState
+            .value
+            .verifiedLinkHistory
+
+        _linkVerificationState.value =
+            LinkVerificationState.Success(
+                linkResult = linkResult,
+                verifiedLinkHistory = newVerifierLinkHistory,
+                bottomSheetInformation = linkResult
+            )
     }
 }

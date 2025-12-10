@@ -20,6 +20,18 @@ class MsgVerifyRepository(val platformContext: PlatformContext) : KoinComponent 
             )
         )
     }
+
+    suspend fun verifyContent(input: String): Flow<Result<LinkVerificationResponse>> {
+        // TODO: Connect this when it becomes available
+        return flowOf(
+            Result.success(
+                LinkVerificationResponse(
+                    maliciousScore = 0.5f,
+                    description = "Could be malicious"
+                )
+            )
+        )
+    }
 }
 
 /**
