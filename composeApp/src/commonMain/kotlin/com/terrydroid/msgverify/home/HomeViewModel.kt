@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import org.contextguard.lib.MLKit.urlClassification.UrlVerifierHelper
 
 
 class HomeViewModel(
@@ -38,7 +39,13 @@ class HomeViewModel(
     }
 
     fun onVerifyClicked(inputLink: String) {
-        if (!isValidUrl(inputLink)) {
+        val isValidUrl = try {
+            UrlVerifierHelper(inputLink)
+            true
+        } catch (_: IllegalArgumentException) {
+           false
+        }
+        if (isValidUrl) {
             _linkVerificationState.value = LinkVerificationState.Error(
                 errorMessage = "Is not a valid url",
                 verifiedLinkHistory = _linkVerificationState.value.verifiedLinkHistory,
@@ -89,14 +96,3 @@ class HomeViewModel(
         }
     }
 }
-
-//TODO: Change to some common url checking that works on CMP
-private fun isValidUrl(url: String): Boolean {
-    return Regex(
-        "^https?://[\\w\\-]+(\\.[\\w\\-]+)+[/#?]?.*\$",
-        RegexOption.IGNORE_CASE
-    ).matches(
-        url
-    )
-}
-

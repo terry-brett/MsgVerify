@@ -53,7 +53,7 @@ internal fun LazyListScope.historicalLinkResults(
 
                 Text(
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                    text = "Malicious Chance Percentage: ${item.linkMaliciousPercentage} %",
+                    text = "Malicious Safety Percentage: ${item.linkMaliciousPercentage} %",
                     color = MaterialTheme.colorScheme.onBackground,
                     textAlign = TextAlign.Center
                 )

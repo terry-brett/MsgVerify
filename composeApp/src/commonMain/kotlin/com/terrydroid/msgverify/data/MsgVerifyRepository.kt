@@ -20,13 +20,6 @@ class MsgVerifyRepository(val platformContext: PlatformContext) : KoinComponent 
             )
         )
     }
-
-    fun getSafeBrowserUrls(): Flow<Result<Unit>> {
-        //TODO: Integrate this with a service to get the Urls. I guess it will come from context guard
-        return flowOf(
-            Result.success(Unit)
-        )
-    }
 }
 
 /**
