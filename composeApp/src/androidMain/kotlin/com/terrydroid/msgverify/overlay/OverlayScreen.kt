@@ -20,10 +20,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.List
+import androidx.compose.material.icons.filled.Policy
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -56,6 +59,7 @@ fun OverlayScreen(
     onCancel: () -> Unit,
     onDragStarted: () -> Pair<Offset, Int>,
     onDragEnd: (Offset, shouldRemoveView: Boolean) -> Unit,
+    takeScreenShot: () -> Unit
 ) {
     var offsetX by rememberSaveable { mutableFloatStateOf(0f) }
     var offsetY by rememberSaveable { mutableFloatStateOf(0f) }
@@ -107,6 +111,7 @@ fun OverlayScreen(
         ) {
             Overlay(
                 isAboutToRemove = isOverlapping && isDragging,
+                takeScreenShot = takeScreenShot
             )
         }
 
@@ -175,6 +180,7 @@ fun OverlayScreen(
 private fun Overlay(
     modifier: Modifier = Modifier,
     isAboutToRemove: Boolean,
+    takeScreenShot: () -> Unit
 ) {
     val analyticsBoxHeight = remember { mutableStateOf(150.dp) }
     val expanded = rememberSaveable { mutableStateOf(false) }
@@ -182,7 +188,7 @@ private fun Overlay(
     val backgroundColor = if (isAboutToRemove) {
         // Just make the background a bit reddish when removing
         val red = if (isSystemInDarkTheme()) 1f else 0.3f
-        Color.Red
+        Color.Red.copy(alpha = red)
     } else MaterialTheme.colorScheme.background
 
     Box(
@@ -208,6 +214,9 @@ private fun Overlay(
                     .background(backgroundColor)
                     .verticalScroll(rememberScrollState())
             ) {
+                TextButton(onClick = {}) {
+                    Text("Take screenshot of your screen")
+                }
 
             }
         } else {
@@ -215,7 +224,7 @@ private fun Overlay(
                 modifier = analyticsContentModifier
                     .background(backgroundColor)
                     .padding(16.dp),
-                imageVector = Icons.AutoMirrored.Rounded.List,
+                imageVector = Icons.Default.Policy,
                 contentDescription = null
             )
         }

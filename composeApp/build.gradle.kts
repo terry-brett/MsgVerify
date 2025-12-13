@@ -35,6 +35,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.core)
             implementation(libs.koin.android)
+            implementation("com.google.mlkit:text-recognition:16.0.1")
         }
         commonMain.dependencies {
             implementation(compose.runtime)
