@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 internal fun SettingsScreen(
     paddingValues: PaddingValues,
+    onOverlayEnable: (enabled: Boolean) -> Unit
 ) {
 
     LazyColumn(
@@ -68,6 +69,7 @@ internal fun SettingsScreen(
                     checked = overlayEnabled.value,
                     onCheckedChange = { checked ->
                         overlayEnabled.value = checked
+                        onOverlayEnable(checked)
                     }
                 )
             }

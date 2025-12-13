@@ -32,13 +32,17 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinApplication
 
 @Composable
-fun App() {
-    AppScreen()
+fun App(
+    onOverlayEnable: (enabled: Boolean) -> Unit
+) {
+    AppScreen(onOverlayEnable = onOverlayEnable)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun AppScreen() {
+private fun AppScreen(
+    onOverlayEnable: (enabled: Boolean) -> Unit
+) {
     MsgVerifyTheme {
         Column(
             modifier = Modifier
@@ -83,7 +87,8 @@ private fun AppScreen() {
                         },
                     ) { innerPadding ->
                         SettingsScreen(
-                            paddingValues = innerPadding
+                            paddingValues = innerPadding,
+                            onOverlayEnable = onOverlayEnable
                         )
                     }
                 }
@@ -133,6 +138,6 @@ private fun AppScreen() {
 @Composable
 private fun AppPreview() {
     MsgVerifyTheme {
-        AppScreen()
+        AppScreen(onOverlayEnable = {})
     }
 }
