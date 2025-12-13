@@ -3,6 +3,7 @@ package com.terrydroid.msgverify.demo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.terrydroid.msgverify.data.MsgVerifyRepository
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -10,7 +11,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class DemoMessageOverviewViewModel(
-    private val msgVerifyRepository: MsgVerifyRepository
+    private val msgVerifyRepository: MsgVerifyRepository,
+    dispatcher: CoroutineDispatcher
 ) : ViewModel() {
     private val _state: MutableStateFlow<Messages> = MutableStateFlow(getMockdata())
 
@@ -18,7 +20,7 @@ class DemoMessageOverviewViewModel(
         get() = _state.asStateFlow()
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcher) {
             state.value.messages.forEach { message ->
                 msgVerifyRepository.verifyContent(message.message).collect { result ->
                     result.fold(

@@ -4,6 +4,7 @@ import com.terrydroid.msgverify.PlatformContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import org.contextguard.lib.MLKit.urlClassification.UrlPrediction
+import org.contextguard.lib.usecase.CalculateResultUseCase
 import org.koin.core.component.KoinComponent
 
 
@@ -22,12 +23,13 @@ class MsgVerifyRepository(val platformContext: PlatformContext) : KoinComponent 
     }
 
     suspend fun verifyContent(input: String): Flow<Result<LinkVerificationResponse>> {
+        val result = CalculateResultUseCase(message = input, sender = null, platformContext = platformContext.getNativeContext()).invoke()
         // TODO: Connect this when it becomes available
         return flowOf(
             Result.success(
                 LinkVerificationResponse(
-                    maliciousScore = 0.5f,
-                    description = "Could be malicious"
+                    maliciousScore = result.score.toFloat(),
+                    description = result.reasons.toString()
                 )
             )
         )
