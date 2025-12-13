@@ -1,5 +1,6 @@
 package com.terrydroid.msgverify
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -15,6 +16,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
@@ -24,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import com.terrydroid.msgverify.demo.DemoMessagesScreen
 import com.terrydroid.msgverify.di.commonModule
 import com.terrydroid.msgverify.home.HomeScreen
 import com.terrydroid.msgverify.settings.SettingsScreen
@@ -66,6 +69,7 @@ private fun AppScreen() {
                                         color = MaterialTheme.colorScheme.onBackground,
                                     )
                                 },
+
                                 scrollBehavior = scrollBehavior,
                                 navigationIcon = {
                                     IconButton(
@@ -103,8 +107,22 @@ private fun AppScreen() {
                                         color = MaterialTheme.colorScheme.onBackground,
                                     )
                                 },
+
                                 scrollBehavior = scrollBehavior,
                                 actions = {
+                                    TextButton(
+                                        onClick = {
+                                            route.value = Routes.Demos
+                                        },
+                                        border = BorderStroke(
+                                            width = 1.dp,
+                                            color = MaterialTheme.colorScheme.secondary
+                                        )
+                                    ) {
+                                        Text(
+                                            text = "Demos"
+                                        )
+                                    }
                                     IconButton(
                                         onClick = {
                                             route.value = Routes.Settings
@@ -120,6 +138,43 @@ private fun AppScreen() {
                         }
                     ) { innerPadding ->
                         HomeScreen(
+                            paddingValues = innerPadding,
+                        )
+                    }
+                }
+
+                Routes.Demos -> {
+                    Scaffold(
+                        contentWindowInsets = WindowInsets(0.dp),
+                        topBar = {
+                            CenterAlignedTopAppBar(
+                                modifier = Modifier.nestedScroll(
+                                    scrollBehavior.nestedScrollConnection
+                                ),
+                                title = {
+                                    Text(
+                                        text = "Demo Messages",
+                                        style = MaterialTheme.typography.headlineMedium,
+                                        color = MaterialTheme.colorScheme.onBackground,
+                                    )
+                                },
+                                scrollBehavior = scrollBehavior,
+                                navigationIcon = {
+                                    IconButton(
+                                        onClick = {
+                                            route.value = Routes.Home
+                                        }
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                            contentDescription = "Navigate Back"
+                                        )
+                                    }
+                                }
+                            )
+                        }
+                    ) { innerPadding ->
+                        DemoMessagesScreen(
                             paddingValues = innerPadding,
                         )
                     }
