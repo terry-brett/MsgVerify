@@ -4,6 +4,8 @@ import com.terrydroid.msgverify.PlatformContext
 import com.terrydroid.msgverify.data.MsgVerifyRepository
 import com.terrydroid.msgverify.demo.DemoMessageOverviewViewModel
 import com.terrydroid.msgverify.home.HomeViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import org.koin.compose.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.singleOf
@@ -26,5 +28,5 @@ fun commonModule(platformContext: PlatformContext) = module {
     single { platformContext }
     singleOf(::MsgVerifyRepository)
     viewModel { HomeViewModel(msgVerifyRepository = get()) }
-    viewModel { DemoMessageOverviewViewModel(msgVerifyRepository = get()) }
+    viewModel { DemoMessageOverviewViewModel(msgVerifyRepository = get(), dispatcher = Dispatchers.IO) }
 }
