@@ -4,6 +4,7 @@ import org.contextguard.addLinkWarningReason
 import org.contextguard.lib.MLKit.messageClassification.MessageInterpreter
 import org.contextguard.lib.MLKit.urlClassification.UrlPrediction
 import org.contextguard.models.Result
+import org.contextguard.models.TextClassificationResult
 import org.contextguard.toListOfReasons
 
 
@@ -21,7 +22,7 @@ class CalculateResultUseCase(
     private val url: String? = null,
     private val platformContext: Any
 ) {
-    suspend operator fun invoke() : Result {
+    suspend operator fun invoke(): Result {
         return calculateResult(
             message = message,
             sender = sender,
@@ -39,16 +40,19 @@ class CalculateResultUseCase(
 
         val urlPredictionScore = url?.let {
             UrlPrediction(platformContext).makePrediction(it)
-        } ?: -1f
+        }
 
         val listOfReasons = MessageInterpreter(platformContext).getListOfReasonsFromMessage(
             message = message
         )
 
         return Result(
-            score = 0,
-            reasons = listOfReasons.toListOfReasons().toMutableList().addLinkWarningReason(
-                urlPredictionScore = urlPredictionScore
+            urlScore = urlPredictionScore,
+            textClassificationResult = TextClassificationResult.Unsafe(
+                listOfReasons = listOfReasons.toListOfReasons().toMutableList()
+                    .addLinkWarningReason(
+                        urlPredictionScore = urlPredictionScore
+                    )
             )
         )
     }
