@@ -25,11 +25,12 @@ class MsgVerifyRepository(val platformContext: PlatformContext) : KoinComponent 
     suspend fun verifyContent(input: String): Flow<Result<LinkVerificationResponse>> {
         val result = CalculateResultUseCase(message = input, sender = null, platformContext = platformContext.getNativeContext()).invoke()
         // TODO: Connect this when it becomes available
+        result.textClassificationResult
         return flowOf(
             Result.success(
                 LinkVerificationResponse(
-                    maliciousScore = result.score.toFloat(),
-                    description = result.reasons.toString()
+                    maliciousScore = result.urlScore?.toFloat() ?: 0f,
+                    description = result.textClassificationResult.toString()
                 )
             )
         )

@@ -26,7 +26,10 @@ class DemoMessageDetailsViewModel(
                 msgVerifyRepository.verifyContent(message.message).collect { result ->
                     result.fold(
                         onSuccess = {
-                            _state.value = message.copy(trafficLight = getClassification(it.maliciousScore))
+                            _state.value = message.copy(
+                                trafficLight = getClassification(it.maliciousScore),
+                                reason = it.description
+                            )
                         },
                         onFailure = {
                             // No-OP
@@ -37,3 +40,5 @@ class DemoMessageDetailsViewModel(
         }
     }
 }
+
+
