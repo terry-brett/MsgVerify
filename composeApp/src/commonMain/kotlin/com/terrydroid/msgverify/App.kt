@@ -207,7 +207,7 @@ private fun AppScreen() {
                                 navigationIcon = {
                                     IconButton(
                                         onClick = {
-                                            route.value = Routes.Home
+                                            route.value = Routes.Demos
                                         }
                                     ) {
                                         Icon(
