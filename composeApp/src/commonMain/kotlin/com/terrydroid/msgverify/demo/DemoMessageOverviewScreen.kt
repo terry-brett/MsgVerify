@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.compose.viewmodel.koinViewModel
@@ -63,16 +64,28 @@ internal fun DemoMessagesScreen(
 
                     when (message.trafficLight) {
                         TrafficLight.Red -> {
-                            Icon(imageVector = Icons.Default.Error, contentDescription = "")
+                            Icon(
+                                imageVector = Icons.Default.Error,
+                                contentDescription = "Message is probably malicious",
+                                tint = Color.Red
+                            )
                         }
 
                         TrafficLight.Yellow -> {
-                            Icon(imageVector = Icons.Default.Warning, contentDescription = "")
+                            Icon(
+                                imageVector = Icons.Default.Warning,
+                                tint = Color.Yellow,
+                                contentDescription = "Message might be malicious"
+                            )
 
                         }
 
                         TrafficLight.Green -> {
-                            Icon(imageVector = Icons.Default.Shield, contentDescription = "")
+                            Icon(
+                                imageVector = Icons.Default.Shield,
+                                contentDescription = "Message should be fine",
+                                tint = Color.Green
+                            )
                         }
 
                         null -> {
