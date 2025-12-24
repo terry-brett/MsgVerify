@@ -35,6 +35,7 @@ class DemoMessageOverviewViewModel(
                             } else {
                                 TrafficLight.Red
                             }
+                            print("Malicious Score: $maliciousScorePercent")
                             _state.update {
                                 Messages(
                                     it.messages.replace(
