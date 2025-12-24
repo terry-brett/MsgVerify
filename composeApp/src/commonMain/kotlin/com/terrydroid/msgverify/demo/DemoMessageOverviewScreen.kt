@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
@@ -30,27 +31,40 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 internal fun DemoMessagesScreen(
     paddingValues: PaddingValues,
+    navigateToDetails: (id: Int) -> Unit,
     demoMessageOverviewViewModel: DemoMessageOverviewViewModel = koinViewModel(),
 ) {
     val state = demoMessageOverviewViewModel.state.collectAsStateWithLifecycle().value
-    LazyColumn(contentPadding = paddingValues) {
+    LazyColumn(
+        contentPadding = paddingValues,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         item {
             Spacer(modifier = Modifier.size(32.dp))
         }
         item {
-            Text(
-                modifier = Modifier.padding(8.dp),
-                style = MaterialTheme.typography.headlineSmall,
-                text = "This is mock data only verified with ContextGuard lib"
-            )
+            ElevatedCard(
+                modifier = Modifier.padding(vertical = 8.dp)
+            ) {
+                Text(
+                    modifier = Modifier.padding(8.dp),
+                    style = MaterialTheme.typography.labelLarge,
+                    text = "This is mock data only verified with ContextGuard lib"
+                )
+            }
         }
 
         item {
-            Spacer(modifier = Modifier.size(32.dp))
+            Spacer(modifier = Modifier.size(24.dp))
         }
 
         items(state.messages) { message ->
-            OutlinedCard(modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)) {
+            OutlinedCard(
+                modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
+                onClick = {
+                    navigateToDetails.invoke(message.id)
+                }
+            ) {
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(8.dp),
                     verticalAlignment = Alignment.CenterVertically,
@@ -92,10 +106,8 @@ internal fun DemoMessagesScreen(
                             /*NO-OP*/
                         }
                     }
-
                 }
             }
         }
     }
-
 }

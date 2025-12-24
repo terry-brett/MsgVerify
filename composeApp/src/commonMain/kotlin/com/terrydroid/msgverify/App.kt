@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.terrydroid.msgverify.demo.DemoMessagesScreen
+import com.terrydroid.msgverify.demo.details.DemoMessageDetailsScreen
 import com.terrydroid.msgverify.di.commonModule
 import com.terrydroid.msgverify.home.HomeScreen
 import com.terrydroid.msgverify.settings.SettingsScreen
@@ -54,6 +55,8 @@ private fun AppScreen() {
 
             //TODO: Improve navigation with decompose or something when it gets a bit more complex
             val route = rememberSaveable { mutableStateOf(Routes.Home) }
+            val demoDetailsId = mutableStateOf(0)
+
             when (route.value) {
                 Routes.Settings -> {
                     Scaffold(
@@ -143,6 +146,7 @@ private fun AppScreen() {
                     }
                 }
 
+
                 Routes.Demos -> {
                     Scaffold(
                         contentWindowInsets = WindowInsets(0.dp),
@@ -176,6 +180,48 @@ private fun AppScreen() {
                     ) { innerPadding ->
                         DemoMessagesScreen(
                             paddingValues = innerPadding,
+                            navigateToDetails = { id ->
+                                demoDetailsId.value = id
+                                route.value = Routes.DemoDetails
+                            }
+                        )
+                    }
+                }
+
+                Routes.DemoDetails -> {
+                    Scaffold(
+                        contentWindowInsets = WindowInsets(0.dp),
+                        topBar = {
+                            CenterAlignedTopAppBar(
+                                modifier = Modifier.nestedScroll(
+                                    scrollBehavior.nestedScrollConnection
+                                ),
+                                title = {
+                                    Text(
+                                        text = "Demo Message",
+                                        style = MaterialTheme.typography.headlineMedium,
+                                        color = MaterialTheme.colorScheme.onBackground,
+                                    )
+                                },
+                                scrollBehavior = scrollBehavior,
+                                navigationIcon = {
+                                    IconButton(
+                                        onClick = {
+                                            route.value = Routes.Home
+                                        }
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                            contentDescription = "Navigate Back"
+                                        )
+                                    }
+                                }
+                            )
+                        }
+                    ) { innerPadding ->
+                        DemoMessageDetailsScreen(
+                            paddingValues = innerPadding,
+                            id = demoDetailsId.value
                         )
                     }
                 }
