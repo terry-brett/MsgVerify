@@ -66,6 +66,7 @@ data class Message(
     val title: String,
     val message: String,
     val trafficLight: TrafficLight? = null,
+    val reason: String? = null
 )
 
 enum class TrafficLight {
