@@ -2,3 +2,13 @@ sms-spam-collection.csv:
     https://huggingface.co/datasets/codesignal/sms-spam-collection
     [1] Almeida, T.A., Gómez Hidalgo, J.M., Yamakami, A. Contributions to the study of SMS Spam Filtering: New Collection and Results. Proceedings of the 2011 ACM Symposium on Document Engineering (ACM DOCENG'11), Mountain View, CA, USA, 2011.
     Note: we already have a citation for this, use \cite{sms_spam_collection_228}
+
+CEAS_08.csv:
+    https://zenodo.org/records/8339691
+    add for referencing: @inproceedings{champa2024curated,
+      title={Curated Datasets and Feature Analysis for Phishing Email Detection with Machine Learning},
+      author={Champa, Arifa I and Rabbi, Md Fazle and Zibran, Minhaz F},
+      booktitle={3rd IEEE International Conference on Computing and Machine Intelligence (ICMI)},
+      pages = {1--7},
+      year={2024}
+    }
