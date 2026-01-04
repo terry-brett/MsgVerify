@@ -2,22 +2,15 @@ package org.contextguard.lib.MLKit.messageClassification.constants
 
 object Labels {
     val reasonLabels = listOf(
-        "Spelling Errors",
-        "Urgency",
-        "Intimidation",
-        "Sensitive Information Request",
+        "Grammatical Errors/Poor Formatting",
         "Impersonation",
+        "Marketing",
+        "Adult content",
+        "Urgency/Intimidation",
+        "Link Click Pressure",
+        "Financial/Personal Information Request", // bank account, home address, sort-code, card details, name, social security
         "Too Good To Be True",
-        "Payment Request",
-        "Emotional Manipulation",
-        "Financial information request",
-        "Fake Technical Language",
         "Generic Greeting",
-        "Inconsistencies",
-        "Bypassing Official Channels",
         "Credential Verification Request",
-        "Unusual Account Activity Claim",
-        "Poor Formatting",
-        "Link Click Pressure"
     )
 }
