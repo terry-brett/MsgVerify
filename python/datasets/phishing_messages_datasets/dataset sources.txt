@@ -13,6 +13,16 @@ CEAS_08.csv:
       year={2024}
     }
 
+ TREC_06.csv:
+    https://zenodo.org/records/8339691
+    add for referencing: @inproceedings{champa2024curated,
+      title={Curated Datasets and Feature Analysis for Phishing Email Detection with Machine Learning},
+      author={Champa, Arifa I and Rabbi, Md Fazle and Zibran, Minhaz F},
+      booktitle={3rd IEEE International Conference on Computing and Machine Intelligence (ICMI)},
+      pages = {1--7},
+      year={2024}
+    }
+
 Dataset_10191.csv
     https://data.mendeley.com/datasets/vmg875v4xs/1
     add for referencing: @inproceedings{mishra2022sms,
