@@ -24,3 +24,13 @@ Dataset_10191.csv
         organization={Springer}
     }
 
+Final-Dataset.csv (Youtube + Twitter + SMS spam)
+    https://www.kaggle.com/datasets/soumyadey200/youtube-twitter-sms-spam-dataset?resource=download
+    add for referencing: @inproceedings{mukherjee2025youtube,
+        title={YouTube Spam Comment Detection System},
+        author={Mukherjee, Siladitya and Dey, Soumya and Acharya, Anal},
+        booktitle={International Conference on Data Management, Analytics \& Innovation},
+        pages={189--203},
+        year={2025},
+        organization={Springer}
+    }
