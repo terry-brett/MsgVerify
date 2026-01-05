@@ -26,7 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.terrydroid.msgverify.demo.smsoverview.DemoMessagesScreen
-import com.terrydroid.msgverify.demo.details.DemoMessageDetailsScreen
+import com.terrydroid.msgverify.demo.smsdetails.DemoMessageDetailsScreen
 import com.terrydroid.msgverify.demo.overview.DemoOverviewScreen
 import com.terrydroid.msgverify.home.HomeScreen
 import com.terrydroid.msgverify.settings.SettingsScreen
