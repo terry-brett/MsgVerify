@@ -12,3 +12,15 @@ CEAS_08.csv:
       pages = {1--7},
       year={2024}
     }
+
+Dataset_10191.csv
+    https://data.mendeley.com/datasets/vmg875v4xs/1
+    add for referencing: @inproceedings{mishra2022sms,
+        title={Sms phishing dataset for machine learning and pattern recognition},
+        author={Mishra, Sandhya and Soni, Devpriya},
+        booktitle={International Conference on Soft Computing and Pattern Recognition},
+        pages={597--604},
+        year={2022},
+        organization={Springer}
+    }
+
