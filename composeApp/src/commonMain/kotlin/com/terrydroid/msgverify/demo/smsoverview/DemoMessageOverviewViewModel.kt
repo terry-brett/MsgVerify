@@ -1,4 +1,4 @@
-package com.terrydroid.msgverify.demo
+package com.terrydroid.msgverify.demo.smsoverview
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

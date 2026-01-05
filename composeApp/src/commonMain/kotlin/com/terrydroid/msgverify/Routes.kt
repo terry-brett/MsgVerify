@@ -1,5 +1,5 @@
 package com.terrydroid.msgverify
 
 enum class Routes{
-    Home, Settings, Demos, DemoDetails
+    Home, Settings, DemoSmsOverview, DemoSmsDetails, DemoOverview
 }

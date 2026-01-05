@@ -1,4 +1,4 @@
-package com.terrydroid.msgverify.demo
+package com.terrydroid.msgverify.demo.smsoverview
 
 private val messages = Messages(
     messages = listOf(
@@ -43,7 +43,7 @@ private val messages = Messages(
             message = "You have a pending transfer. Confirm to receive funds: vipps-confirmation.net (expires in 30 minutes)",
         ),
 
-    )
+        )
 )
 internal fun getMessagesMockdata(): Messages {
   return messages

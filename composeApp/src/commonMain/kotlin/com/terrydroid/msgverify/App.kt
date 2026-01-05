@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
@@ -26,14 +25,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
-import com.terrydroid.msgverify.demo.DemoMessagesScreen
+import com.terrydroid.msgverify.demo.smsoverview.DemoMessagesScreen
 import com.terrydroid.msgverify.demo.details.DemoMessageDetailsScreen
-import com.terrydroid.msgverify.di.commonModule
+import com.terrydroid.msgverify.demo.overview.DemoOverviewScreen
 import com.terrydroid.msgverify.home.HomeScreen
 import com.terrydroid.msgverify.settings.SettingsScreen
 import com.terrydroid.msgverify.theme.MsgVerifyTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.KoinApplication
 
 @Composable
 fun App() {
@@ -115,7 +113,7 @@ private fun AppScreen() {
                                 actions = {
                                     TextButton(
                                         onClick = {
-                                            route.value = Routes.Demos
+                                            route.value = Routes.DemoOverview
                                         },
                                         border = BorderStroke(
                                             width = 1.dp,
@@ -147,7 +145,7 @@ private fun AppScreen() {
                 }
 
 
-                Routes.Demos -> {
+                Routes.DemoSmsOverview -> {
                     Scaffold(
                         contentWindowInsets = WindowInsets(0.dp),
                         topBar = {
@@ -166,7 +164,7 @@ private fun AppScreen() {
                                 navigationIcon = {
                                     IconButton(
                                         onClick = {
-                                            route.value = Routes.Home
+                                            route.value = Routes.DemoOverview
                                         }
                                     ) {
                                         Icon(
@@ -182,13 +180,13 @@ private fun AppScreen() {
                             paddingValues = innerPadding,
                             navigateToDetails = { id ->
                                 demoDetailsId.value = id
-                                route.value = Routes.DemoDetails
+                                route.value = Routes.DemoSmsDetails
                             }
                         )
                     }
                 }
 
-                Routes.DemoDetails -> {
+                Routes.DemoSmsDetails -> {
                     Scaffold(
                         contentWindowInsets = WindowInsets(0.dp),
                         topBar = {
@@ -207,7 +205,7 @@ private fun AppScreen() {
                                 navigationIcon = {
                                     IconButton(
                                         onClick = {
-                                            route.value = Routes.Demos
+                                            route.value = Routes.DemoSmsOverview
                                         }
                                     ) {
                                         Icon(
@@ -224,6 +222,14 @@ private fun AppScreen() {
                             id = demoDetailsId.value
                         )
                     }
+                }
+
+                Routes.DemoOverview -> {
+                    DemoOverviewScreen(
+                        onSmsDemoClicked = {
+                            route.value = Routes.DemoSmsOverview
+                        }
+                    )
                 }
             }
         }

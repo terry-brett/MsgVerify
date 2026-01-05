@@ -1,4 +1,4 @@
-package com.terrydroid.msgverify.demo
+package com.terrydroid.msgverify.demo.smsoverview
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues

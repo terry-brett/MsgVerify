@@ -3,9 +3,9 @@ package com.terrydroid.msgverify.demo.details
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.terrydroid.msgverify.data.MsgVerifyRepository
-import com.terrydroid.msgverify.demo.Message
-import com.terrydroid.msgverify.demo.getClassification
-import com.terrydroid.msgverify.demo.getMessage
+import com.terrydroid.msgverify.demo.smsoverview.Message
+import com.terrydroid.msgverify.demo.smsoverview.getClassification
+import com.terrydroid.msgverify.demo.smsoverview.getMessage
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
