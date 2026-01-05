@@ -2,8 +2,9 @@ package com.terrydroid.msgverify.di
 
 import com.terrydroid.msgverify.PlatformContext
 import com.terrydroid.msgverify.data.MsgVerifyRepository
-import com.terrydroid.msgverify.demo.smsoverview.DemoMessageOverviewViewModel
+import com.terrydroid.msgverify.demo.emailoverview.DemoEmailOverviewViewModel
 import com.terrydroid.msgverify.demo.smsdetails.DemoMessageDetailsViewModel
+import com.terrydroid.msgverify.demo.smsoverview.DemoMessageOverviewViewModel
 import com.terrydroid.msgverify.home.HomeViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -31,4 +32,5 @@ fun commonModule(platformContext: PlatformContext) = module {
     viewModel { HomeViewModel(msgVerifyRepository = get()) }
     viewModel { DemoMessageOverviewViewModel(msgVerifyRepository = get(), dispatcher = Dispatchers.IO) }
     viewModel { DemoMessageDetailsViewModel(msgVerifyRepository = get(), dispatcher = Dispatchers.IO) }
+    viewModel { DemoEmailOverviewViewModel(msgVerifyRepository = get(), dispatcher = Dispatchers.IO) }
 }

@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import com.terrydroid.msgverify.demo.emailoverview.DemoEmailOverview
 import com.terrydroid.msgverify.demo.smsoverview.DemoMessagesScreen
 import com.terrydroid.msgverify.demo.smsdetails.DemoMessageDetailsScreen
 import com.terrydroid.msgverify.demo.overview.DemoOverviewScreen
@@ -228,8 +229,15 @@ private fun AppScreen() {
                     DemoOverviewScreen(
                         onSmsDemoClicked = {
                             route.value = Routes.DemoSmsOverview
+                        },
+                        onEmailDemoClicked = {
+                            route.value = Routes.DemoEmailOverview
                         }
                     )
+                }
+
+                Routes.DemoEmailOverview -> {
+                    DemoEmailOverview()
                 }
             }
         }

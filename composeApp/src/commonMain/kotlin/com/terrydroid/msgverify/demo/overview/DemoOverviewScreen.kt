@@ -16,7 +16,8 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 internal fun DemoOverviewScreen(
-    onSmsDemoClicked: () -> Unit
+    onSmsDemoClicked: () -> Unit,
+    onEmailDemoClicked: () -> Unit
 ) {
     LazyColumn {
         item {
@@ -49,6 +50,29 @@ internal fun DemoOverviewScreen(
 
                     Text(
                         text = "Small demo on how to use context guard in context of an SMS application",
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+            }
+        }
+
+        item {
+            OutlinedCard(
+                modifier = Modifier.fillMaxWidth().padding(4.dp),
+                shape = RoundedCornerShape(18.dp),
+                onClick = onEmailDemoClicked
+            ) {
+                Column(
+                    modifier = Modifier.padding(vertical = 8.dp).padding(horizontal = 4.dp)
+                ) {
+                    Text(
+                        modifier = Modifier.padding(bottom = 4.dp),
+                        text = "Email Demo",
+                        style = MaterialTheme.typography.labelMedium,
+                    )
+
+                    Text(
+                        text = "Small demo on how to use context guard in context of an email application",
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
