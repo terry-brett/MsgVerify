@@ -3,7 +3,7 @@ from helpers import *
 
 class MessageReasoningLabels:
     def __init__(self, message):
-        self.message = message
+        self.message = normalise(message)
         self.labels = []
 
     def check_spelling_and_formatting(self):
@@ -20,16 +20,14 @@ class MessageReasoningLabels:
         return "" # add "Impersonation" label
 
     def check_marketing(self):
-        normalised_message = normalise(self.message)
-        if has_marketing_patters(normalised_message):
+        if has_marketing_patters(self.message):
             self.labels.append("Marketing")
 
     def check_adult_content(self):
         return "" # add "Adult content" label
 
     def check_urgency(self):
-        normalised_message = normalise(self.message)
-        if has_urgency_or_intimidation_patterns(normalised_message):
+        if has_urgency_or_intimidation_patterns(self.message):
             self.labels.append("Urgency/Intimidation")
 
     def contains_links(self):
