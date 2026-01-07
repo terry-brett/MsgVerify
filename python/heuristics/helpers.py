@@ -13,8 +13,8 @@ def normalise(message):
 # marketing helpers
 def has_marketing_patters(message):
     """
-            Heuristic marketing detector using weighted signals.
-            Returns label string if detected, else "".
+        Heuristic marketing detector using weighted signals.
+        Returns true/false
     """
     score = 0
     reasons = []
@@ -119,6 +119,110 @@ def has_marketing_patters(message):
         return ""
 
     if score >= 4:
+        return true
+
+    return false
+
+
+def has_urgency_or_intimidation_patterns(message):
+    """
+        Heuristic urgency/intimidation detector using weighted signals.
+        Returns true/false
+    """
+    raw = message
+    msg = re.sub(r"\s+", " ", message.lower()).strip()
+
+    score = 0
+    reasons = []
+
+    # direct urgency language
+    urgency_keywords = [
+        "urgent", "immediately", "asap", "act now", "action required", "time sensitive",
+        "right away", "respond now", "do it now", "final notice", "last chance",
+        "limited time", "expires", "expiring", "today", "now"
+    ]
+    hits = [k for k in urgency_keywords if k in msg]
+    if hits:
+        add = min(3, 1 + len(hits))  # cap so it doesn't explode
+        score += add
+        reasons.append(f"urgency_keywords(+{add})")
+
+    # deadline/time-window patterns
+    deadline_patterns = [
+        r"\bwithin\s+\d+\s*(minutes?|mins?|hours?|hrs?|days?)\b",
+        r"\bin\s+\d+\s*(minutes?|mins?|hours?|hrs?|days?)\b",
+        r"\b\d+\s*(minutes?|mins?|hours?|hrs?)\s*(left|remaining)\b",
+        r"\bby\s+(today|tonight|tomorrow)\b",
+        r"\b24\s*hours?\b",
+        r"\b48\s*hours?\b",
+    ]
+    if any(re.search(p, msg) for p in deadline_patterns):
+        score += 3
+        reasons.append("deadline_language(+3)")
+
+    # account/service consequences (pressure)
+    consequence_patterns = [
+        r"\b(account|card|service|subscription|profile)\b.*\b(suspend|suspended|disable|disabled|block|blocked|close|closed|terminate|terminated|restricted|locked)\b",
+        r"\b(will be|has been)\b.*\b(suspended|disabled|blocked|closed|locked|restricted)\b",
+        r"\bavoid\b.*\b(suspension|termination|closure|penalty)\b",
+    ]
+    if any(re.search(p, msg) for p in consequence_patterns):
+        score += 3
+        reasons.append("account_consequence(+3)")
+
+    # legal / police / intimidation threats
+    intimidation_patterns = [
+        r"\blegal\s+action\b",
+        r"\bcourt\b",
+        r"\blawsuit\b",
+        r"\bpolice\b",
+        r"\barrest\b",
+        r"\bwarrant\b",
+        r"\bprosecut(e|ion)\b",
+        r"\bfine\b",
+        r"\bpenalt(y|ies)\b",
+        r"\bjail\b",
+        r"\bscam investigation\b",
+        r"\btax\b.*\b(overdue|debt|owed)\b",
+        r"\bdebt collectors?\b",
+    ]
+    if any(re.search(p, msg) for p in intimidation_patterns):
+        score += 4
+        reasons.append("legal_or_threat(+4)")
+
+    # verbs such as must, required & direct command
+    command_patterns = [
+        r"\byou\s+must\b",
+        r"\brequired\b",
+        r"\bverify\s+now\b",
+        r"\bupdate\s+now\b",
+        r"\bconfirm\s+now\b",
+        r"\brespond\s+immediately\b",
+    ]
+    if any(re.search(p, msg) for p in command_patterns):
+        score += 2
+        reasons.append("command_language(+2)")
+
+    # exclamation marks and CAAAPS
+    if raw.count("!") >= 3:
+        score += 1
+        reasons.append("many_exclamations(+1)")
+
+    letters = [c for c in raw if c.isalpha()]
+    if letters:
+        caps_ratio = sum(1 for c in letters if c.isupper()) / len(letters)
+        if caps_ratio > 0.35:
+            score += 1
+            reasons.append("high_caps_ratio(+1)")
+
+    suppression_patterns = [
+        r"\b(otp|one[-\s]?time\s+pass(code|word)|verification\s+code)\b",
+        r"\b(delivered|delivery|courier|tracking)\b",
+    ]
+    if any(re.search(p, msg) for p in suppression_patterns) and score <= 4:
+        return False, reasons + ["suppressed_transactional"]
+
+    if score >= 5:
         return true
 
     return false

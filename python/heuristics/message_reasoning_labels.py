@@ -28,7 +28,9 @@ class MessageReasoningLabels:
         return "" # add "Adult content" label
 
     def check_urgency(self):
-        return "" # add "Urgency/Intimidation" label
+        normalised_message = normalise(self.message)
+        if has_urgency_or_intimidation_patterns(normalised_message):
+            self.labels.append("Urgency/Intimidation")
 
     def contains_links(self):
         # TODO: Yash - check if message contains links
