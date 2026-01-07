@@ -9,8 +9,10 @@ class MessageReasoningLabels:
     def check_spelling_and_formatting(self):
         # TODO: Yash - use a spell check for English and check for poor formatting e.g. hElLo
         # ive added helper function _check_poor_formatting
-
-        return ""  # add "Grammatical Errors/Poor Formatting" label
+        if has_spelling_error(self.message):
+            # add "Grammatical Errors/Poor Formatting" label
+            self.labels.append("Grammatical Errors/Poor Formatting")
+        
 
     def check_impersonation(self):
         # the sender/message pretends to be another company e.g. Amazon/Paypal

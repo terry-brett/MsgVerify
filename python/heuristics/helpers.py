@@ -1,5 +1,5 @@
 import re
-
+import string
 from sympy import true, false
 
 
@@ -226,3 +226,36 @@ def has_urgency_or_intimidation_patterns(message):
         return true
 
     return false
+
+def has_spelling_error(message) :
+    contains_error = False
+
+    with open("wordlist.txt", encoding="utf-8") as f:
+        DICTIONARY = set(w.strip().lower() for w in f if w.strip())
+
+    URL_REGEX = re.compile(
+        r'(https?://\S+|www\.\S+|\S+\.(com|org|net|io|gov|edu|co.uk|uk)(/\S*)?)',
+        re.IGNORECASE
+    )
+    text_no_urls = URL_REGEX.sub("", message)
+    text_clean = re.sub(r'[\d' + re.escape(string.punctuation) + r']', '', text_no_urls)
+
+    #split text into words
+    words = text_clean.split()
+    
+    for i, word in enumerate(words):
+        #skip capitalized words
+        if word[0].isupper():
+            continue
+
+        if word.isupper():
+            continue
+
+        #check lowercase version in dictionary
+        if word.lower() not in DICTIONARY:
+            contains_error = True
+
+    return contains_error
+
+
+#print(has_spelling_error('Nationwide has noticed your debit card was recently used on 29-11-2016 15:04:43, at APPLE ONLINE STORE for 1267.00 GBP If not you please urgently call fraud prevention on 03303800231 or Int +443303800231. Do not reply by SMS http://www.Nationwide.co.uk'))
