@@ -4,6 +4,7 @@ from helpers import *
 class MessageReasoningLabels:
     def __init__(self, message):
         self.message = message
+        self.labels = []
 
     def check_spelling_and_formatting(self):
         # TODO: Yash - use a spell check for English and check for poor formatting e.g. hElLo
@@ -20,7 +21,8 @@ class MessageReasoningLabels:
 
     def check_marketing(self):
         normalised_message = normalise(self.message)
-        return "" # add "Marketing" label
+        if has_marketing_patters(normalised_message):
+            self.labels.append("Marketing")
 
     def check_adult_content(self):
         return "" # add "Adult content" label
@@ -58,6 +60,8 @@ class MessageReasoningLabels:
         self.check_too_good_to_be_true()
         self.check_credential_verification_request()
 
+        # return set of reasoning labels or uncategorized spam
+        return list(set(self.labels)) if self.labels else ["Uncategorized Spam"]
 
 '''
 "Impersonation": r"(amazon|mygov|wells fargo|paypal|hmrc|netflix|apple|microsoft|delivery|o2|vodafone|bank)",
