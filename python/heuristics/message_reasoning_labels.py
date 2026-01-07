@@ -1,4 +1,5 @@
 import re
+from helpers import *
 
 class MessageReasoningLabels:
     def __init__(self, message):
@@ -18,6 +19,7 @@ class MessageReasoningLabels:
         return "" # add "Impersonation" label
 
     def check_marketing(self):
+        normalised_message = normalise(self.message)
         return "" # add "Marketing" label
 
     def check_adult_content(self):
