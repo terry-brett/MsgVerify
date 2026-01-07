@@ -36,16 +36,13 @@ def has_marketing_patters(message):
 
     # promotions / discounts / deals
     promo_keywords = [
-        "sale", "deal", "discount", "offer", "promo", "promotion", "coupon",
-        "save", "clearance", "limited time", "exclusive", "special offer",
-        "buy one get one", "bogo", "free trial", "trial", "bonus", "cashback",
-        "gift", "giveaway", "winner", "congratulations",
-        "free", "free entry", "entry", "win", "prize", "competition", "comp",
-        "weekly", "wkly", "tickets", "tkts", "mins", "minutes", "txt", "txts", "text"
-        # legal
-        "t&c", "t&cs", "terms", "apply",
-        "standard txt rate", "std txt rate",
-        "over18", "18+", "text rate"
+        "congratulations", "enjoy", "free", "promo", "free trial", "bonus", "best price", "lowest price",
+        "competition", "text", "t&c", "weekly", "t&cs", "best deals", "free", "promotion", "gift", "winner",
+        "special offer", "prize", "comp", "standard txt rate", "exclusive", "giveaway", "discount",
+        "std txt rate", "mins", "18+", "minutes", "sale", "over18", "call now", "deals", "apply", "offer",
+        "txt", "trial", "deal", "txts", "tickets", "clearance", "coupon", "text rate", "limited time",
+        "cashback", "wkly", "bogo", "tkts", "save", "entry", "offers", "best deal", "free entry", "terms",
+        "available now", "sale", "book now", "buy one get one", "win"
     ]
 
     promo_hits = sum(1 for k in promo_keywords if k in message)
@@ -56,7 +53,6 @@ def has_marketing_patters(message):
 
     # call to action / shopping intents
     cta_patterns = [
-
         r"\bbuy\s+now\b",
         r"\bshop\s+now\b",
         r"\border\s+now\b",
@@ -71,6 +67,17 @@ def has_marketing_patters(message):
         r"\bcall\b\s*(?:now\s*)?\b",  # "call now"
         r"\btext\b\s+\w+\s+\bto\b\s+\d{4,6}\b",  # "Text FA to 87121"
         r"\btxt\b\s+\w+\s+\bto\b\s+\d{4,6}\b",  # "txt FA to 87121"
+        r"\blucky\s*draw\b",
+        r"\bcontest\b",
+        r"\bwinner\b",
+        r"\bsubscribe\b",
+        r"\bsubscribed\b",
+        r"\bsubscriber\b",
+        r"\byou\s+are\s+the\s+winner\b",
+        r"\bwon\b",
+        r"\bprize\b",
+        r"\baward\b",
+        r"\bcongratulations\b",
     ]
 
     if any(re.search(p, message) for p in cta_patterns):
