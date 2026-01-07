@@ -20,13 +20,15 @@ def has_marketing_patters(message):
     reasons = []
     # opt - out / compliance phrases(very common in marketing SMS / email)
     opt_out_patterns = [
-         r"\bunsubscribe\b",
-         r"\bopt\s*out\b",
-         r"\bmanage\s+preferences\b",
-         r"\bstop\s+to\s+(end|cancel|unsubscribe)\b",
-         r"\breply\s+stop\b",
-         r"\btext\s+stop\b",
-     ]
+        r"\bunsubscribe\b",
+        r"\bopt\s*out\b",
+        r"\bmanage\s+preferences\b",
+        r"\bstop\s+to\s+(end|cancel|unsubscribe)\b",
+        r"\breply\s+stop\b",
+        r"\btext\s+stop\b",
+        r"\bcall2optout\b",
+        r"\boptout\b",
+    ]
 
     if any(re.search(p, message) for p in opt_out_patterns):
         score += 4
@@ -37,7 +39,13 @@ def has_marketing_patters(message):
         "sale", "deal", "discount", "offer", "promo", "promotion", "coupon",
         "save", "clearance", "limited time", "exclusive", "special offer",
         "buy one get one", "bogo", "free trial", "trial", "bonus", "cashback",
-        "gift", "giveaway", "winner", "congratulations"
+        "gift", "giveaway", "winner", "congratulations",
+        "free", "free entry", "entry", "win", "prize", "competition", "comp",
+        "weekly", "wkly", "tickets", "tkts", "mins", "minutes", "txt", "txts", "text"
+        # legal
+        "t&c", "t&cs", "terms", "apply",
+        "standard txt rate", "std txt rate",
+        "over18", "18+", "text rate"
     ]
 
     promo_hits = sum(1 for k in promo_keywords if k in message)
@@ -48,6 +56,7 @@ def has_marketing_patters(message):
 
     # call to action / shopping intents
     cta_patterns = [
+
         r"\bbuy\s+now\b",
         r"\bshop\s+now\b",
         r"\border\s+now\b",
@@ -59,6 +68,9 @@ def has_marketing_patters(message):
         r"\bclaim\b",
         r"\bredeem\b",
         r"\bcheck\s+out\b",
+        r"\bcall\b\s*(?:now\s*)?\b",  # "call now"
+        r"\btext\b\s+\w+\s+\bto\b\s+\d{4,6}\b",  # "Text FA to 87121"
+        r"\btxt\b\s+\w+\s+\bto\b\s+\d{4,6}\b",  # "txt FA to 87121"
     ]
 
     if any(re.search(p, message) for p in cta_patterns):
@@ -68,7 +80,7 @@ def has_marketing_patters(message):
     # price indicators, percentage
     price_patterns = [
         r"[$€£]\s?\d+(?:[.,]\d{2})?\b",  # $19.99, €100
-        r"\b\d+(?:[.,]\d{2})?\s?(usd|eur|gbp|nok|sek|dkk)\b",
+        r"\b\d+(?:[.,]\d{2})?\s?(usd|eur|gbp|nok|sek|dkk|pln)\b",
         r"\bkr\s?\d+\b",  # Norwegian "kr 199"
         r"\b\d{1,3}%\s*off\b",  # 50% off
         r"\boff\s*\d{1,3}%\b",  # off 50%
