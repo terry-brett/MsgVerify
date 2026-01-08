@@ -3,13 +3,12 @@ from helpers import *
 
 class MessageReasoningLabels:
     def __init__(self, message):
+        self.raw_message = message #for spell check function so it can identify nouns
         self.message = normalise(message)
         self.labels = []
 
     def check_spelling_and_formatting(self):
-        # TODO: Yash - use a spell check for English and check for poor formatting e.g. hElLo
-        # ive added helper function _check_poor_formatting
-        if has_spelling_error(self.message):
+        if has_spelling_error(self.raw_message) or self._check_poor_formatting():
             # add "Grammatical Errors/Poor Formatting" label
             self.labels.append("Grammatical Errors/Poor Formatting")
         
@@ -48,8 +47,8 @@ class MessageReasoningLabels:
 
     def _check_poor_formatting(self):
         # detects excessive capitalization (common in spam)
-        caps_ratio = sum(1 for c in self.message if c.isupper()) / (len(self.message) + 1)
-        return caps_ratio > 0.3 or bool(re.search(r"[a-z][A-Z][a-z][A-Z]", self.message))
+        caps_ratio = sum(1 for c in self.raw_message if c.isupper()) / (len(self.raw_message) + 1)
+        return caps_ratio > 0.3 or bool(re.search(r"[a-z][A-Z][a-z][A-Z]", self.raw_message))
 
     def add_reasoning_labels(self):
         self.check_spelling_and_formatting()

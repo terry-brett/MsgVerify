@@ -237,6 +237,8 @@ def has_spelling_error(message) :
         r'(https?://\S+|www\.\S+|\S+\.(com|org|net|io|gov|edu|co.uk|uk)(/\S*)?)',
         re.IGNORECASE
     )
+
+    #ignore URLs for spell check
     text_no_urls = URL_REGEX.sub("", message)
     text_clean = re.sub(r'[\d' + re.escape(string.punctuation) + r']', '', text_no_urls)
 
@@ -247,7 +249,8 @@ def has_spelling_error(message) :
         #skip capitalized words
         if word[0].isupper():
             continue
-
+        
+        #skip all caps letters
         if word.isupper():
             continue
 
@@ -256,6 +259,3 @@ def has_spelling_error(message) :
             contains_error = True
 
     return contains_error
-
-
-#print(has_spelling_error('Nationwide has noticed your debit card was recently used on 29-11-2016 15:04:43, at APPLE ONLINE STORE for 1267.00 GBP If not you please urgently call fraud prevention on 03303800231 or Int +443303800231. Do not reply by SMS http://www.Nationwide.co.uk'))
