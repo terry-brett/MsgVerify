@@ -34,6 +34,9 @@ Dataset_10191.csv
         organization={Springer}
     }
 
+twitter_spam.csv
+    https://www.kaggle.com/datasets/greyhatboy/twitter-spam-dataset?resource=download
+
 Final-Dataset.csv (Youtube + Twitter + SMS spam)
     https://www.kaggle.com/datasets/soumyadey200/youtube-twitter-sms-spam-dataset?resource=download
     add for referencing: @inproceedings{mukherjee2025youtube,
