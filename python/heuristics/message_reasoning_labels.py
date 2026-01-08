@@ -33,8 +33,8 @@ class MessageReasoningLabels:
 
     def contains_links(self):
         # TODO: Yash - check if message contains links
-
-        return ""  # add "Link Click Pressure" label
+        if contains_url(self.message):
+            self.labels.append("Link Click Pressure")
 
     def is_asking_for_financial_or_personal_information(self):
         return "" # add "Financial/Personal Information Request" label

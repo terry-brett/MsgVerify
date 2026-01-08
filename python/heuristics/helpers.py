@@ -2,7 +2,13 @@ import re
 import string
 from sympy import true, false
 
-
+URL_REGEX = re.compile(
+    r'^(https?:\/\/)(www\.)?[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+(:\d+)?'
+    r'(\/[A-Za-z0-9._~!$&\'()*+,;=:@%-]*)*'
+    r'(\?[A-Za-z0-9._~!$&\'()*+,;=:@%-]*)?'
+    r'(#[A-Za-z0-9._~!$&\'()*+,;=:@%-]*)?$',
+    re.IGNORECASE
+)
 # helper function to convert to lowercase and remove special characters
 def normalise(message):
     text = message.lower()
@@ -233,11 +239,6 @@ def has_spelling_error(message) :
     with open("wordlist.txt", encoding="utf-8") as f:
         DICTIONARY = set(w.strip().lower() for w in f if w.strip())
 
-    URL_REGEX = re.compile(
-        r'(https?://\S+|www\.\S+|\S+\.(com|org|net|io|gov|edu|co.uk|uk)(/\S*)?)',
-        re.IGNORECASE
-    )
-
     #ignore URLs for spell check
     text_no_urls = URL_REGEX.sub("", message)
     text_clean = re.sub(r'[\d' + re.escape(string.punctuation) + r']', '', text_no_urls)
@@ -259,3 +260,9 @@ def has_spelling_error(message) :
             contains_error = True
 
     return contains_error
+
+def contains_url (message):
+    for token in message.split():
+        if URL_REGEX.match(token):
+            return True
+    return False
