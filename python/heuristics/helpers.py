@@ -335,13 +335,71 @@ def has_too_good_to_be_true_patterns(message):
         score += 1
         reasons.append("claim_cta(+1)")
 
-    suppression_patterns = [
-        r"\b(receipt|invoice|order\s+confirmation|tracking|shipped|delivered)\b",
-        r"\bsubscription\b.*\brenew(al|ed)\b",
-        r"\brefund\b.*\bprocessed\b",  # legit "refund processed"
+    if score >= 5:
+        return true
+
+    return false
+
+def has_credential_verification_patterns(message):
+
+    msg = re.sub(r"\b0f\b", "of", message)
+
+    score = 0
+    reasons = []
+
+    cred_nouns = [
+        "password", "passcode", "pin", "login", "log in", "signin", "sign in",
+        "username", "user id", "account", "credentials", "authentication",
+        "2fa", "two factor", "verification code", "security code", "otp"
+    ]
+    noun_hits = [w for w in cred_nouns if w in msg]
+    if noun_hits:
+        add = 2 if len(noun_hits) == 1 else 3
+        score += add
+        reasons.append(f"cred_nouns(+{add})")
+
+    action_patterns = [
+        r"\bverify\b",
+        r"\bconfirm\b",
+        r"\bvalidate\b",
+        r"\bupdate\b",
+        r"\breset\b",
+        r"\bre-?login\b",
+        r"\bauthenticate\b",
+        r"\bsecure\b",
+        r"\brestore\b",
+        r"\brecover\b",
+    ]
+    if any(re.search(p, msg) for p in action_patterns):
+        score += 3
+        reasons.append("verification_or_update_action(+3)")
+
+    strong_phrases = [
+        r"\bverify\s+your\s+(account|password|login|identity)\b",
+        r"\bconfirm\s+(your\s+)?(login|account)\b",
+        r"\bupdate\s+your\s+(credentials|password|account)\b",
+        r"\breset\s+your\s+password\b",
+        r"\bsign\s*in\s+to\b.*\baccount\b",
+    ]
+    if any(re.search(p, msg) for p in strong_phrases):
+        score += 3
+        reasons.append("strong_credential_phrase(+3)")
+
+    if re.search(URL_REGEX, message) and (
+            ("password" in msg) or ("login" in msg) or ("sign in" in msg) or ("verify" in msg)):
+        score += 2
+        reasons.append("link_plus_credentials(+2)")
+
+    otp_sender_patterns = [
+        r"\byour\s+(otp|one[-\s]?time\s+pass(code|word)|verification\s+code)\s+is\b",
+        r"\buse\s+\d{4,8}\s+as\s+your\s+(otp|code)\b",
     ]
 
-    if score >= 5:
+    if any(re.search(p, msg) for p in otp_sender_patterns):
+        score += 2
+        reasons.append("suppressed_otp_sender_message")
+
+    if score >= 6:
         return true
 
     return false

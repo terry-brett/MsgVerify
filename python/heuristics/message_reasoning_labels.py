@@ -43,7 +43,8 @@ class MessageReasoningLabels:
             self.labels.append("Too Good To Be True")
 
     def check_credential_verification_request(self):
-        return "" # add "Credential Verification Request" label
+        if has_credential_verification_patterns(self.message):
+            self.labels.append("Credential Verification Request")
 
     def _check_poor_formatting(self):
         # detects excessive capitalization (common in spam)
