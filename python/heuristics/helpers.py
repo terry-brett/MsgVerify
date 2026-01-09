@@ -9,6 +9,10 @@ URL_REGEX = re.compile(
     r'(#[A-Za-z0-9._~!$&\'()*+,;=:@%-]*)?$',
     re.IGNORECASE
 )
+
+PHONE_LIKE  = r"\b(?:\+?\d[\d\s\-()]{7,}\d)\b"
+SHORTCODE   = r"\b\d{5,6}\b"
+
 # helper function to convert to lowercase and remove special characters
 def normalise(message):
     text = message.lower()
@@ -403,6 +407,113 @@ def has_credential_verification_patterns(message):
         return true
 
     return false
+
+def has_adult_content_patterns(message):
+    score = 0
+
+    msg = re.sub(r"\b0f\b", "of", message)
+
+    # strong adult slang / explicit terms (add gradually based on your dataset)
+    adult_terms = [
+        "rude chat", "sex", "sexy", "nude", "nudes", "naked", "porn", "xxx",
+        "shag", "shagged", "cum", "hookup", "escort",
+        "pics", "pictures", "gettin", "getting"
+    ]
+    if any(term in msg for term in adult_terms):
+        score += 4
+
+    # “private line/chat line” style + phone number is a huge signal
+    if re.search(r"\b(private line|chat line|rude chat|adult chat)\b", msg):
+        score += 3
+
+    # “text PIX to 85…” / shortcodes + adult context
+    if re.search(r"\btext\b.*\b(pix|pics|photo|photos)\b", msg):
+        score += 2
+
+    if re.search(PHONE_LIKE, message) or re.search(SHORTCODE, message):
+        score += 1
+
+    return score >= 6
+
+def asks_for_financial_or_personal_info(message):
+
+    msg = re.sub(r"\b0f\b", "of", message)
+
+    score = 0
+    reasons = []
+
+    request_patterns = [
+        r"\bprovide\b", r"\bsend\b", r"\bshare\b", r"\breply\b", r"\benter\b",
+        r"\bsubmit\b", r"\bconfirm\b", r"\bverify\b", r"\bupdate\b", r"\bfurnish\b",
+        r"\bgive\b", r"\btext\b", r"\btype\b",
+        r"\breply\s+with\b", r"\bfill\s+(in|out)\b",
+    ]
+    if any(re.search(p, msg) for p in request_patterns):
+        score += 2
+        reasons.append("request_verb(+2)")
+
+    financial_patterns = [
+        r"\bbank\s+account\b",
+        r"\baccount\s+number\b",
+        r"\bsort\s+code\b",
+        r"\biban\b",
+        r"\bbic\b|\bswift\b",
+        r"\brouting\s+number\b",
+        r"\bcredit\s+card\b|\bdebit\s+card\b|\bcard\s+details\b",
+        r"\bcard\s+number\b",
+        r"\bcvv\b|\bcvc\b|\bsecurity\s+code\b",
+        r"\bexpiry\b|\bexpiration\b|\bexp\s*date\b",
+        r"\bpin\b",  # careful: overlaps with credential PIN; still sensitive
+        r"\bpaypal\b.*\b(email|account)\b",
+    ]
+
+    fin_hit = any(re.search(p, msg) for p in financial_patterns)
+
+    personal_patterns = [
+        r"\bfull\s+name\b|\blegal\s+name\b|\bname\b",
+        r"\bdate\s+of\s+birth\b|\bdob\b|\bbirth\s+date\b",
+        r"\bssn\b|\bsocial\s+security\b|\bnational\s+id\b|\bid\s+number\b",
+        r"\baddress\b|\bhome\s+address\b|\bstreet\b|\bhouse\s*(no|number)\b",
+        r"\bpostcode\b|\bzip\s*code\b",
+        r"\bpassport\b|\bdriver'?s\s+licen[cs]e\b",
+        r"\bmother'?s\s+maiden\s+name\b",
+    ]
+
+    pers_hit = any(re.search(p, msg) for p in personal_patterns)
+
+    if fin_hit:
+        score += 3
+        reasons.append("financial_field(+3)")
+    if pers_hit:
+        score += 3
+        reasons.append("personal_field(+3)")
+
+    if re.search(r"\b(name|address|dob|ssn|iban|account|card)\b.*[,/].*\b(name|address|dob|ssn|iban|account|card)\b",
+                 msg):
+        score += 2
+        reasons.append("multiple_fields_listed(+2)")
+
+    if re.search(r"(https?://\S+|www\.\S+)", message) and score >= 5:
+        score += 1
+        reasons.append("link_plus_request(+1)")
+
+    informational_patterns = [
+        r"\bending\s+\d{2,4}\b",
+        r"\b(last\s+)?\d{4}\b",  # last 4 digits mention
+        r"\baccount\s+ending\b",
+        r"\bmasked\b",
+        r"\bxxxx\b|\b\*{2,}\d{2,4}\b",
+        r"\byour\s+(account|card|iban)\b.*\b(is|was)\b",  # "your account number is ..."
+    ]
+
+    if any(re.search(p, msg) for p in informational_patterns):
+        score += 4
+        reasons.append("suppressed_informational_context")
+
+    if score >= 6:
+        return True
+
+    return False
 
 def contains_url (message):
     for token in message.split():

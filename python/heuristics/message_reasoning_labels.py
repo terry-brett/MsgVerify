@@ -25,7 +25,8 @@ class MessageReasoningLabels:
             self.labels.append("Marketing")
 
     def check_adult_content(self):
-        return "" # add "Adult content" label
+        if has_adult_content_patterns(self.message):
+            self.labels.append("Adult Content")
 
     def check_urgency(self):
         if has_urgency_or_intimidation_patterns(self.message):
@@ -36,7 +37,8 @@ class MessageReasoningLabels:
             self.labels.append("Link Click Pressure")
 
     def is_asking_for_financial_or_personal_information(self):
-        return "" # add "Financial/Personal Information Request" label
+        if asks_for_financial_or_personal_info(self.message):
+            self.labels.append("Financial or Personal Information")
 
     def check_too_good_to_be_true(self):
         if has_too_good_to_be_true_patterns(self.message):
