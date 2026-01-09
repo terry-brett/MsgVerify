@@ -2,9 +2,10 @@ import re
 from helpers import *
 
 class MessageReasoningLabels:
-    def __init__(self, message):
+    def __init__(self, message, sender = None):
         self.raw_message = message #for spell check function so it can identify nouns
         self.message = normalise(message)
+        self.sender = sender # for emails we should also pass a sender to check TLD
         self.labels = []
 
     def check_spelling_and_formatting(self):
@@ -14,11 +15,8 @@ class MessageReasoningLabels:
         
 
     def check_impersonation(self):
-        # the sender/message pretends to be another company e.g. Amazon/Paypal
-        # we have a json top_impersonated_brands.json you can use here
-        # TODO: Yash - for emails check TLD against the json, we have full company names and abbreviations
-
-        return "" # add "Impersonation" label
+        if check_impersonation(self.message, self.sender):
+            self.labels.append("Impersonation")
 
     def check_marketing(self):
         if has_marketing_patterns(self.message):
