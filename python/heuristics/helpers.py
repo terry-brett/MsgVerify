@@ -14,7 +14,7 @@ URL_REGEX = re.compile(
 PHONE_LIKE  = r"\b(?:\+?\d[\d\s\-()]{7,}\d)\b"
 SHORTCODE   = r"\b\d{5,6}\b"
 
-BRANDS = {'phishing_targets': [{'name': 'DHL', 'abbr': 'DHL'}, {'name': 'Allied Bank Limited', 'abbr': 'ABL'}, {'name': 'Santander UK', 'abbr': 'SAN'}, {'name': 'Coinbase', 'abbr': 'COIN'}, {'name': 'East Japan Railway Company', 'abbr': 'JR East'}, {'name': 'Steam', 'abbr': 'STM'}, {'name': 'Bank Millennium', 'abbr': 'MIL'}, {'name': 'Virustotal', 'abbr': 'VT'}, {'name': 'DocuSign', 'abbr': 'DOCU'}, {'name': 'Apple', 'abbr': 'AAPL'}, {'name': 'Banco Bilbao Vizcaya Argentaria', 'abbr': 'BBVA'}, {'name': 'WeTransfer', 'abbr': 'WT'}, {'name': 'Adobe', 'abbr': 'ADBE'}, {'name': 'Das kann Bank', 'abbr': 'DKB'}, {'name': 'Orange', 'abbr': 'ORA'}, {'name': 'Regions Bank', 'abbr': 'RF'}, {'name': 'Allegro', 'abbr': 'ALE'}, {'name': 'Royal Bank of Canada', 'abbr': 'RY'}, {'name': 'AEON Card', 'abbr': 'AEON'}, {'name': 'Microsoft', 'abbr': 'MSFT'}, {'name': 'The Brazilian Development Bank', 'abbr': 'BNDES'}, {'name': 'Caixa', 'abbr': 'CEF'}, {'name': 'Dropbox', 'abbr': 'DBX'}, {'name': 'Comcast', 'abbr': 'CMCSA'}, {'name': 'Wachovia', 'abbr': 'WB'}, {'name': 'Mercari', 'abbr': 'MERC'}, {'name': 'Other', 'abbr': 'MISC'}, {'name': 'HSBC Group', 'abbr': 'HSBC'}, {'name': 'Wells Fargo', 'abbr': 'WFC'}, {'name': "Her Majesty's Revenue and Customs", 'abbr': 'HMRC'}, {'name': 'US Bank', 'abbr': 'USB'}, {'name': 'PayPay Bank', 'abbr': 'PPB'}, {'name': 'Aetna Health Plans & Dental Coverage', 'abbr': 'AET'}, {'name': 'Telefónica UK', 'abbr': 'O2'}, {'name': 'Visa', 'abbr': 'V'}, {'name': 'Banco De Brasil', 'abbr': 'BBAS'}, {'name': 'UniCredit', 'abbr': 'UCG'}, {'name': 'PKO Polish Bank', 'abbr': 'PKO'}, {'name': 'Bradesco', 'abbr': 'BBD'}, {'name': 'AT&T', 'abbr': 'T'}, {'name': 'Barclays Bank PLC', 'abbr': 'BARC'}, {'name': 'Co-operative Bank', 'abbr': 'COOP'}, {'name': 'Huntington National Bank', 'abbr': 'HBAN'}, {'name': 'ABN AMRO Bank', 'abbr': 'ABN'}, {'name': 'Internal Revenue Service', 'abbr': 'IRS'}, {'name': 'RuneScape', 'abbr': 'RS'}, {'name': 'Sumitomo Mitsui Banking Corporation', 'abbr': 'SMBC'}, {'name': 'Banco Santander, S.A.', 'abbr': 'SAN'}, {'name': 'Navy Federal Credit Union', 'abbr': 'NFCU'}, {'name': 'Netflix', 'abbr': 'NFLX'}, {'name': 'JPMorgan Chase and Co.', 'abbr': 'JPM'}, {'name': 'Bank of America Corporation', 'abbr': 'BAC'}, {'name': 'Raiffeisen Bank', 'abbr': 'RBI'}, {'name': 'Yahoo', 'abbr': 'YHOO'}, {'name': 'Accurint', 'abbr': 'ACC'}, {'name': 'Rakuten', 'abbr': 'RKUNY'}, {'name': 'British Telecom', 'abbr': 'BT'}, {'name': 'Hotmail', 'abbr': 'MSFT'}, {'name': 'AOL', 'abbr': 'AOL'}, {'name': 'Google', 'abbr': 'GOOGL'}, {'name': 'Intesa Sanpaolo', 'abbr': 'ISP'}, {'name': 'Volksbanken Raiffeisenbanken', 'abbr': 'VR'}, {'name': 'TSB', 'abbr': 'TSB'}, {'name': 'Nets', 'abbr': 'NETS'}, {'name': 'Binance', 'abbr': 'BNB'}, {'name': 'Itau', 'abbr': 'ITUB'}, {'name': 'Mastercard', 'abbr': 'MA'}, {'name': 'American Express', 'abbr': 'AMEX'}, {'name': 'ABSA Bank', 'abbr': 'ABSA'}, {'name': 'Westpac', 'abbr': 'WBC'}, {'name': 'PayPal', 'abbr': 'PYPL'}, {'name': 'Facebook', 'abbr': 'META'}, {'name': 'Swiss Post', 'abbr': 'SWP'}, {'name': 'Abonné Free Mobile', 'abbr': 'FREE'}, {'name': 'Nubank', 'abbr': 'NU'}, {'name': 'eBay, Inc.', 'abbr': 'EBAY'}, {'name': 'Nordea Bank', 'abbr': 'NDA'}, {'name': 'Development Bank of Singapore', 'abbr': 'DBS'}, {'name': 'Rackspace', 'abbr': 'RAX'}, {'name': 'Scotiabank', 'abbr': 'BNS'}, {'name': 'Interactive Brokers', 'abbr': 'IBKR'}, {'name': 'ING Direct', 'abbr': 'ING'}, {'name': 'Amazon.com', 'abbr': 'AMZN'}, {'name': 'Optus', 'abbr': 'OPT'}, {'name': 'Sulake Corporation', 'abbr': 'SUL'}, {'name': 'Instagram', 'abbr': 'IG'}, {'name': 'Capital One', 'abbr': 'COF'}, {'name': 'Capitec Bank', 'abbr': 'CPI'}]}
+BRANDS = {'phishing_targets': [{'name': 'DHL', 'abbr': 'DHL'}, {'name': 'Allied Bank Limited', 'abbr': 'ABL'}, {'name': 'Santander UK', 'abbr': 'SAN'}, {'name': 'Coinbase', 'abbr': 'COIN'}, {'name': 'East Japan Railway Company', 'abbr': 'JR East'}, {'name': 'Steam', 'abbr': 'STM'}, {'name': 'Bank Millennium', 'abbr': 'MIL'}, {'name': 'Virustotal', 'abbr': 'VT'}, {'name': 'DocuSign', 'abbr': 'DOCU'}, {'name': 'Apple', 'abbr': 'AAPL'}, {'name': 'Nationwide', 'abbr': 'NBS'} , {'name': 'Banco Bilbao Vizcaya Argentaria', 'abbr': 'BBVA'}, {'name': 'WeTransfer', 'abbr': 'WT'}, {'name': 'Adobe', 'abbr': 'ADBE'}, {'name': 'Das kann Bank', 'abbr': 'DKB'}, {'name': 'Orange', 'abbr': 'ORA'}, {'name': 'Regions Bank', 'abbr': 'RF'}, {'name': 'Allegro', 'abbr': 'ALE'}, {'name': 'Royal Bank of Canada', 'abbr': 'RY'}, {'name': 'AEON Card', 'abbr': 'AEON'}, {'name': 'Microsoft', 'abbr': 'MSFT'}, {'name': 'The Brazilian Development Bank', 'abbr': 'BNDES'}, {'name': 'Caixa', 'abbr': 'CEF'}, {'name': 'Dropbox', 'abbr': 'DBX'}, {'name': 'Comcast', 'abbr': 'CMCSA'}, {'name': 'Wachovia', 'abbr': 'WB'}, {'name': 'Mercari', 'abbr': 'MERC'}, {'name': 'Other', 'abbr': 'MISC'}, {'name': 'HSBC Group', 'abbr': 'HSBC'}, {'name': 'Wells Fargo', 'abbr': 'WFC'}, {'name': "Her Majesty's Revenue and Customs", 'abbr': 'HMRC'}, {'name': 'US Bank', 'abbr': 'USB'}, {'name': 'PayPay Bank', 'abbr': 'PPB'}, {'name': 'Aetna Health Plans & Dental Coverage', 'abbr': 'AET'}, {'name': 'Telefónica UK', 'abbr': 'O2'}, {'name': 'Visa', 'abbr': 'V'}, {'name': 'Banco De Brasil', 'abbr': 'BBAS'}, {'name': 'UniCredit', 'abbr': 'UCG'}, {'name': 'PKO Polish Bank', 'abbr': 'PKO'}, {'name': 'Bradesco', 'abbr': 'BBD'}, {'name': 'AT&T', 'abbr': 'T'}, {'name': 'Barclays Bank PLC', 'abbr': 'BARC'}, {'name': 'Co-operative Bank', 'abbr': 'COOP'}, {'name': 'Huntington National Bank', 'abbr': 'HBAN'}, {'name': 'ABN AMRO Bank', 'abbr': 'ABN'}, {'name': 'Internal Revenue Service', 'abbr': 'IRS'}, {'name': 'RuneScape', 'abbr': 'RS'}, {'name': 'Sumitomo Mitsui Banking Corporation', 'abbr': 'SMBC'}, {'name': 'Banco Santander, S.A.', 'abbr': 'SAN'}, {'name': 'Navy Federal Credit Union', 'abbr': 'NFCU'}, {'name': 'Netflix', 'abbr': 'NFLX'}, {'name': 'JPMorgan Chase and Co.', 'abbr': 'JPM'}, {'name': 'Bank of America Corporation', 'abbr': 'BAC'}, {'name': 'Raiffeisen Bank', 'abbr': 'RBI'}, {'name': 'Yahoo', 'abbr': 'YHOO'}, {'name': 'Accurint', 'abbr': 'ACC'}, {'name': 'Rakuten', 'abbr': 'RKUNY'}, {'name': 'British Telecom', 'abbr': 'BT'}, {'name': 'Hotmail', 'abbr': 'MSFT'}, {'name': 'AOL', 'abbr': 'AOL'}, {'name': 'Google', 'abbr': 'GOOGL'}, {'name': 'Intesa Sanpaolo', 'abbr': 'ISP'}, {'name': 'Volksbanken Raiffeisenbanken', 'abbr': 'VR'}, {'name': 'TSB', 'abbr': 'TSB'}, {'name': 'Nets', 'abbr': 'NETS'}, {'name': 'Binance', 'abbr': 'BNB'}, {'name': 'Itau', 'abbr': 'ITUB'}, {'name': 'Mastercard', 'abbr': 'MA'}, {'name': 'American Express', 'abbr': 'AMEX'}, {'name': 'ABSA Bank', 'abbr': 'ABSA'}, {'name': 'Westpac', 'abbr': 'WBC'}, {'name': 'PayPal', 'abbr': 'PYPL'}, {'name': 'Facebook', 'abbr': 'META'}, {'name': 'Swiss Post', 'abbr': 'SWP'}, {'name': 'Abonné Free Mobile', 'abbr': 'FREE'}, {'name': 'Nubank', 'abbr': 'NU'}, {'name': 'eBay, Inc.', 'abbr': 'EBAY'}, {'name': 'Nordea Bank', 'abbr': 'NDA'}, {'name': 'Development Bank of Singapore', 'abbr': 'DBS'}, {'name': 'Rackspace', 'abbr': 'RAX'}, {'name': 'Scotiabank', 'abbr': 'BNS'}, {'name': 'Interactive Brokers', 'abbr': 'IBKR'}, {'name': 'ING Direct', 'abbr': 'ING'}, {'name': 'Amazon.com', 'abbr': 'AMZN'}, {'name': 'Optus', 'abbr': 'OPT'}, {'name': 'Sulake Corporation', 'abbr': 'SUL'}, {'name': 'Instagram', 'abbr': 'IG'}, {'name': 'Capital One', 'abbr': 'COF'}, {'name': 'Capitec Bank', 'abbr': 'CPI'}]}
 
 # helper function to convert to lowercase and remove special characters
 def normalise(message):
@@ -527,29 +527,37 @@ def asks_for_financial_or_personal_info(message):
 
     return False
 
-def check_impersonation(message, sender):
-    sender = "" if sender is None else sender
+
+import re
+
+
+def check_impersonation(message, sender=None):
+    sender = "" if sender is None else sender.lower()
+
     email_match = re.search(r'[\w\.-]+@[\w\.-]+\.\w+', sender)
+    sender_domain = email_match.group(0).split('@')[-1] if email_match else ""
 
-    if not email_match:
-        return ""
-
-    sender_email = email_match.group(0).lower()
-    sender_domain = sender_email.split('@')[-1]
+    free_providers = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'aol.com', 'protonmail.com']
 
     for brand in BRANDS['phishing_targets']:
         name = brand['name'].lower()
+        abbr = brand['abbr'].lower()
 
-        name_pattern = rf"\b{re.escape(name)}\b"
+        brand_pattern = rf"\b({re.escape(name)}|{re.escape(abbr)})\b"
 
-        if re.search(name_pattern, message) or name in sender:
+        brand_in_msg = re.search(brand_pattern, message)
+        brand_in_sender = name in sender or abbr in sender
 
-            free_providers = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'aol.com', 'protonmail.com']
+        if brand_in_msg or brand_in_sender:
+            if sender_domain:
+                brand_domain_part = name.replace(" ", "").replace(".com", "")
+                if sender_domain in free_providers or brand_domain_part not in sender_domain:
+                    return True
+            else:
+                has_url = "http" in message or ".com/" in message or ".net/" in message
 
-            brand_domain_part = name.replace(" ", "").replace(".com", "")
-
-            if sender_domain in free_providers or brand_domain_part not in sender_domain:
-                return True
+                if has_url:
+                    return True
 
     return False
 
