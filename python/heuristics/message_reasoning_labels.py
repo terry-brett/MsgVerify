@@ -32,7 +32,6 @@ class MessageReasoningLabels:
             self.labels.append("Urgency/Intimidation")
 
     def contains_links(self):
-        # TODO: Yash - check if message contains links
         if contains_url(self.message):
             self.labels.append("Link Click Pressure")
 
