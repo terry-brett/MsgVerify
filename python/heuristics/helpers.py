@@ -443,10 +443,9 @@ def asks_for_financial_or_personal_info(message):
     reasons = []
 
     request_patterns = [
-        r"\bprovide\b", r"\bsend\b", r"\bshare\b", r"\breply\b", r"\benter\b",
+        r"\bprovide\b", r"\bsend\b", r"\bshare\b", r"\breply to\b", r"\breply with\b",r"\benter\b",
         r"\bsubmit\b", r"\bconfirm\b", r"\bverify\b", r"\bupdate\b", r"\bfurnish\b",
-        r"\bgive\b", r"\btext\b", r"\btype\b",
-        r"\breply\s+with\b", r"\bfill\s+(in|out)\b",
+        r"\bgive\b", r"\btype\b", r"\bfill\s+(in|out)\b",
     ]
     if any(re.search(p, msg) for p in request_patterns):
         score += 2
