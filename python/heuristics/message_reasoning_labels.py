@@ -21,7 +21,7 @@ class MessageReasoningLabels:
         return "" # add "Impersonation" label
 
     def check_marketing(self):
-        if has_marketing_patters(self.message):
+        if has_marketing_patterns(self.message):
             self.labels.append("Marketing")
 
     def check_adult_content(self):
@@ -40,7 +40,8 @@ class MessageReasoningLabels:
         return "" # add "Financial/Personal Information Request" label
 
     def check_too_good_to_be_true(self):
-        return "" # add "Too Good To Be True" label
+        if has_too_good_to_be_true_patterns(self.message):
+            self.labels.append("Too Good To Be True")
 
     def check_credential_verification_request(self):
         return "" # add "Credential Verification Request" label

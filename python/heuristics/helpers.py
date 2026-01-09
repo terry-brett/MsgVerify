@@ -17,7 +17,7 @@ def normalise(message):
 
 
 # marketing helpers
-def has_marketing_patters(message):
+def has_marketing_patterns(message):
     """
         Heuristic marketing detector using weighted signals.
         Returns true/false
@@ -260,6 +260,91 @@ def has_spelling_error(message) :
             contains_error = True
 
     return contains_error
+
+def has_too_good_to_be_true_patterns(message):
+    # normalize common obfuscations: "0f" -> "of"
+    msg = re.sub(r"\b0f\b", "of", message)
+
+    score = 0
+    reasons = []
+
+    win_patterns = [
+        r"\bwon\b", r"\bwinner\b", r"\bwin\b",
+        r"\blottery\b", r"\blucky\s*draw\b", r"\bjackpot\b",
+        r"\bprize\b", r"\bclaim\s+your\s+prize\b",
+        r"\bcongratulations\b",
+    ]
+    if any(re.search(p, msg) for p in win_patterns):
+        score += 4
+        reasons.append("win_or_lottery(+4)")
+
+    selected_patterns = [
+        r"\byou(\s+have|'ve)\s+been\s+selected\b",
+        r"\bselected\b",
+        r"\beligible\b",
+        r"\bqualif(ied|y)\b",
+        r"\bpre[-\s]?approved\b",
+        r"\bexclusive\s+invite\b",
+    ]
+    if any(re.search(p, msg) for p in selected_patterns):
+        score += 2
+        reasons.append("selected_or_eligible(+2)")
+
+    free_reward_patterns = [
+        r"\bfree\b",
+        r"\bgift\s*card\b",
+        r"\breward(s)?\b",
+        r"\bbonus\b",
+        r"\bcash\s*back\b",
+        r"\bvoucher\b",
+        r"\bcoupon\b",
+    ]
+    if any(re.search(p, msg) for p in free_reward_patterns):
+        score += 2
+        reasons.append("free_or_rewards(+2)")
+
+    compensation_patterns = [
+        r"\bcompensation\b",
+        r"\bsettlement\b",
+        r"\brefund\b",
+        r"\breimbursement\b",
+        r"\bclaim\s+refund\b",
+    ]
+    if any(re.search(p, msg) for p in compensation_patterns):
+        score += 1
+        reasons.append("refund_or_compensation(+1)")
+
+    money_patterns = [
+        r"\b(?:usd|eur|gbp|nok|sek|dkk|inr)\b",
+        r"[$€£]\s?\d+(?:[.,]\d{2})?\b",
+        r"\b\d{1,3}(?:[.,]\d{3})+(?:[.,]\d{2})?\b",  # 12,60000 / 1,000,000 etc (loose)
+        r"\b\d+\s*(?:million|billion|crore|lakhs?|lakh)\b",
+        r"\bcash\b",
+    ]
+    if any(re.search(p, msg) for p in money_patterns):
+        score += 2
+        reasons.append("money_amount_or_currency(+2)")
+
+    claim_patterns = [
+        r"\bclaim\b",
+        r"\bcollect\b",
+        r"\bredeem\b",
+        r"\bget\s+your\b",
+    ]
+    if any(re.search(p, msg) for p in claim_patterns):
+        score += 1
+        reasons.append("claim_cta(+1)")
+
+    suppression_patterns = [
+        r"\b(receipt|invoice|order\s+confirmation|tracking|shipped|delivered)\b",
+        r"\bsubscription\b.*\brenew(al|ed)\b",
+        r"\brefund\b.*\bprocessed\b",  # legit "refund processed"
+    ]
+
+    if score >= 5:
+        return true
+
+    return false
 
 def contains_url (message):
     for token in message.split():
