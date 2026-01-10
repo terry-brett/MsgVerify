@@ -15,7 +15,6 @@ LABELS_CANONICAL = [
     "Link Click Pressure",
     "Financial/Personal Information Request",
     "Too Good To Be True",
-    "Generic Greeting",
     "Credential Verification Request",
 ]
 
