@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ChatBubble
 import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Sms
@@ -37,7 +38,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 internal fun DemoOverviewScreen(
     onSmsDemoClicked: () -> Unit,
-    onEmailDemoClicked: () -> Unit
+    onEmailDemoClicked: () -> Unit,
+    onSocialMediaDemoClicked: () -> Unit
 ) {
     val items = listOf(
         DemoItem(
@@ -51,6 +53,12 @@ internal fun DemoOverviewScreen(
             description = "How to use Context Guard in the context of an email application.",
             icon = Icons.Outlined.Email,
             onClick = onEmailDemoClicked
+        ),
+        DemoItem(
+            title = "Social Media Demo",
+            description = "How to use Context Guard in the context of a social media application.",
+            icon = Icons.Outlined.ChatBubble,
+            onClick = onSocialMediaDemoClicked
         ),
     )
 

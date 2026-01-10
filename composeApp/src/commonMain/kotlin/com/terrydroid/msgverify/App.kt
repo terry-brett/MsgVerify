@@ -29,6 +29,7 @@ import com.terrydroid.msgverify.demo.emailoverview.DemoEmailOverview
 import com.terrydroid.msgverify.demo.smsoverview.DemoMessagesScreen
 import com.terrydroid.msgverify.demo.smsdetails.DemoMessageDetailsScreen
 import com.terrydroid.msgverify.demo.overview.DemoOverviewScreen
+import com.terrydroid.msgverify.demo.socialmedia.SocialMediaScreen
 import com.terrydroid.msgverify.home.HomeScreen
 import com.terrydroid.msgverify.settings.SettingsScreen
 import com.terrydroid.msgverify.theme.MsgVerifyTheme
@@ -232,12 +233,52 @@ private fun AppScreen() {
                         },
                         onEmailDemoClicked = {
                             route.value = Routes.DemoEmailOverview
+                        },
+                        onSocialMediaDemoClicked = {
+                            route.value = Routes.SocialMediaDemo
                         }
                     )
                 }
 
                 Routes.DemoEmailOverview -> {
                     DemoEmailOverview()
+                }
+
+                Routes.SocialMediaDemo -> {
+                    Scaffold(
+                        contentWindowInsets = WindowInsets(0.dp),
+                        topBar = {
+                            CenterAlignedTopAppBar(
+                                modifier = Modifier.nestedScroll(
+                                    scrollBehavior.nestedScrollConnection
+                                ),
+                                title = {
+                                    Text(
+                                        text = "Social Media Demo",
+                                        style = MaterialTheme.typography.headlineMedium,
+                                        color = MaterialTheme.colorScheme.onBackground,
+                                    )
+                                },
+                                scrollBehavior = scrollBehavior,
+                                navigationIcon = {
+                                    IconButton(
+                                        onClick = {
+                                            route.value = Routes.DemoOverview
+                                        }
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                            contentDescription = "Navigate Back"
+                                        )
+                                    }
+                                }
+                            )
+                        }
+                    ) { innerPadding ->
+                        SocialMediaScreen(
+                            paddingValues = innerPadding,
+                        )
+                    }
                 }
             }
         }
