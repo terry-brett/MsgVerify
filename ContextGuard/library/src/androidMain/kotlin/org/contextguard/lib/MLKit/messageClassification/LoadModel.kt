@@ -7,7 +7,7 @@ import java.io.File
 
 actual class LoadModel(private val context: Context) {
     actual suspend fun getTextModelDesc(): ModelDesc {
-        val bytes = Res.readBytes("files/messageClassificationModel/distilbert_mnli_dynamic_quant.tflite")
+        val bytes = Res.readBytes("files/messageClassificationModel/otis_spam_model.tflite")
         val tmpFile = File.createTempFile("prefix", "suffix", context.cacheDir)
         tmpFile.writeBytes(bytes)
         val modelDesc = ModelDesc.File(tmpFile)
