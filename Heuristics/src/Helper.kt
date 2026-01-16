@@ -219,9 +219,28 @@ fun extractEmailDomain(email: String): String? {
     return email.split("@")[1].lowercase()
 }
 
+fun domainLooksLikeBrand(domain: String?, brandText: String?): Boolean {
+    if (domain.isNullOrBlank() || brandText.isNullOrBlank()) return false
+
+    val d = domain.lowercase().replace(".", "")
+
+    val stopWords = setOf(
+        "the", "and", "of", "inc", "corp", "corporation",
+        "ltd", "limited", "llc", "plc"
+    )
+
+    val tokens = brandText
+        .lowercase()
+        .split(Regex("[\\s,&()\\-]+"))
+        .filter { it.isNotBlank() && it !in stopWords && it.length >= 3 }
+
+    return tokens.any { token ->
+        token.replace(".", "") in d
+    }
+}
+
 fun checkImpersonation(message: String?, sender: String? = null): Boolean {
     val raw = message ?: ""
-    println(raw)
     val isEmailLike = sender != null || raw.length > 800
     val text = if (isEmailLike) extractPrimaryEmailText(raw) else raw
 
@@ -244,7 +263,6 @@ fun checkImpersonation(message: String?, sender: String? = null): Boolean {
             return true
         }
     }
-
     if (_APPLE_CLAIM_RE.containsMatchIn(text)) {
         val appleAction = _APPLE_ACTION_RE.containsMatchIn(text) ||
                 _APPLE_EXPIRE_RE.containsMatchIn(text) ||
@@ -347,7 +365,12 @@ fun extractPrimaryEmailText(text: String?): String {
 
 fun containsUrlLoose(message: String?): Boolean{
     val text = message ?: ""
-    return (URL_REGEX.matches(text) or LOOSE_URL_REGEX.matches(text))
+    for (token in text.split(" ")) {
+        if (URL_REGEX.matches(token) or LOOSE_URL_REGEX.matches(token)) {
+            return true
+        }
+    }
+    return false
 }
 
 fun containsUrl(message: String) : Boolean {

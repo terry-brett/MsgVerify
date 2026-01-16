@@ -94,4 +94,43 @@ val EMAIL_REGEX = Regex(
     RegexOption.IGNORE_CASE
 )
 
+val BRAND_RE = brandPatterns()
+
+fun brandPatterns(): Regex {
+    val patterns = mutableListOf<String>()
+
+    for (b in BRANDS.phishingTargets) {
+        val name = b.name.trim()
+        val abbr = b.abbr.trim()
+
+        if (name.isEmpty() || name.equals("other", ignoreCase = true)) continue
+
+        // match name words in order
+        val tokens = name
+            .lowercase()
+            .split(Regex("[\\s,&()\\-]+"))
+            .filter { it.isNotBlank() && it !in setOf("the", "and", "of") }
+
+        if (tokens.isNotEmpty()) {
+            val pattern =
+                "\\b" + tokens.joinToString("\\s+") { Regex.escape(it) } + "\\b"
+            patterns.add(pattern)
+        }
+
+        // keep a small allowlist of 3-letter abbrs that are actually distinctive
+        if (abbr.isNotEmpty() && abbr.length >= 4) {
+            patterns.add("\\b${Regex.escape(abbr.lowercase())}\\b")
+        } else if (abbr.uppercase() in setOf("DHL", "UPS", "IRS", "HMRC")) {
+            patterns.add("\\b${Regex.escape(abbr.lowercase())}\\b")
+        }
+    }
+
+    return if (patterns.isNotEmpty()) {
+        Regex(patterns.joinToString("|"), RegexOption.IGNORE_CASE)
+    } else {
+        Regex("a^") // never matches
+    }
+}
+
+
 
