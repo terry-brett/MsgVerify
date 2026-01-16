@@ -38,7 +38,9 @@ class MessageReasoningLabels (val message: String, val sender: String) {
     }
 
     fun checkTooGoodToBeTrue(){
-
+        if(hasTooGoodToBeTruePatterns(rawMessage)){
+            labels.add("Too Good to Be True")
+        }
     }
 
     fun checkCredentialVerificationRequest(){

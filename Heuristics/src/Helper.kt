@@ -175,6 +175,43 @@ fun hasUrgencyOrIntimidationPatterns(message: String?): Boolean {
             msg.contains("final notice", ignoreCase = true)
 }
 
+fun hasTooGoodToBeTruePatterns(message: String): Boolean {
+    val msg = normalise(message)
+
+    val contact =
+        PHONE_LIKE.containsMatchIn(message) ||
+                SHORTCODE.containsMatchIn(message) ||
+                containsUrl(message)
+
+    if (!contact) return false
+
+    // Pattern A: urgent + prize/win + explicit currency symbol
+    if (
+        Regex("\\burgent\\b", RegexOption.IGNORE_CASE).containsMatchIn(msg) &&
+        Regex("\\b(prize|award|won|winner)\\b", RegexOption.IGNORE_CASE).containsMatchIn(msg) &&
+        Regex("[£$€]").containsMatchIn(message)
+    ) {
+        return true
+    }
+
+    // Pattern B: selected + prize/award + money (symbol or "5000 pounds", etc.)
+    val money =
+        Regex("[£$€]").containsMatchIn(message) ||
+                Regex(
+                    "\\b\\d{3,}\\s*(pounds|gbp|usd|eur|inr|nok|sek|dkk)\\b",
+                    RegexOption.IGNORE_CASE
+                ).containsMatchIn(msg)
+
+    if (
+        Regex("\\bselected\\b", RegexOption.IGNORE_CASE).containsMatchIn(msg) &&
+        money &&
+        Regex("\\b(receive|award|prize)\\b", RegexOption.IGNORE_CASE).containsMatchIn(msg)
+    ) {
+        return true
+    }
+
+    return false
+}
 
 
 fun extractEmailDomain(email: String): String? {
