@@ -40,7 +40,9 @@ class MessageReasoningLabels (val message: String, val sender: String) {
     }
 
     fun checkCredentialVerificationRequest(){
-
+        if(hasCredentialVerificationPatterns(message)){
+            labels.add("Credential Verification Request")
+        }
     }
 
     fun addLabels() : MutableList<String>{

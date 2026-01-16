@@ -129,6 +129,41 @@ fun hasAdultContentPatterns(message: String?): Boolean {
     return adultRegex.containsMatchIn(msg)
 }
 
+fun hasCredentialVerificationPatterns(message: String?): Boolean {
+    // High-precision credential verification request detector
+    val msg = normalise(message ?: "")
+
+    // Suppress normal OTP notifications
+    val otpNoticeRegex = Regex(
+        "\\byour\\s+(otp|verification\\s+code)\\s+is\\b",
+        RegexOption.IGNORE_CASE
+    )
+    if (otpNoticeRegex.containsMatchIn(msg)) {
+        return false
+    }
+
+    val actionRegex = Regex(
+        "\\b(verify|confirm|update|reset|authenticate|login|log in|sign in)\\b",
+        RegexOption.IGNORE_CASE
+    )
+    val nounRegex = Regex(
+        "\\b(password|passcode|pin|credentials|account|login|username|security code|verification code|otp|2fa)\\b",
+        RegexOption.IGNORE_CASE
+    )
+
+    val politeRequestRegex = Regex("\\b(please|kindly)\\b", RegexOption.IGNORE_CASE)
+    val ctaRegex = Regex("\\b(click|visit|reply|enter|submit)\\b", RegexOption.IGNORE_CASE)
+
+    val request =
+        politeRequestRegex.containsMatchIn(msg) ||
+                ctaRegex.containsMatchIn(msg) ||
+                containsUrl(msg)
+
+    return actionRegex.containsMatchIn(msg) &&
+            nounRegex.containsMatchIn(msg) &&
+            request
+}
+
 
 fun extractEmailDomain(email: String): String? {
     if (email.isBlank() or !email.contains("@")) return null
