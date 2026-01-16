@@ -36,7 +36,9 @@ class MessageReasoningLabels (val message: String, val sender: String) {
     }
 
     fun checkPersonalFinancialRequest(){
-
+        if (asksForFinancialOrPersonalInfo(rawMessage)){
+            labels.add("Financial or Personal Information")
+        }
     }
 
     fun checkTooGoodToBeTrue(){

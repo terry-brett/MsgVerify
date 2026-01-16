@@ -435,3 +435,144 @@ fun containsUrl(message: String) : Boolean {
     return false
 }
 
+fun asksForFinancialOrPersonalInfo(message: String?): Boolean {
+    if (message.isNullOrBlank()) return false
+
+    val msg = normalise(message)
+
+    // Exclusions: Credential verification
+    val credentialRequest = Regex(
+        "\\b(login|log\\s*in|sign\\s*in|username|user\\s*id|password|passcode|pin\\s*code|pin\\b|" +
+                "otp|verification\\s+code|security\\s+code|authenticate|apple\\s+id)\\b.{0,60}" +
+                "\\b(verify|confirm|send|provide|enter|update)\\b",
+        RegexOption.IGNORE_CASE
+    ).containsMatchIn(msg) || Regex(
+        "\\b(verify|confirm|send|provide|enter|update).{0,60}" +
+                "\\b(login|log\\s*in|sign\\s*in|username|user\\s*id|password|passcode|pin\\s*code|pin\\b|" +
+                "otp|verification\\s+code|security\\s+code|authenticate|apple\\s+id)\\b",
+        RegexOption.IGNORE_CASE
+    ).containsMatchIn(msg)
+
+    if (credentialRequest) return false
+
+    // Exclusions: vague security update
+    val vagueSecurity = Regex("\\bupdate\\s+(your\\s+)?security\\s+details\\b", RegexOption.IGNORE_CASE)
+        .containsMatchIn(msg) &&
+            !Regex("\\b(name|address|phone|mobile|postcode|account\\s+number|credit\\s+card|ssn)\\b", RegexOption.IGNORE_CASE)
+                .containsMatchIn(msg)
+
+    if (vagueSecurity) return false
+
+    // Exclusions: Telecom promotional offers
+    val telecomPromo = Regex("\\b(o2|orange|vodafone|t-?mobile|three|ee|verizon|at&t|sprint)\\b", RegexOption.IGNORE_CASE)
+        .containsMatchIn(msg) &&
+            Regex("\\b(free\\s+call\\s+credit|free\\s+credit|reward|points|cashback|loyalty)\\b", RegexOption.IGNORE_CASE)
+                .containsMatchIn(msg)
+
+    if (telecomPromo) return false
+
+    // Exclusions: casual dating/flirting with example
+    val casualDatingWithExample = Regex(
+        "\\b(meet\\s+someone|find\\s+a\\s+date|flirt).{0,60}\\b(eg|e\\.g\\.|example)\\s+\\w+\\s+\\d+",
+        RegexOption.IGNORE_CASE
+    ).containsMatchIn(msg)
+
+    if (casualDatingWithExample) return false
+
+    // === Composite scoring ===
+    var score = 0
+
+    // Pattern 1: Sensitive financial info
+    val sensitiveFin = Regex(
+        "\\b(account\\s+number|credit\\s+card|debit\\s+card|cvv|cvc|ssn|social\\s+security|" +
+                "sort\\s+code|routing\\s+number|iban|bank\\s+details|credit\\s+card\\s+number)\\b",
+        RegexOption.IGNORE_CASE
+    )
+    if (sensitiveFin.containsMatchIn(message) &&
+        Regex("\\b(provide|send|enter|verify|confirm|update|share|give|submit)\\b", RegexOption.IGNORE_CASE)
+            .containsMatchIn(msg)
+    ) {
+        score += 6
+    }
+
+    // Pattern 2: Multiple personal info fields
+    val hasName = Regex("\\b(your\\s+)?name\\b", RegexOption.IGNORE_CASE).containsMatchIn(msg)
+    val hasAddress = Regex("\\b(your\\s+)?(address|house\\s+no)\\b", RegexOption.IGNORE_CASE).containsMatchIn(msg)
+    val hasPhone = Regex("\\b(your\\s+)?(phone|mobile|cell|number)\\b", RegexOption.IGNORE_CASE).containsMatchIn(msg)
+    val hasAgeDob = Regex("\\b(your\\s+)?(age|dob|date\\s+of\\s+birth|d\\.o\\.b\\.?)\\b", RegexOption.IGNORE_CASE).containsMatchIn(msg)
+    val hasPostcode = Regex("\\b(your\\s+)?(postcode|zip\\s*code|postal\\s*code)\\b", RegexOption.IGNORE_CASE).containsMatchIn(msg)
+
+    val fieldCount = listOf(hasName, hasAddress, hasPhone, hasAgeDob, hasPostcode).count { it }
+
+    val hasRequestVerb = Regex("\\b(send|reply|provide|text|forward|email|give|share)\\b", RegexOption.IGNORE_CASE)
+        .containsMatchIn(msg)
+
+    if (fieldCount >= 3 && hasRequestVerb) score += 6
+    else if (fieldCount == 2 && hasRequestVerb &&
+        (hasName && hasAddress || hasAddress && hasAgeDob)) score += 5
+
+    // Pattern 3: Prize/lottery + multi-field info request
+    val prizePattern = Regex("\\b(won|winner|winning|prize|award|claim|collect|receive|redeem|gain(?:ed)?)\\b", RegexOption.IGNORE_CASE)
+        .containsMatchIn(msg)
+    val explicitFields = Regex(
+        "\\b(send|provide|reply|forward).{0,80}(name.{0,40}(address|phone|number|age|postcode)|" +
+                "address.{0,40}(name|phone|number|age)|phone.{0,40}(name|address))\\b",
+        RegexOption.IGNORE_CASE
+    ).containsMatchIn(msg)
+    if (prizePattern && explicitFields) score += 6
+
+    // Pattern 4: Urgent request for account info
+    val urgentInfoRequest = Regex(
+        "\\b(verify|confirm|update|validate|provide|send).{0,50}" +
+                "\\b(account\\s+number|identity|personal\\s+information|contact\\s+details|billing\\s+information)\\b",
+        RegexOption.IGNORE_CASE
+    ).containsMatchIn(msg)
+    val hasUrgency = Regex("\\b(urgent|immediately|now|today|asap)\\b", RegexOption.IGNORE_CASE).containsMatchIn(msg)
+    if (urgentInfoRequest) {
+        score += 4
+        if (hasUrgency) score += 1
+    }
+
+    // Pattern 5: Account access restricted
+    val restricted = Regex("\\b(suspended|locked|restricted|limited|blocked|disabled|frozen).{0,80}(account|access|card)\\b", RegexOption.IGNORE_CASE)
+        .containsMatchIn(msg)
+    val specificInfoNeeded = Regex("\\b(provide|verify|confirm|update).{0,50}" +
+            "\\b(account\\s+number|personal\\s+information|identity|contact\\s+details|billing\\s+information|name|address|phone)\\b",
+        RegexOption.IGNORE_CASE
+    ).containsMatchIn(msg)
+    if (restricted && specificInfoNeeded) score += 4
+
+    // Pattern 6: Direct request for info ASAP
+    val directNeed = Regex("\\bi\\s+(need|require|want|ask).{0,50}(your|you).{0,50}" +
+            "(address|dob|phone|mobile|postcode|details|information)\\b", RegexOption.IGNORE_CASE)
+        .containsMatchIn(msg)
+    if (directNeed && fieldCount >= 2) score += 5
+
+    // Pattern 7: Start-of-message request
+    val startsWithRequest = Regex("^(reply|send|text|provide)\\s+(with|us)\\b", RegexOption.IGNORE_CASE)
+        .containsMatchIn(msg)
+    if (startsWithRequest && fieldCount >= 2) score += 3
+
+    // Pattern 8: Advance-fee / 419 cues
+    val advanceFeeCues = Regex("\\b(seek\\s+(your\\s+)?cooperation|can\\s+you\\s+assist|need\\s+(your\\s+)?assistance|" +
+            "require\\s+(your\\s+)?cooperation|business\\s+proposal)\\b", RegexOption.IGNORE_CASE)
+        .containsMatchIn(msg)
+    val financialTransfer = Regex("\\b(transfer.{0,30}(fund|money|amount)|fund.{0,30}transfer|" +
+            "bank\\s+account.{0,50}(transfer|details)|sum\\s+of.{0,30}(million|thousand|usd|gbp|eur))\\b", RegexOption.IGNORE_CASE)
+        .containsMatchIn(msg)
+    val contactFinancial = Regex("\\b(contact|reply|respond|email\\s+me).{0,50}(fund|transfer|claim|bank|account|payment)\\b", RegexOption.IGNORE_CASE)
+        .containsMatchIn(msg) || Regex("\\b(fund|transfer|claim|bank|account|payment).{0,50}(contact|reply|respond|email\\s+me)\\b", RegexOption.IGNORE_CASE)
+        .containsMatchIn(msg)
+
+    if (advanceFeeCues || (financialTransfer && contactFinancial)) score += 3
+
+    // Pattern 9: Need more info in account/billing context
+    val needMoreInfo = Regex("\\b(need|require).{0,30}(more|additional).{0,30}(information|details)\\b", RegexOption.IGNORE_CASE)
+        .containsMatchIn(msg)
+    val accountContext = Regex("\\b(account|billing|payment|profile|service|identity|verification)\\b", RegexOption.IGNORE_CASE)
+        .containsMatchIn(msg)
+    if (needMoreInfo && accountContext) score += 3
+
+    // Decision threshold
+    return score >= 3
+}
