@@ -22,7 +22,9 @@ class MessageReasoningLabels (val message: String, val sender: String) {
     }
 
     fun checkUrgency(){
-
+        if (hasUrgencyOrIntimidationPatterns(message)){
+            labels.add("Urgency/Intimidation")
+        }
     }
 
     fun checkLinks(){

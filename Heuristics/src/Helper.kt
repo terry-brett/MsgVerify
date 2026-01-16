@@ -164,6 +164,18 @@ fun hasCredentialVerificationPatterns(message: String?): Boolean {
             request
 }
 
+fun hasUrgencyOrIntimidationPatterns(message: String?): Boolean {
+    val msg = normalise(message ?: "")
+
+    val urgentRegex = Regex("\\burgent\\b", RegexOption.IGNORE_CASE)
+    val immediatelyRegex = Regex("\\bimmediately\\b", RegexOption.IGNORE_CASE)
+
+    return urgentRegex.containsMatchIn(msg) ||
+            immediatelyRegex.containsMatchIn(msg) ||
+            msg.contains("final notice", ignoreCase = true)
+}
+
+
 
 fun extractEmailDomain(email: String): String? {
     if (email.isBlank() or !email.contains("@")) return null
