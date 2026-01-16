@@ -213,6 +213,59 @@ fun hasTooGoodToBeTruePatterns(message: String): Boolean {
     return false
 }
 
+fun hasMarketingPatterns(message: String): Boolean {
+    val raw = message
+    val msg = normalise(raw)
+
+    // Strong opt-out / compliance (common in marketing SMS)
+    val optOutRegex = Regex(
+        "\\b(unsubscribe|opt\\s*out|reply\\s*stop|text\\s*stop|send\\s*stop|stop\\s+to)\\b",
+        RegexOption.IGNORE_CASE
+    )
+    if (optOutRegex.containsMatchIn(msg)) {
+        return true
+    }
+
+    // Suppress pure OTP / verification messages (transactional)
+    val otpRegex = Regex(
+        "\\b(your\\s+otp|your\\s+verification\\s+code|one[-\\s]?time\\s+pass)\\b",
+        RegexOption.IGNORE_CASE
+    )
+    if (otpRegex.containsMatchIn(msg)) {
+        return false
+    }
+
+    val promoRegex = Regex(
+        "\\b(discount|offer|deal|sale|limited|promo|promotion|voucher|coupon|cashback|half price|free)\\b",
+        RegexOption.IGNORE_CASE
+    )
+    val telecomRegex = Regex(
+        "\\b(line rental|free texts?|text messages|minutes|min|handset|tariff|contract)\\b",
+        RegexOption.IGNORE_CASE
+    )
+    val contestRegex = Regex(
+        "\\b(free entry|entry|competition|comp\\b|win)\\b",
+        RegexOption.IGNORE_CASE
+    )
+
+    val ctaRegex = Regex(
+        "\\b(call|dial|text|reply|click|visit|join|buy|order|subscribe|claim|redeem|get)\\b",
+        RegexOption.IGNORE_CASE
+    )
+
+    val promo = promoRegex.containsMatchIn(msg)
+    val telecom = telecomRegex.containsMatchIn(msg)
+    val contest = contestRegex.containsMatchIn(msg)
+
+    val cta = ctaRegex.containsMatchIn(msg)
+    val contact = PHONE_LIKE.containsMatchIn(raw) ||
+            SHORTCODE.containsMatchIn(raw) ||
+            containsUrl(raw)
+
+    return (promo || telecom || contest) && (cta || contact)
+}
+
+
 
 fun extractEmailDomain(email: String): String? {
     if (email.isBlank() or !email.contains("@")) return null

@@ -12,7 +12,9 @@ class MessageReasoningLabels (val message: String, val sender: String) {
     }
 
     fun checkMarketing(){
-
+        if (hasMarketingPatterns(message)){
+            labels.add("Marketing")
+        }
     }
 
     fun checkAdultContent(){
