@@ -67,29 +67,26 @@ class WordPieceTokenizer(
     }
 
     /**
-     * Encode a pair (premise + hypothesis) to input_ids + attention_mask
+     * Encode a single message to input_ids + attention_mask for Spam Classification
      */
-    fun encode(premise: String, hypothesis: String, maxLen: Int): Pair<IntArray, IntArray> {
+    fun encode(message: String, maxLen: Int): Pair<IntArray, IntArray> {
+        val tokens = tokenizeSentence(message)
 
-        val tokens1 = tokenizeSentence(premise)
-        val tokens2 = tokenizeSentence(hypothesis)
+        val combinedTokens = mutableListOf<String>()
 
-        val tokens = mutableListOf<String>()
+        // For single sentence: [CLS] message [SEP]
+        combinedTokens.add(clsToken)
+        combinedTokens.addAll(tokens)
+        combinedTokens.add(sepToken)
 
-        // [CLS] premise [SEP] hypothesis [SEP]
-        tokens.add(clsToken)
-        tokens.addAll(tokens1)
-        tokens.add(sepToken)
-        tokens.addAll(tokens2)
-        tokens.add(sepToken)
-
-        // Convert tokens to initial IDs
-        val initialInputIds = tokens.map { token ->
+        // Convert to IDs
+        val initialInputIds = combinedTokens.map { token ->
             vocabMap[token] ?: unkId
         }
 
+        // Truncate if necessary (keeping space for the SEP token)
         val truncatedInputIds = if (initialInputIds.size > maxLen) {
-            initialInputIds.take(maxLen)
+            initialInputIds.take(maxLen - 1).toMutableList().apply { add(sepId) }
         } else {
             initialInputIds
         }

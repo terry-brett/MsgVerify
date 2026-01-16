@@ -1,7 +1,7 @@
 package org.contextguard.lib.usecase
 
 import org.contextguard.addLinkWarningReason
-import org.contextguard.lib.MLKit.messageClassification.MessageInterpreter
+import org.contextguard.lib.MLKit.messageClassification.MessagePrediction
 import org.contextguard.lib.MLKit.urlClassification.UrlPrediction
 import org.contextguard.models.Result
 import org.contextguard.models.TextClassificationResult
@@ -42,17 +42,18 @@ class CalculateResultUseCase(
             UrlPrediction(platformContext).makePrediction(it)
         }
 
-        val listOfReasons = MessageInterpreter(platformContext).getListOfReasonsFromMessage(
-            message = message
+        val messageSpamProbability = MessagePrediction(platformContext).getSpamPrediction(
+            message
         )
+
+        if (messageSpamProbability > 0.9){
+
+        }
 
         return Result(
             urlScore = urlPredictionScore,
             textClassificationResult = TextClassificationResult.Unsafe(
-                listOfReasons = listOfReasons.toListOfReasons().toMutableList()
-                    .addLinkWarningReason(
-                        urlPredictionScore = urlPredictionScore
-                    )
+                emptyList()
             )
         )
     }
