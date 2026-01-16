@@ -119,6 +119,17 @@ fun extractEmailAddress(sender: String): String? {
     return match?.groupValues?.get(1)?.lowercase()
 }
 
+fun hasAdultContentPatterns(message: String?): Boolean {
+    // High-precision adult-content detector (tuned to Dataset_10191 annotations).
+    val msg = normalise(message ?: "")
+    val adultRegex = Regex(
+        "\\b(xxx|porn|hardcore|nude|nudes|sexcam|camgirl|escort|filthy)\\b",
+        RegexOption.IGNORE_CASE
+    )
+    return adultRegex.containsMatchIn(msg)
+}
+
+
 fun extractEmailDomain(email: String): String? {
     if (email.isBlank() or !email.contains("@")) return null
     return email.split("@")[1].lowercase()

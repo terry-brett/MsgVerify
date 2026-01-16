@@ -16,7 +16,9 @@ class MessageReasoningLabels (val message: String, val sender: String) {
     }
 
     fun checkAdultContent(){
-
+        if (hasAdultContentPatterns(message)){
+            labels.add("Adult Content")
+        }
     }
 
     fun checkUrgency(){
