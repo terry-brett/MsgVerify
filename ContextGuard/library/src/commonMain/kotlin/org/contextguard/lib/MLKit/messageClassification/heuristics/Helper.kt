@@ -1,127 +1,25 @@
-data class Brand(
-    val name: String,
-    val abbr: String
-)
+package org.contextguard.lib.MLKit.messageClassification.heuristics
 
-data class Brands(
-    val phishingTargets: List<Brand>
-)
-
-val BRANDS = Brands(
-    phishingTargets = listOf(
-        Brand("DHL", "DHL"),
-        Brand("Allied Bank Limited", "ABL"),
-        Brand("Santander UK", "SAN"),
-        Brand("Coinbase", "COIN"),
-        Brand("East Japan Railway Company", "JR East"),
-        Brand("Steam", "STM"),
-        Brand("Bank Millennium", "MIL"),
-        Brand("Virustotal", "VT"),
-        Brand("DocuSign", "DOCU"),
-        Brand("Apple", "AAPL"),
-        Brand("Nationwide", "NBS"),
-        Brand("Banco Bilbao Vizcaya Argentaria", "BBVA"),
-        Brand("WeTransfer", "WT"),
-        Brand("Adobe", "ADBE"),
-        Brand("Das kann Bank", "DKB"),
-        Brand("Orange", "ORA"),
-        Brand("Regions Bank", "RF"),
-        Brand("Allegro", "ALE"),
-        Brand("Royal Bank of Canada", "RY"),
-        Brand("AEON Card", "AEON"),
-        Brand("Microsoft", "MSFT"),
-        Brand("The Brazilian Development Bank", "BNDES"),
-        Brand("Caixa", "CEF"),
-        Brand("Dropbox", "DBX"),
-        Brand("Comcast", "CMCSA"),
-        Brand("Wachovia", "WB"),
-        Brand("Mercari", "MERC"),
-        Brand("Other", "MISC"),
-        Brand("HSBC Group", "HSBC"),
-        Brand("Wells Fargo", "WFC"),
-        Brand("Her Majesty's Revenue and Customs", "HMRC"),
-        Brand("US Bank", "USB"),
-        Brand("PayPay Bank", "PPB"),
-        Brand("Aetna Health Plans & Dental Coverage", "AET"),
-        Brand("Telefónica UK", "O2"),
-        Brand("Visa", "V"),
-        Brand("Banco De Brasil", "BBAS"),
-        Brand("UniCredit", "UCG"),
-        Brand("PKO Polish Bank", "PKO"),
-        Brand("Bradesco", "BBD"),
-        Brand("AT&T", "T"),
-        Brand("Barclays Bank PLC", "BARC"),
-        Brand("Co-operative Bank", "COOP"),
-        Brand("Huntington National Bank", "HBAN"),
-        Brand("ABN AMRO Bank", "ABN"),
-        Brand("Internal Revenue Service", "IRS"),
-        Brand("RuneScape", "RS"),
-        Brand("Sumitomo Mitsui Banking Corporation", "SMBC"),
-        Brand("Banco Santander, S.A.", "SAN"),
-        Brand("Navy Federal Credit Union", "NFCU"),
-        Brand("Netflix", "NFLX"),
-        Brand("JPMorgan Chase and Co.", "JPM"),
-        Brand("Bank of America Corporation", "BAC"),
-        Brand("Raiffeisen Bank", "RBI"),
-        Brand("Yahoo", "YHOO"),
-        Brand("Accurint", "ACC"),
-        Brand("Rakuten", "RKUNY"),
-        Brand("British Telecom", "BT"),
-        Brand("Hotmail", "MSFT"),
-        Brand("AOL", "AOL"),
-        Brand("Google", "GOOGL"),
-        Brand("Intesa Sanpaolo", "ISP"),
-        Brand("Volksbanken Raiffeisenbanken", "VR"),
-        Brand("TSB", "TSB"),
-        Brand("Nets", "NETS"),
-        Brand("Binance", "BNB"),
-        Brand("Itau", "ITUB"),
-        Brand("Mastercard", "MA"),
-        Brand("American Express", "AMEX"),
-        Brand("ABSA Bank", "ABSA"),
-        Brand("Westpac", "WBC"),
-        Brand("PayPal", "PYPL"),
-        Brand("Facebook", "META"),
-        Brand("Swiss Post", "SWP"),
-        Brand("Abonné Free Mobile", "FREE"),
-        Brand("Nubank", "NU"),
-        Brand("eBay, Inc.", "EBAY"),
-        Brand("Nordea Bank", "NDA"),
-        Brand("Development Bank of Singapore", "DBS"),
-        Brand("Rackspace", "RAX"),
-        Brand("Scotiabank", "BNS"),
-        Brand("Interactive Brokers", "IBKR"),
-        Brand("ING Direct", "ING"),
-        Brand("Amazon.com", "AMZN"),
-        Brand("Optus", "OPT"),
-        Brand("Sulake Corporation", "SUL"),
-        Brand("Instagram", "IG"),
-        Brand("Capital One", "COF"),
-        Brand("Capitec Bank", "CPI")
-    )
-)
-
-
-fun normalise(message: String): String {
-    return message
+fun String.normalise(): String {
+    return this
         .lowercase()
         .replace(Regex("\\s+"), " ")
         .trim()
 }
 
-fun extractEmailAddress(sender: String): String? {
+fun String.extractEmailAddress(): String? {
     val regex = Regex(
         "([A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,})",
         RegexOption.IGNORE_CASE
     )
 
-    val match = regex.find(sender)
+    val match = regex.find(this)
     return match?.groupValues?.get(1)?.lowercase()
 }
 
-fun hasAdultContentPatterns(message: String?): Boolean {
+fun String?.hasAdultContentPatterns(): Boolean {
     // High-precision adult-content detector (tuned to Dataset_10191 annotations).
-    val msg = normalise(message ?: "")
+    val msg = (this ?: "").normalise()
     val adultRegex = Regex(
         "\\b(xxx|porn|hardcore|nude|nudes|sexcam|camgirl|escort|filthy)\\b",
         RegexOption.IGNORE_CASE
@@ -129,9 +27,9 @@ fun hasAdultContentPatterns(message: String?): Boolean {
     return adultRegex.containsMatchIn(msg)
 }
 
-fun hasCredentialVerificationPatterns(message: String?): Boolean {
+fun String?.hasCredentialVerificationPatterns(): Boolean {
     // High-precision credential verification request detector
-    val msg = normalise(message ?: "")
+    val msg = (this ?: "").normalise()
 
     // Suppress normal OTP notifications
     val otpNoticeRegex = Regex(
@@ -157,15 +55,15 @@ fun hasCredentialVerificationPatterns(message: String?): Boolean {
     val request =
         politeRequestRegex.containsMatchIn(msg) ||
                 ctaRegex.containsMatchIn(msg) ||
-                containsUrl(msg)
+                msg.containsUrl()
 
     return actionRegex.containsMatchIn(msg) &&
             nounRegex.containsMatchIn(msg) &&
             request
 }
 
-fun hasUrgencyOrIntimidationPatterns(message: String?): Boolean {
-    val msg = normalise(message ?: "")
+fun String?.hasUrgencyOrIntimidationPatterns(): Boolean {
+    val msg = (this ?: "").normalise()
 
     val urgentRegex = Regex("\\burgent\\b", RegexOption.IGNORE_CASE)
     val immediatelyRegex = Regex("\\bimmediately\\b", RegexOption.IGNORE_CASE)
@@ -175,13 +73,14 @@ fun hasUrgencyOrIntimidationPatterns(message: String?): Boolean {
             msg.contains("final notice", ignoreCase = true)
 }
 
-fun hasTooGoodToBeTruePatterns(message: String): Boolean {
-    val msg = normalise(message)
+fun String.hasTooGoodToBeTruePatterns(): Boolean {
+    val raw = this
+    val msg = raw.normalise()
 
     val contact =
-        PHONE_LIKE.containsMatchIn(message) ||
-                SHORTCODE.containsMatchIn(message) ||
-                containsUrl(message)
+        PHONE_LIKE.containsMatchIn(raw) ||
+                SHORTCODE.containsMatchIn(raw) ||
+                raw.containsUrl()
 
     if (!contact) return false
 
@@ -189,14 +88,14 @@ fun hasTooGoodToBeTruePatterns(message: String): Boolean {
     if (
         Regex("\\burgent\\b", RegexOption.IGNORE_CASE).containsMatchIn(msg) &&
         Regex("\\b(prize|award|won|winner)\\b", RegexOption.IGNORE_CASE).containsMatchIn(msg) &&
-        Regex("[£$€]").containsMatchIn(message)
+        Regex("[£$€]").containsMatchIn(raw)
     ) {
         return true
     }
 
     // Pattern B: selected + prize/award + money (symbol or "5000 pounds", etc.)
     val money =
-        Regex("[£$€]").containsMatchIn(message) ||
+        Regex("[£$€]").containsMatchIn(raw) ||
                 Regex(
                     "\\b\\d{3,}\\s*(pounds|gbp|usd|eur|inr|nok|sek|dkk)\\b",
                     RegexOption.IGNORE_CASE
@@ -213,9 +112,9 @@ fun hasTooGoodToBeTruePatterns(message: String): Boolean {
     return false
 }
 
-fun hasMarketingPatterns(message: String): Boolean {
-    val raw = message
-    val msg = normalise(raw)
+fun String.hasMarketingPatterns(): Boolean {
+    val raw = this
+    val msg = raw.normalise()
 
     // Strong opt-out / compliance (common in marketing SMS)
     val optOutRegex = Regex(
@@ -260,19 +159,18 @@ fun hasMarketingPatterns(message: String): Boolean {
     val cta = ctaRegex.containsMatchIn(msg)
     val contact = PHONE_LIKE.containsMatchIn(raw) ||
             SHORTCODE.containsMatchIn(raw) ||
-            containsUrl(raw)
+            raw.containsUrl()
 
     return (promo || telecom || contest) && (cta || contact)
 }
 
-
-
-fun extractEmailDomain(email: String): String? {
-    if (email.isBlank() or !email.contains("@")) return null
-    return email.split("@")[1].lowercase()
+fun String.extractEmailDomain(): String? {
+    if (this.isBlank() || !this.contains("@")) return null
+    return this.split("@")[1].lowercase()
 }
 
-fun domainLooksLikeBrand(domain: String?, brandText: String?): Boolean {
+fun String?.domainLooksLikeBrand(brandText: String?): Boolean {
+    val domain = this
     if (domain.isNullOrBlank() || brandText.isNullOrBlank()) return false
 
     val d = domain.lowercase().replace(".", "")
@@ -292,15 +190,15 @@ fun domainLooksLikeBrand(domain: String?, brandText: String?): Boolean {
     }
 }
 
-fun checkImpersonation(message: String?, sender: String? = null): Boolean {
-    val raw = message ?: ""
+fun String?.checkImpersonation(sender: String? = null): Boolean {
+    val raw = this ?: ""
     val isEmailLike = sender != null || raw.length > 800
-    val text = if (isEmailLike) extractPrimaryEmailText(raw) else raw
+    val text = if (isEmailLike) raw.extractPrimaryEmailText() else raw
 
     if (_TECH_BULLETIN_RE.containsMatchIn(text)) return false
 
-    val msg = normalise(text)
-    val hasLink = containsUrlLoose(text)
+    val msg = text.normalise()
+    val hasLink = text.containsUrlLoose()
     val hasPhone = PHONE_LIKE.containsMatchIn(text) || SHORTCODE.containsMatchIn(text)
     val hasEmailInBody = EMAIL_REGEX.containsMatchIn(text)
     val hasContactWord = Regex("\\b(call|dial|contact|reply|text|email|chat)\\b")
@@ -312,16 +210,18 @@ fun checkImpersonation(message: String?, sender: String? = null): Boolean {
         hasPhone && contact
     ) {
         if (!Regex("\\bhas noticed\\b.*\\bdebit card\\b.*\\bused\\b", RegexOption.IGNORE_CASE)
-                .containsMatchIn(text)) {
+                .containsMatchIn(text)
+        ) {
             return true
         }
     }
+
     if (_APPLE_CLAIM_RE.containsMatchIn(text)) {
         val appleAction = _APPLE_ACTION_RE.containsMatchIn(text) ||
                 _APPLE_EXPIRE_RE.containsMatchIn(text) ||
                 _APPLE_DUE_EXPIRE_RE.containsMatchIn(text)
         if (appleAction && (contact || hasLink)) {
-            if (containsUrl(text) && sender == null) {
+            if (text.containsUrl() && sender == null) {
                 if (!URL_REGEX.containsMatchIn(text) && hasLink) return true
             } else {
                 return true
@@ -352,7 +252,8 @@ fun checkImpersonation(message: String?, sender: String? = null): Boolean {
     ) return true
 
     if (Regex("\\b(orange|vodafone|tmobile|t-mobile|o2)\\s+(customer|subscriber|user)", RegexOption.IGNORE_CASE)
-            .containsMatchIn(msg) && contact) return true
+            .containsMatchIn(msg) && contact
+    ) return true
 
     val prizeScam = Regex(
         "\\b(you\\s+have\\s+won|you've\\s+won|you\\s+are\\s+a\\s+winner|won\\s+a|" +
@@ -369,7 +270,7 @@ fun checkImpersonation(message: String?, sender: String? = null): Boolean {
     if (prizeScam && prizeValue && contact) return true
 
     if (sender != null) {
-        val sdom = (extractEmailDomain(sender) ?: "").lowercase()
+        val sdom = (sender.extractEmailDomain() ?: "").lowercase()
         if (sdom.endsWith(".gov") || sdom.endsWith(".gov.uk") ||
             sdom.endsWith(".mil") || sdom.endsWith(".edu")
         ) {
@@ -400,8 +301,8 @@ fun checkImpersonation(message: String?, sender: String? = null): Boolean {
     return false
 }
 
-fun extractPrimaryEmailText(text: String?): String {
-    var t = text ?: ""
+fun String?.extractPrimaryEmailText(): String {
+    var t = this ?: ""
 
     // Stop at common quote markers
     val m = _QUOTE_CUTOFF_RE.find(t)
@@ -415,19 +316,18 @@ fun extractPrimaryEmailText(text: String?): String {
     return lines.joinToString("\n").trim()
 }
 
-
-fun containsUrlLoose(message: String?): Boolean{
-    val text = message ?: ""
+fun String?.containsUrlLoose(): Boolean {
+    val text = this ?: ""
     for (token in text.split(" ")) {
-        if (URL_REGEX.matches(token) or LOOSE_URL_REGEX.matches(token)) {
+        if (URL_REGEX.matches(token) || LOOSE_URL_REGEX.matches(token)) {
             return true
         }
     }
     return false
 }
 
-fun containsUrl(message: String) : Boolean {
-    for (token in message.split(" ")) {
+fun String.containsUrl(): Boolean {
+    for (token in this.split(" ")) {
         if (URL_REGEX.matches(token)) {
             return true
         }
@@ -435,10 +335,10 @@ fun containsUrl(message: String) : Boolean {
     return false
 }
 
-fun asksForFinancialOrPersonalInfo(message: String?): Boolean {
-    if (message.isNullOrBlank()) return false
+fun String?.asksForFinancialOrPersonalInfo(): Boolean {
+    if (this.isNullOrBlank()) return false
 
-    val msg = normalise(message)
+    val msg = this.normalise()
 
     // Exclusions: Credential verification
     val credentialRequest = Regex(
@@ -458,8 +358,10 @@ fun asksForFinancialOrPersonalInfo(message: String?): Boolean {
     // Exclusions: vague security update
     val vagueSecurity = Regex("\\bupdate\\s+(your\\s+)?security\\s+details\\b", RegexOption.IGNORE_CASE)
         .containsMatchIn(msg) &&
-            !Regex("\\b(name|address|phone|mobile|postcode|account\\s+number|credit\\s+card|ssn)\\b", RegexOption.IGNORE_CASE)
-                .containsMatchIn(msg)
+            !Regex(
+                "\\b(name|address|phone|mobile|postcode|account\\s+number|credit\\s+card|ssn)\\b",
+                RegexOption.IGNORE_CASE
+            ).containsMatchIn(msg)
 
     if (vagueSecurity) return false
 
@@ -488,7 +390,7 @@ fun asksForFinancialOrPersonalInfo(message: String?): Boolean {
                 "sort\\s+code|routing\\s+number|iban|bank\\s+details|credit\\s+card\\s+number)\\b",
         RegexOption.IGNORE_CASE
     )
-    if (sensitiveFin.containsMatchIn(message) &&
+    if (sensitiveFin.containsMatchIn(this) &&
         Regex("\\b(provide|send|enter|verify|confirm|update|share|give|submit)\\b", RegexOption.IGNORE_CASE)
             .containsMatchIn(msg)
     ) {
@@ -509,7 +411,8 @@ fun asksForFinancialOrPersonalInfo(message: String?): Boolean {
 
     if (fieldCount >= 3 && hasRequestVerb) score += 6
     else if (fieldCount == 2 && hasRequestVerb &&
-        (hasName && hasAddress || hasAddress && hasAgeDob)) score += 5
+        ((hasName && hasAddress) || (hasAddress && hasAgeDob))
+    ) score += 5
 
     // Pattern 3: Prize/lottery + multi-field info request
     val prizePattern = Regex("\\b(won|winner|winning|prize|award|claim|collect|receive|redeem|gain(?:ed)?)\\b", RegexOption.IGNORE_CASE)
@@ -536,16 +439,19 @@ fun asksForFinancialOrPersonalInfo(message: String?): Boolean {
     // Pattern 5: Account access restricted
     val restricted = Regex("\\b(suspended|locked|restricted|limited|blocked|disabled|frozen).{0,80}(account|access|card)\\b", RegexOption.IGNORE_CASE)
         .containsMatchIn(msg)
-    val specificInfoNeeded = Regex("\\b(provide|verify|confirm|update).{0,50}" +
-            "\\b(account\\s+number|personal\\s+information|identity|contact\\s+details|billing\\s+information|name|address|phone)\\b",
+    val specificInfoNeeded = Regex(
+        "\\b(provide|verify|confirm|update).{0,50}" +
+                "\\b(account\\s+number|personal\\s+information|identity|contact\\s+details|billing\\s+information|name|address|phone)\\b",
         RegexOption.IGNORE_CASE
     ).containsMatchIn(msg)
     if (restricted && specificInfoNeeded) score += 4
 
     // Pattern 6: Direct request for info ASAP
-    val directNeed = Regex("\\bi\\s+(need|require|want|ask).{0,50}(your|you).{0,50}" +
-            "(address|dob|phone|mobile|postcode|details|information)\\b", RegexOption.IGNORE_CASE)
-        .containsMatchIn(msg)
+    val directNeed = Regex(
+        "\\bi\\s+(need|require|want|ask).{0,50}(your|you).{0,50}" +
+                "(address|dob|phone|mobile|postcode|details|information)\\b",
+        RegexOption.IGNORE_CASE
+    ).containsMatchIn(msg)
     if (directNeed && fieldCount >= 2) score += 5
 
     // Pattern 7: Start-of-message request
@@ -554,15 +460,23 @@ fun asksForFinancialOrPersonalInfo(message: String?): Boolean {
     if (startsWithRequest && fieldCount >= 2) score += 3
 
     // Pattern 8: Advance-fee / 419 cues
-    val advanceFeeCues = Regex("\\b(seek\\s+(your\\s+)?cooperation|can\\s+you\\s+assist|need\\s+(your\\s+)?assistance|" +
-            "require\\s+(your\\s+)?cooperation|business\\s+proposal)\\b", RegexOption.IGNORE_CASE)
-        .containsMatchIn(msg)
-    val financialTransfer = Regex("\\b(transfer.{0,30}(fund|money|amount)|fund.{0,30}transfer|" +
-            "bank\\s+account.{0,50}(transfer|details)|sum\\s+of.{0,30}(million|thousand|usd|gbp|eur))\\b", RegexOption.IGNORE_CASE)
-        .containsMatchIn(msg)
-    val contactFinancial = Regex("\\b(contact|reply|respond|email\\s+me).{0,50}(fund|transfer|claim|bank|account|payment)\\b", RegexOption.IGNORE_CASE)
-        .containsMatchIn(msg) || Regex("\\b(fund|transfer|claim|bank|account|payment).{0,50}(contact|reply|respond|email\\s+me)\\b", RegexOption.IGNORE_CASE)
-        .containsMatchIn(msg)
+    val advanceFeeCues = Regex(
+        "\\b(seek\\s+(your\\s+)?cooperation|can\\s+you\\s+assist|need\\s+(your\\s+)?assistance|" +
+                "require\\s+(your\\s+)?cooperation|business\\s+proposal)\\b",
+        RegexOption.IGNORE_CASE
+    ).containsMatchIn(msg)
+    val financialTransfer = Regex(
+        "\\b(transfer.{0,30}(fund|money|amount)|fund.{0,30}transfer|" +
+                "bank\\s+account.{0,50}(transfer|details)|sum\\s+of.{0,30}(million|thousand|usd|gbp|eur))\\b",
+        RegexOption.IGNORE_CASE
+    ).containsMatchIn(msg)
+    val contactFinancial = Regex(
+        "\\b(contact|reply|respond|email\\s+me).{0,50}(fund|transfer|claim|bank|account|payment)\\b",
+        RegexOption.IGNORE_CASE
+    ).containsMatchIn(msg) || Regex(
+        "\\b(fund|transfer|claim|bank|account|payment).{0,50}(contact|reply|respond|email\\s+me)\\b",
+        RegexOption.IGNORE_CASE
+    ).containsMatchIn(msg)
 
     if (advanceFeeCues || (financialTransfer && contactFinancial)) score += 3
 

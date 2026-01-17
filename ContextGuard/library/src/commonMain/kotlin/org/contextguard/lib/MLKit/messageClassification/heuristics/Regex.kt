@@ -1,3 +1,5 @@
+package org.contextguard.lib.MLKit.messageClassification.heuristics
+
 // Bank/card account restriction cues (SMS)
 val _BANK_ACTION_RE = Regex("\\b(blocked|lock(?:ed)?|suspend(?:ed)?|disabled|frozen|restricted|jam)\\b", RegexOption.IGNORE_CASE)
 val _BANK_CARD_RE = Regex("\\b(bank|debit|credit|atm)\\b.*\\bcard\\b|\\bcard\\b.*\\b(bank|debit|credit|atm)\\b", RegexOption.IGNORE_CASE)
@@ -93,44 +95,3 @@ val EMAIL_REGEX = Regex(
     "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}",
     RegexOption.IGNORE_CASE
 )
-
-val BRAND_RE = brandPatterns()
-
-fun brandPatterns(): Regex {
-    val patterns = mutableListOf<String>()
-
-    for (b in BRANDS.phishingTargets) {
-        val name = b.name.trim()
-        val abbr = b.abbr.trim()
-
-        if (name.isEmpty() || name.equals("other", ignoreCase = true)) continue
-
-        // match name words in order
-        val tokens = name
-            .lowercase()
-            .split(Regex("[\\s,&()\\-]+"))
-            .filter { it.isNotBlank() && it !in setOf("the", "and", "of") }
-
-        if (tokens.isNotEmpty()) {
-            val pattern =
-                "\\b" + tokens.joinToString("\\s+") { Regex.escape(it) } + "\\b"
-            patterns.add(pattern)
-        }
-
-        // keep a small allowlist of 3-letter abbrs that are actually distinctive
-        if (abbr.isNotEmpty() && abbr.length >= 4) {
-            patterns.add("\\b${Regex.escape(abbr.lowercase())}\\b")
-        } else if (abbr.uppercase() in setOf("DHL", "UPS", "IRS", "HMRC")) {
-            patterns.add("\\b${Regex.escape(abbr.lowercase())}\\b")
-        }
-    }
-
-    return if (patterns.isNotEmpty()) {
-        Regex(patterns.joinToString("|"), RegexOption.IGNORE_CASE)
-    } else {
-        Regex("a^") // never matches
-    }
-}
-
-
-

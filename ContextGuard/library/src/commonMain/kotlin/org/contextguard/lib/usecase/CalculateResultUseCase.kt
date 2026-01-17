@@ -1,12 +1,12 @@
 package org.contextguard.lib.usecase
 
+import MessageReasoningLabels
 import org.contextguard.addLinkWarningReason
 import org.contextguard.lib.MLKit.messageClassification.MessagePrediction
 import org.contextguard.lib.MLKit.urlClassification.UrlPrediction
+import org.contextguard.models.Reason
 import org.contextguard.models.Result
 import org.contextguard.models.TextClassificationResult
-import org.contextguard.toListOfReasons
-
 
 /**
  * Use case used to compute the result given the message content and optional sender and URL
@@ -45,15 +45,16 @@ class CalculateResultUseCase(
         val isMessageSpam = MessagePrediction(platformContext).isSpam(
             message
         )
+        var listOfReasons: List<Reason> = listOf()
 
         if (isMessageSpam){
-            // add heuristics here
+            listOfReasons = MessageReasoningLabels(message, sender.orEmpty()).addLabels()
         }
 
         return Result(
             urlScore = urlPredictionScore,
             textClassificationResult = TextClassificationResult.Unsafe(
-                emptyList()
+                listOfReasons.addLinkWarningReason(urlPredictionScore)
             )
         )
     }
