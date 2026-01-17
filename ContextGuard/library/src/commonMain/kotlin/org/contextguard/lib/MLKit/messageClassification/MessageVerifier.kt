@@ -36,20 +36,28 @@ class MessageVerifier {
         )
 
         val outputTensor = Tensor(
-            data = ByteArray(3 * 4),
-            shape = TensorShape(1, 3),
+            data = ByteArray(2 * 4),
+            shape = TensorShape(1, 2),
             dataType = TensorDataType.Float32
         )
 
         interpreter.run(
             inputs = listOf(
-                inputIdsTensor,
-                attentionMaskTensor
+                attentionMaskTensor,
+                inputIdsTensor
             ),
             outputs = listOf(outputTensor)
         )
 
-        return byteArrayToFloatArray(outputTensor.data)
+        val rawLogits = byteArrayToFloatArray(outputTensor.data)
+
+        return softmax(rawLogits)
+    }
+
+    private fun softmax(logits: FloatArray): FloatArray {
+        val exp = logits.map { kotlin.math.exp(it.toDouble()) }
+        val sum = exp.sum()
+        return exp.map { (it / sum).toFloat() }.toFloatArray()
     }
 }
 

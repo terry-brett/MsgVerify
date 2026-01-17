@@ -6,5 +6,5 @@ expect class MessagePrediction(platformContext: Any) {
      * @param message to be analyzed
      * @return Float probability of message being malicious
      */
-    suspend fun getSpamPrediction(message: String): Float
+    suspend fun isSpam(message: String): Boolean
 }

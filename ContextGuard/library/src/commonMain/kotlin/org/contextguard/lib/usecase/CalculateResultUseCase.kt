@@ -42,12 +42,12 @@ class CalculateResultUseCase(
             UrlPrediction(platformContext).makePrediction(it)
         }
 
-        val messageSpamProbability = MessagePrediction(platformContext).getSpamPrediction(
+        val isMessageSpam = MessagePrediction(platformContext).isSpam(
             message
         )
 
-        if (messageSpamProbability > 0.9){
-
+        if (isMessageSpam){
+            // add heuristics here
         }
 
         return Result(

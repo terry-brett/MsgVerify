@@ -7,7 +7,7 @@ import kotlin.math.log
 actual class MessagePrediction actual constructor(private val platformContext: Any) {
     private val context: Context = platformContext as Context
 
-    actual suspend fun getSpamPrediction(message: String): Float {
+    actual suspend fun isSpam(message: String): Boolean {
         val vocab = loadVocab()
 
         val tokenizer = WordPieceTokenizer(vocab)
@@ -20,14 +20,15 @@ actual class MessagePrediction actual constructor(private val platformContext: A
             maxLen = 128
         )
 
-        val logits = MessageVerifier().makePrediction(
+        val probabilities = MessageVerifier().makePrediction(
             modelDesc = modelDesc,
             inputIds = inputIds,
             attentionMask = attentionMask
         )
 
-        println("prediction is ${logits}")
+        val notSpamScore = probabilities[0]
+        val spamScore = probabilities[1]
 
-        return 0f
+        return spamScore > notSpamScore
     }
 }
