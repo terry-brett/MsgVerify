@@ -69,11 +69,11 @@ internal fun DemoMessageDetailsScreen(
                 contentPadding = paddingValues,
                 modifier = Modifier.fillMaxSize()
             ) {
-                if (state.reason != null) {
+                if (state.reasons.isNotEmpty()) {
                     item {
                         SafetyNoticeItem(
                             text = "Potentially unsafe message detected",
-                            details = state.reason
+                            details = state.reasons.joinToString("\n• ", prefix = "• ")
                         )
                     }
                 }
