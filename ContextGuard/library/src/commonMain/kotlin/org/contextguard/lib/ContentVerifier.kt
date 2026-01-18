@@ -82,8 +82,9 @@ class ContentVerifierImpl(private val platformContext: Any) : ContentVerifier {
   ): Result? {
 
     if (content.isEmpty()) return null
+    val extractedUrls = extractUrlsFromContent(content)
     val urlPredictionScores =
-        extractUrlsFromContent(content).map { url ->
+        extractedUrls.map { url ->
           UrlPrediction(platformContext).makePrediction(url)
         }
 
@@ -100,11 +101,13 @@ class ContentVerifierImpl(private val platformContext: Any) : ContentVerifier {
       Result(
           urlScores = urlPredictionScores,
           textClassificationResult = TextClassificationResult.Unsafe(listOfReasons),
+          extractedUrls = extractedUrls,
       )
     } else {
       Result(
           urlScores = urlPredictionScores,
           textClassificationResult = TextClassificationResult.Safe,
+          extractedUrls = extractedUrls,
       )
     }
   }

@@ -12,7 +12,11 @@ import org.koin.core.component.KoinComponent
 class MsgVerifyRepository(val platformContext: PlatformContext) : KoinComponent {
 
   suspend fun verifyLink(url: String): Flow<Result<LinkVerificationResponse>> {
-    val result = ContentVerifierImpl(platformContext).verifyUrl(url)?.urlScores?.firstOrNull() ?: 0f
+    val result =
+        ContentVerifierImpl(platformContext.getNativeContext())
+            .verifyUrl(url)
+            ?.urlScores
+            ?.firstOrNull() ?: 0f
 
     return flowOf(
         Result.success(LinkVerificationResponse(maliciousScore = result, description = ""))
@@ -23,19 +27,22 @@ class MsgVerifyRepository(val platformContext: PlatformContext) : KoinComponent 
       input: String,
       sender: String,
   ): Flow<Result<ContentVerificationResponse>> {
-    val result = ContentVerifierImpl(platformContext).verify(content = input, sender = sender)
+    val result =
+        ContentVerifierImpl(platformContext.getNativeContext())
+            .verify(content = input, sender = sender)
 
     if (result == null) {
       return flowOf(Result.failure(Exception("Unable to verify content")))
     }
 
-    return when (result.textClassificationResult) {
+    return when (val classificationResult = result.textClassificationResult) {
       is TextClassificationResult.Unsafe -> {
         flowOf(
             Result.success(
                 ContentVerificationResponse.Unsafe(
                     result.urlScores,
-                    result.textClassificationResult.listOfReasons,
+                    classificationResult.listOfReasons,
+                    result.extractedUrls,
                 )
             )
         )
@@ -58,6 +65,9 @@ data class LinkVerificationResponse(val maliciousScore: Float, val description: 
 sealed class ContentVerificationResponse {
   data object Safe : ContentVerificationResponse()
 
-  data class Unsafe(val urlScores: List<Float>?, val reasons: List<Reason>) :
-      ContentVerificationResponse()
+  data class Unsafe(
+      val urlScores: List<Float>?,
+      val reasons: List<Reason>,
+      val extractedUrls: List<String>? = null
+  ) : ContentVerificationResponse()
 }

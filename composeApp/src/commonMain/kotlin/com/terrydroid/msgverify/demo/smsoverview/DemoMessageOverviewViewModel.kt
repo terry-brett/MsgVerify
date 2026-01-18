@@ -2,6 +2,7 @@ package com.terrydroid.msgverify.demo.smsoverview
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.terrydroid.msgverify.data.ContentVerificationResponse
 import com.terrydroid.msgverify.data.MsgVerifyRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,11 +23,28 @@ class DemoMessageOverviewViewModel(
     init {
         viewModelScope.launch(dispatcher) {
             state.value.messages.forEach { message ->
-                msgVerifyRepository.verifyContent(message.message).collect { result ->
+                msgVerifyRepository.verifyContent(message.message, message.title).collect { result ->
                     result.fold(
                         onFailure = {},
-                        onSuccess = { value ->
-                            val maliciousScorePercent = value.maliciousScore
+                        onSuccess = { response ->
+                            val maliciousScorePercent: Float
+                            val reasons: List<String>
+                            val urlScores: List<UrlScore>
+
+                            when (response) {
+                                is ContentVerificationResponse.Safe -> {
+                                    maliciousScorePercent = 0f
+                                    reasons = emptyList()
+                                    urlScores = emptyList()
+                                }
+                                is ContentVerificationResponse.Unsafe -> {
+                                    maliciousScorePercent = response.urlScores?.maxOrNull() ?: 0f
+                                    reasons = response.reasons.map { it.reason }
+                                    urlScores = (response.extractedUrls ?: emptyList())
+                                        .zip(response.urlScores ?: emptyList())
+                                        .map { (url, score) -> UrlScore(url, score) }
+                                }
+                            }
 
                             val classification = getClassification(maliciousScorePercent)
                             _state.update {
@@ -36,7 +54,9 @@ class DemoMessageOverviewViewModel(
                                             id = message.id,
                                             title = message.title,
                                             message = message.message,
-                                            trafficLight = classification
+                                            trafficLight = classification,
+                                            reasons = reasons,
+                                            urlScores = urlScores
                                         )
                                     ) { value ->
                                         value == message
@@ -66,7 +86,13 @@ data class Message(
     val title: String,
     val message: String,
     val trafficLight: TrafficLight? = null,
-    val reason: String? = null
+    val reasons: List<String> = emptyList(),
+    val urlScores: List<UrlScore> = emptyList()
+)
+
+data class UrlScore(
+    val url: String,
+    val score: Float
 )
 
 enum class TrafficLight {

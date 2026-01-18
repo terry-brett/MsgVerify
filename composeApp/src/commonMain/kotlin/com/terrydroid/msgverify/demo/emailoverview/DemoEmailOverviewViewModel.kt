@@ -3,8 +3,10 @@ package com.terrydroid.msgverify.demo.emailoverview
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.terrydroid.msgverify.data.ContentVerificationResponse
 import com.terrydroid.msgverify.data.MsgVerifyRepository
 import com.terrydroid.msgverify.demo.smsoverview.TrafficLight
+import com.terrydroid.msgverify.demo.smsoverview.UrlScore
 import com.terrydroid.msgverify.demo.smsoverview.getClassification
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,11 +28,28 @@ class DemoEmailOverviewViewModel(
     init {
         viewModelScope.launch(dispatcher) {
             state.value.messages.forEach { message ->
-                msgVerifyRepository.verifyContent(message.preview).collect { result ->
+                msgVerifyRepository.verifyContent(message.preview, message.fromName).collect { result ->
                     result.fold(
                         onFailure = {},
-                        onSuccess = { value ->
-                            val maliciousScorePercent = value.maliciousScore
+                        onSuccess = { response ->
+                            val maliciousScorePercent: Float
+                            val reasons: List<String>
+                            val urlScores: List<UrlScore>
+
+                            when (response) {
+                                is ContentVerificationResponse.Safe -> {
+                                    maliciousScorePercent = 0f
+                                    reasons = emptyList()
+                                    urlScores = emptyList()
+                                }
+                                is ContentVerificationResponse.Unsafe -> {
+                                    maliciousScorePercent = response.urlScores?.maxOrNull() ?: 0f
+                                    reasons = response.reasons.map { it.reason }
+                                    urlScores = (response.extractedUrls ?: emptyList())
+                                        .zip(response.urlScores ?: emptyList())
+                                        .map { (url, score) -> UrlScore(url, score) }
+                                }
+                            }
 
                             val classification = getClassification(maliciousScorePercent)
                             _state.update {
@@ -43,7 +62,9 @@ class DemoEmailOverviewViewModel(
                                             subject = message.subject,
                                             preview = message.preview,
                                             unread = message.unread,
-                                            trafficLight = classification
+                                            trafficLight = classification,
+                                            reasons = reasons,
+                                            urlScores = urlScores
                                         )
                                     ) { value ->
                                         value == message
@@ -77,6 +98,8 @@ data class EmailMessage(
     val preview: String,
     val unread: Boolean,
     val trafficLight: TrafficLight,
+    val reasons: List<String> = emptyList(),
+    val urlScores: List<UrlScore> = emptyList()
 )
 
 

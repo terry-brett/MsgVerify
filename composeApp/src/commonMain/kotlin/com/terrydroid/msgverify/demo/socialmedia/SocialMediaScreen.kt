@@ -128,9 +128,9 @@ private fun MessageCard(
                         style = MaterialTheme.typography.bodyMedium
                     )
 
-                    if (!message.reason.isNullOrBlank()) {
+                    if (message.reasons.isNotEmpty()) {
                         Spacer(Modifier.height(10.dp))
-                        ReasonChip(reason = message.reason!!)
+                        ReasonsChips(reasons = message.reasons)
                     }
 
                     Spacer(Modifier.height(10.dp))
@@ -209,6 +209,18 @@ private fun ReasonChip(reason: String) {
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
+    }
+}
+
+@Composable
+private fun ReasonsChips(reasons: List<String>) {
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        reasons.forEach { reason ->
+            ReasonChip(reason = reason)
+            Spacer(Modifier.height(6.dp))
+        }
     }
 }
 
