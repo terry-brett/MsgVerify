@@ -89,14 +89,14 @@ class ContentVerifierImpl(private val platformContext: Any) : ContentVerifier {
         }
 
     val isMessageSpam = MessagePrediction(platformContext).isSpam(content)
-    var listOfReasons: List<Reason> = listOf()
+    var listOfReasons: MutableList<Reason> = mutableListOf()
 
     if (isMessageSpam) {
       listOfReasons = MessageReasoningLabels(content, sender.orEmpty()).addLabels()
     }
 
     urlPredictionScores.forEach {
-        listOfReasons.toMutableList().checkUrlAndSpelling(
+        listOfReasons.checkUrlAndSpelling(
             content = content,
             platformContext = platformContext,
             urlPredictionScore = it

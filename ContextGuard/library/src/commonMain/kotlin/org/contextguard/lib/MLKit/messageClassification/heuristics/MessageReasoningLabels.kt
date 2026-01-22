@@ -63,7 +63,7 @@ class MessageReasoningLabels(val message: String, val sender: String) {
         }
     }
 
-    fun addLabels() : List<Reason>{
+    fun addLabels() : MutableList<Reason>{
         checkImpersonation()
         checkMarketing()
         checkAdultContent()
