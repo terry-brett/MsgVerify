@@ -319,7 +319,7 @@ fun String?.extractPrimaryEmailText(): String {
 fun String?.containsUrlLoose(): Boolean {
     val text = this ?: ""
     for (token in text.split(" ")) {
-        if (URL_REGEX.matches(token) || LOOSE_URL_REGEX.matches(token)) {
+        if (URL_REGEX.containsMatchIn(token) || LOOSE_URL_REGEX.containsMatchIn(token)) {
             return true
         }
     }
@@ -328,7 +328,7 @@ fun String?.containsUrlLoose(): Boolean {
 
 fun String.containsUrl(): Boolean {
     for (token in this.split(" ")) {
-        if (URL_REGEX.matches(token)) {
+        if (URL_REGEX.containsMatchIn(token)) {
             return true
         }
     }
