@@ -1,7 +1,7 @@
 package org.contextguard.lib
 
 import MessageReasoningLabels
-import org.contextguard.addLinkWarningReason
+import org.contextguard.checkUrlAndSpelling
 import org.contextguard.lib.MLKit.messageClassification.MessagePrediction
 import org.contextguard.lib.MLKit.urlClassification.UrlPrediction
 import org.contextguard.models.Reason
@@ -95,7 +95,14 @@ class ContentVerifierImpl(private val platformContext: Any) : ContentVerifier {
       listOfReasons = MessageReasoningLabels(content, sender.orEmpty()).addLabels()
     }
 
-    urlPredictionScores.forEach { listOfReasons.toMutableList().addLinkWarningReason(it) }
+    urlPredictionScores.forEach {
+        listOfReasons.toMutableList().checkUrlAndSpelling(
+            content = content,
+            platformContext = platformContext,
+            urlPredictionScore = it
+        )
+
+    }
 
     return if (isMessageSpam) {
       Result(
