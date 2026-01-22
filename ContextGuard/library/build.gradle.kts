@@ -45,6 +45,9 @@ kotlin {
 
                 // ktensorflow
                 implementation(libs.ktensorflow.core)
+
+                // spell check
+                implementation(libs.platform.spellchecker)
             }
         }
 
