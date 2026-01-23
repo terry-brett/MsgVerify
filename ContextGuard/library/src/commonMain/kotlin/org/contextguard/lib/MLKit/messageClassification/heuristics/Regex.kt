@@ -95,3 +95,18 @@ val EMAIL_REGEX = Regex(
     "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}",
     RegexOption.IGNORE_CASE
 )
+
+val URGENCY_PATTERN by lazy {
+    val urgencyTerms = listOf(
+        "urgent", "immediately", "final notice", "action required",
+        "attention", "mandatory", "asap", "verify now", "within \\d+ (hour|min|day)",
+        "24 hour", "48 hour", "today", "now"
+    )
+
+    val threatTerms = listOf(
+        "block(ed)?", "expir(ed|y)", "suspend(ed)?", "restrict(ed)?",
+        "deactivate(d)?", "closed", "terminated", "security alert", "unauthorized"
+    )
+
+    Regex("\\b(${urgencyTerms.joinToString("|")}|${threatTerms.joinToString("|")})\\b", RegexOption.IGNORE_CASE)
+}
