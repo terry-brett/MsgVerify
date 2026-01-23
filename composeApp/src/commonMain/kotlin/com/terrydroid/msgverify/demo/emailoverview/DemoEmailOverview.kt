@@ -23,143 +23,132 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 internal fun DemoEmailOverview(
+    padding: PaddingValues,
     detailsViewModel: DemoEmailOverviewViewModel = koinViewModel(),
 ) {
-    val inbox = detailsViewModel.state.collectAsStateWithLifecycle().value.messages
+  val inbox = detailsViewModel.state.collectAsStateWithLifecycle().value.messages
 
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-        modifier = Modifier.fillMaxSize().padding(top = 24.dp)
-    ) {
-        item {
-            Text(
-                text = "Inbox",
-                style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-            )
-        }
-
-        items(inbox, key = { it.id }) { msg ->
-            EmailRow(
-                message = msg,
-                onClick = { /* TODO: navigate to details */ },
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-        }
-
-        item { Spacer(Modifier.height(8.dp)) }
+  LazyColumn(
+      verticalArrangement = Arrangement.spacedBy(10.dp),
+      modifier = Modifier.fillMaxSize().padding(padding).padding(top = 24.dp),
+  ) {
+    item {
+      Text(
+          text = "Inbox",
+          style = MaterialTheme.typography.headlineSmall,
+          modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+      )
     }
+
+    items(inbox, key = { it.id }) { msg ->
+      EmailRow(
+          message = msg,
+          onClick = { /* TODO: navigate to details */ },
+          modifier = Modifier.padding(horizontal = 16.dp),
+      )
+    }
+
+    item { Spacer(Modifier.height(8.dp)) }
+  }
 }
 
 @Composable
-private fun EmailRow(
-    message: EmailMessage,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val badge = riskBadge(message.trafficLight)
-    val icon = when (message.trafficLight) {
+private fun EmailRow(message: EmailMessage, onClick: () -> Unit, modifier: Modifier = Modifier) {
+  val badge = riskBadge(message.trafficLight)
+  val icon =
+      when (message.trafficLight) {
         TrafficLight.Green -> Icons.Outlined.Verified
-        TrafficLight.Yellow, TrafficLight.Red -> Icons.Outlined.ReportProblem
-    }
+        TrafficLight.Yellow,
+        TrafficLight.Red -> Icons.Outlined.ReportProblem
+      }
 
-    Surface(
-        tonalElevation = 1.dp,
-        shape = RoundedCornerShape(16.dp),
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-    ) {
-        Row(
-            modifier = Modifier.padding(14.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Simple “avatar” block
-            Box(
-                modifier = Modifier
-                    .size(44.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = message.fromName.take(1).uppercase(),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
+  Surface(
+      tonalElevation = 1.dp,
+      shape = RoundedCornerShape(16.dp),
+      modifier = modifier.fillMaxWidth().clickable(onClick = onClick),
+  ) {
+    Row(modifier = Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
+      // Simple “avatar” block
+      Box(
+          modifier =
+              Modifier.size(44.dp)
+                  .clip(RoundedCornerShape(12.dp))
+                  .background(MaterialTheme.colorScheme.surfaceVariant),
+          contentAlignment = Alignment.Center,
+      ) {
+        Text(
+            text = message.fromName.take(1).uppercase(),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+        )
+      }
 
-            Spacer(Modifier.width(12.dp))
+      Spacer(Modifier.width(12.dp))
 
-            Column(modifier = Modifier.weight(1f)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = message.fromName,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = if (message.unread) FontWeight.Bold else FontWeight.Medium,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f)
-                    )
+      Column(modifier = Modifier.weight(1f)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+          Text(
+              text = message.fromName,
+              style = MaterialTheme.typography.titleMedium,
+              fontWeight = if (message.unread) FontWeight.Bold else FontWeight.Medium,
+              maxLines = 1,
+              overflow = TextOverflow.Ellipsis,
+              modifier = Modifier.weight(1f),
+          )
 
-                    Spacer(Modifier.width(8.dp))
+          Spacer(Modifier.width(8.dp))
 
-                    AssistChip(
-                        onClick = { /* no-op */ },
-                        label = { Text(badge.text) },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = icon,
-                                contentDescription = null
-                            )
-                        }
-                    )
-                }
-
-                Text(
-                    text = message.subject,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = if (message.unread) FontWeight.SemiBold else FontWeight.Normal,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                Text(
-                    text = message.preview,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                if (message.trafficLight != TrafficLight.Green) {
-                    Spacer(Modifier.height(6.dp))
-                    Text(
-                        text = badge.hint,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-            }
+          AssistChip(
+              onClick = { /* no-op */ },
+              label = { Text(badge.text) },
+              leadingIcon = { Icon(imageVector = icon, contentDescription = null) },
+          )
         }
+
+        Text(
+            text = message.subject,
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = if (message.unread) FontWeight.SemiBold else FontWeight.Normal,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+
+        Text(
+            text = message.preview,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+        )
+
+        if (message.trafficLight != TrafficLight.Green) {
+          Spacer(Modifier.height(6.dp))
+          Text(
+              text = badge.hint,
+              style = MaterialTheme.typography.labelSmall,
+              color = MaterialTheme.colorScheme.onSurfaceVariant,
+              maxLines = 2,
+              overflow = TextOverflow.Ellipsis,
+          )
+        }
+      }
     }
+  }
 }
 
 private data class RiskBadge(val text: String, val hint: String)
 
-private fun riskBadge(level: TrafficLight): RiskBadge = when (level) {
-    TrafficLight.Green -> RiskBadge(
-        text = "Looks safe",
-        hint = "No obvious red flags."
-    )
-    TrafficLight.Yellow -> RiskBadge(
-        text = "Suspicious",
-        hint = "Check sender domain, urgency, and where links really go."
-    )
-    TrafficLight.Red -> RiskBadge(
-        text = "Likely phishing",
-        hint = "High-risk cues: urgent action, credential request, sketchy domain."
-    )
-}
+private fun riskBadge(level: TrafficLight): RiskBadge =
+    when (level) {
+      TrafficLight.Green -> RiskBadge(text = "Looks safe", hint = "No obvious red flags.")
+      TrafficLight.Yellow ->
+          RiskBadge(
+              text = "Suspicious",
+              hint = "Check sender domain, urgency, and where links really go.",
+          )
+      TrafficLight.Red ->
+          RiskBadge(
+              text = "Likely phishing",
+              hint = "High-risk cues: urgent action, credential request, sketchy domain.",
+          )
+    }

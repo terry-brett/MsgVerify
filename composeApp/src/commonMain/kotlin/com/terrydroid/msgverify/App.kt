@@ -26,9 +26,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.terrydroid.msgverify.demo.emailoverview.DemoEmailOverview
-import com.terrydroid.msgverify.demo.smsoverview.DemoMessagesScreen
-import com.terrydroid.msgverify.demo.smsdetails.DemoMessageDetailsScreen
 import com.terrydroid.msgverify.demo.overview.DemoOverviewScreen
+import com.terrydroid.msgverify.demo.smsdetails.DemoMessageDetailsScreen
+import com.terrydroid.msgverify.demo.smsoverview.DemoMessagesScreen
 import com.terrydroid.msgverify.demo.socialmedia.SocialMediaScreen
 import com.terrydroid.msgverify.home.HomeScreen
 import com.terrydroid.msgverify.settings.SettingsScreen
@@ -37,258 +37,232 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun App() {
-    AppScreen()
+  AppScreen()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AppScreen() {
-    MsgVerifyTheme {
-        Column(
-            modifier = Modifier
-                .background(color = MaterialTheme.colorScheme.background)
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            val scrollBehavior =
-                TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+  MsgVerifyTheme {
+    Column(
+        modifier = Modifier.background(color = MaterialTheme.colorScheme.background).fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+      val scrollBehavior =
+          TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
-            //TODO: Improve navigation with decompose or something when it gets a bit more complex
-            val route = rememberSaveable { mutableStateOf(Routes.Home) }
-            val demoDetailsId = mutableStateOf(0)
+      // TODO: Improve navigation with decompose or something when it gets a bit more complex
+      val route = rememberSaveable { mutableStateOf(Routes.Home) }
+      val demoDetailsId = mutableStateOf(0)
 
-            when (route.value) {
-                Routes.Settings -> {
-                    Scaffold(
-                        topBar = {
-                            CenterAlignedTopAppBar(
-                                modifier = Modifier.nestedScroll(
-                                    scrollBehavior.nestedScrollConnection
-                                ),
-                                title = {
-                                    Text(
-                                        text = "Settings",
-                                        style = MaterialTheme.typography.headlineMedium,
-                                        color = MaterialTheme.colorScheme.onBackground,
-                                    )
-                                },
-
-                                scrollBehavior = scrollBehavior,
-                                navigationIcon = {
-                                    IconButton(
-                                        onClick = {
-                                            route.value = Routes.Home
-                                        }
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                            contentDescription = "Navigate Back"
-                                        )
-                                    }
-                                }
-                            )
-                        },
-                    ) { innerPadding ->
-                        SettingsScreen(
-                            paddingValues = innerPadding
+      when (route.value) {
+        Routes.Settings -> {
+          Scaffold(
+              topBar = {
+                CenterAlignedTopAppBar(
+                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+                    title = {
+                      Text(
+                          text = "Settings",
+                          style = MaterialTheme.typography.headlineMedium,
+                          color = MaterialTheme.colorScheme.onBackground,
+                      )
+                    },
+                    scrollBehavior = scrollBehavior,
+                    navigationIcon = {
+                      IconButton(onClick = { route.value = Routes.Home }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Navigate Back",
                         )
-                    }
-                }
-
-                Routes.Home -> {
-                    Scaffold(
-                        contentWindowInsets = WindowInsets(0.dp),
-                        topBar = {
-                            CenterAlignedTopAppBar(
-                                modifier = Modifier.nestedScroll(
-                                    scrollBehavior.nestedScrollConnection
-                                ),
-                                title = {
-                                    Text(
-                                        text = "MsgVerify",
-                                        style = MaterialTheme.typography.headlineMedium,
-                                        color = MaterialTheme.colorScheme.onBackground,
-                                    )
-                                },
-
-                                scrollBehavior = scrollBehavior,
-                                actions = {
-                                    TextButton(
-                                        onClick = {
-                                            route.value = Routes.DemoOverview
-                                        },
-                                        border = BorderStroke(
-                                            width = 1.dp,
-                                            color = MaterialTheme.colorScheme.secondary
-                                        )
-                                    ) {
-                                        Text(
-                                            text = "Demos"
-                                        )
-                                    }
-                                    IconButton(
-                                        onClick = {
-                                            route.value = Routes.Settings
-                                        }
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Default.Settings,
-                                            contentDescription = "Go to settings"
-                                        )
-                                    }
-                                }
-                            )
-                        }
-                    ) { innerPadding ->
-                        HomeScreen(
-                            paddingValues = innerPadding,
-                        )
-                    }
-                }
-
-
-                Routes.DemoSmsOverview -> {
-                    Scaffold(
-                        contentWindowInsets = WindowInsets(0.dp),
-                        topBar = {
-                            CenterAlignedTopAppBar(
-                                modifier = Modifier.nestedScroll(
-                                    scrollBehavior.nestedScrollConnection
-                                ),
-                                title = {
-                                    Text(
-                                        text = "Demo Messages",
-                                        style = MaterialTheme.typography.headlineMedium,
-                                        color = MaterialTheme.colorScheme.onBackground,
-                                    )
-                                },
-                                scrollBehavior = scrollBehavior,
-                                navigationIcon = {
-                                    IconButton(
-                                        onClick = {
-                                            route.value = Routes.DemoOverview
-                                        }
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                            contentDescription = "Navigate Back"
-                                        )
-                                    }
-                                }
-                            )
-                        }
-                    ) { innerPadding ->
-                        DemoMessagesScreen(
-                            paddingValues = innerPadding,
-                            navigateToDetails = { id ->
-                                demoDetailsId.value = id
-                                route.value = Routes.DemoSmsDetails
-                            }
-                        )
-                    }
-                }
-
-                Routes.DemoSmsDetails -> {
-                    Scaffold(
-                        contentWindowInsets = WindowInsets(0.dp),
-                        topBar = {
-                            CenterAlignedTopAppBar(
-                                modifier = Modifier.nestedScroll(
-                                    scrollBehavior.nestedScrollConnection
-                                ),
-                                title = {
-                                    Text(
-                                        text = "Demo Message",
-                                        style = MaterialTheme.typography.headlineMedium,
-                                        color = MaterialTheme.colorScheme.onBackground,
-                                    )
-                                },
-                                scrollBehavior = scrollBehavior,
-                                navigationIcon = {
-                                    IconButton(
-                                        onClick = {
-                                            route.value = Routes.DemoSmsOverview
-                                        }
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                            contentDescription = "Navigate Back"
-                                        )
-                                    }
-                                }
-                            )
-                        }
-                    ) { innerPadding ->
-                        DemoMessageDetailsScreen(
-                            paddingValues = innerPadding,
-                            id = demoDetailsId.value
-                        )
-                    }
-                }
-
-                Routes.DemoOverview -> {
-                    DemoOverviewScreen(
-                        onSmsDemoClicked = {
-                            route.value = Routes.DemoSmsOverview
-                        },
-                        onEmailDemoClicked = {
-                            route.value = Routes.DemoEmailOverview
-                        },
-                        onSocialMediaDemoClicked = {
-                            route.value = Routes.SocialMediaDemo
-                        }
-                    )
-                }
-
-                Routes.DemoEmailOverview -> {
-                    DemoEmailOverview()
-                }
-
-                Routes.SocialMediaDemo -> {
-                    Scaffold(
-                        contentWindowInsets = WindowInsets(0.dp),
-                        topBar = {
-                            CenterAlignedTopAppBar(
-                                modifier = Modifier.nestedScroll(
-                                    scrollBehavior.nestedScrollConnection
-                                ),
-                                title = {
-                                    Text(
-                                        text = "Social Media Demo",
-                                        style = MaterialTheme.typography.headlineMedium,
-                                        color = MaterialTheme.colorScheme.onBackground,
-                                    )
-                                },
-                                scrollBehavior = scrollBehavior,
-                                navigationIcon = {
-                                    IconButton(
-                                        onClick = {
-                                            route.value = Routes.DemoOverview
-                                        }
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                            contentDescription = "Navigate Back"
-                                        )
-                                    }
-                                }
-                            )
-                        }
-                    ) { innerPadding ->
-                        SocialMediaScreen(
-                            paddingValues = innerPadding,
-                        )
-                    }
-                }
-            }
+                      }
+                    },
+                )
+              },
+          ) { innerPadding ->
+            SettingsScreen(paddingValues = innerPadding)
+          }
         }
+
+        Routes.Home -> {
+          Scaffold(
+              contentWindowInsets = WindowInsets(0.dp),
+              topBar = {
+                CenterAlignedTopAppBar(
+                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+                    title = {
+                      Text(
+                          text = "MsgVerify",
+                          style = MaterialTheme.typography.headlineMedium,
+                          color = MaterialTheme.colorScheme.onBackground,
+                      )
+                    },
+                    scrollBehavior = scrollBehavior,
+                    actions = {
+                      TextButton(
+                          onClick = { route.value = Routes.DemoOverview },
+                          border =
+                              BorderStroke(
+                                  width = 1.dp,
+                                  color = MaterialTheme.colorScheme.secondary,
+                              ),
+                      ) {
+                        Text(text = "Demos")
+                      }
+                      IconButton(onClick = { route.value = Routes.Settings }) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Go to settings",
+                        )
+                      }
+                    },
+                )
+              },
+          ) { innerPadding ->
+            HomeScreen(
+                paddingValues = innerPadding,
+            )
+          }
+        }
+
+        Routes.DemoSmsOverview -> {
+          Scaffold(
+              contentWindowInsets = WindowInsets(0.dp),
+              topBar = {
+                CenterAlignedTopAppBar(
+                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+                    title = {
+                      Text(
+                          text = "Demo Messages",
+                          style = MaterialTheme.typography.headlineMedium,
+                          color = MaterialTheme.colorScheme.onBackground,
+                      )
+                    },
+                    scrollBehavior = scrollBehavior,
+                    navigationIcon = {
+                      IconButton(onClick = { route.value = Routes.DemoOverview }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Navigate Back",
+                        )
+                      }
+                    },
+                )
+              },
+          ) { innerPadding ->
+            DemoMessagesScreen(
+                paddingValues = innerPadding,
+                navigateToDetails = { id ->
+                  demoDetailsId.value = id
+                  route.value = Routes.DemoSmsDetails
+                },
+            )
+          }
+        }
+
+        Routes.DemoSmsDetails -> {
+          Scaffold(
+              contentWindowInsets = WindowInsets(0.dp),
+              topBar = {
+                CenterAlignedTopAppBar(
+                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+                    title = {
+                      Text(
+                          text = "Demo Message",
+                          style = MaterialTheme.typography.headlineMedium,
+                          color = MaterialTheme.colorScheme.onBackground,
+                      )
+                    },
+                    scrollBehavior = scrollBehavior,
+                    navigationIcon = {
+                      IconButton(onClick = { route.value = Routes.DemoSmsOverview }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Navigate Back",
+                        )
+                      }
+                    },
+                )
+              },
+          ) { innerPadding ->
+            DemoMessageDetailsScreen(paddingValues = innerPadding, id = demoDetailsId.value)
+          }
+        }
+
+        Routes.DemoOverview -> {
+          DemoOverviewScreen(
+              onSmsDemoClicked = { route.value = Routes.DemoSmsOverview },
+              onEmailDemoClicked = { route.value = Routes.DemoEmailOverview },
+              onSocialMediaDemoClicked = { route.value = Routes.SocialMediaDemo },
+          )
+        }
+
+        Routes.DemoEmailOverview -> {
+          Scaffold(
+              contentWindowInsets = WindowInsets(0.dp),
+              topBar = {
+                CenterAlignedTopAppBar(
+                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+                    title = {
+                      Text(
+                          text = "Email Client Demo",
+                          style = MaterialTheme.typography.headlineMedium,
+                          color = MaterialTheme.colorScheme.onBackground,
+                      )
+                    },
+                    scrollBehavior = scrollBehavior,
+                    navigationIcon = {
+                      IconButton(onClick = { route.value = Routes.DemoOverview }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Navigate Back",
+                        )
+                      }
+                    },
+                )
+              },
+          ) { innerPadding ->
+            DemoEmailOverview(innerPadding)
+          }
+        }
+
+        Routes.SocialMediaDemo -> {
+          Scaffold(
+              contentWindowInsets = WindowInsets(0.dp),
+              topBar = {
+                CenterAlignedTopAppBar(
+                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+                    title = {
+                      Text(
+                          text = "Social Media Demo",
+                          style = MaterialTheme.typography.headlineMedium,
+                          color = MaterialTheme.colorScheme.onBackground,
+                      )
+                    },
+                    scrollBehavior = scrollBehavior,
+                    navigationIcon = {
+                      IconButton(onClick = { route.value = Routes.DemoOverview }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Navigate Back",
+                        )
+                      }
+                    },
+                )
+              },
+          ) { innerPadding ->
+            SocialMediaScreen(
+                paddingValues = innerPadding,
+            )
+          }
+        }
+      }
     }
+  }
 }
 
 @Preview
 @Composable
 private fun AppPreview() {
-    MsgVerifyTheme {
-        AppScreen()
-    }
+  MsgVerifyTheme { AppScreen() }
 }
