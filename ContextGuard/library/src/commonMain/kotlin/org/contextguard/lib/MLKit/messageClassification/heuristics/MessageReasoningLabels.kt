@@ -9,74 +9,43 @@ import org.contextguard.lib.MLKit.messageClassification.heuristics.hasUrgencyOrI
 import org.contextguard.lib.MLKit.messageClassification.heuristics.normalise
 import org.contextguard.models.Reason
 
-class MessageReasoningLabels(val message: String, val sender: String) {
-
-    private val rawMessage: String = message
+class MessageReasoningLabels(
+    message: String,
+    private val sender: String
+) {
     private val cleanMessage: String = message.normalise()
-    private val labels: MutableList<Reason> = mutableListOf()
 
-    fun checkImpersonation(){
-        if (message.checkImpersonation(sender)){
-            labels.add(Reason("Impersonation"))
-        }
+    private object Labels {
+        const val IMPERSONATION = "Impersonation"
+        const val MARKETING = "Marketing"
+        const val ADULT_CONTENT = "Adult Content"
+        const val URGENCY = "Urgency/Intimidation"
+        const val LINK_PRESSURE = "Link Click Pressure"
+        const val FINANCIAL_PERSONAL = "Financial or Personal Information"
+        const val TOO_GOOD = "Too Good to Be True"
+        const val CREDENTIAL_VERIFICATION = "Credential Verification Request"
+        const val FALLBACK = "Uncategorized Spam"
     }
 
-    fun checkMarketing(){
-        if (message.hasMarketingPatterns()){
-            labels.add(Reason("Marketing"))
-        }
-    }
+    fun addLabels(): MutableList<Reason> {
+        val checks: List<Pair<String, (String) -> Boolean>> = listOf(
+            Labels.IMPERSONATION to { msg -> msg.checkImpersonation(sender) },
+            Labels.MARKETING to { msg -> msg.hasMarketingPatterns() },
+            Labels.ADULT_CONTENT to { msg -> msg.hasAdultContentPatterns() },
+            Labels.URGENCY to { msg -> msg.hasUrgencyOrIntimidationPatterns() },
+            Labels.LINK_PRESSURE to { msg -> msg.containsUrl() },
+            Labels.FINANCIAL_PERSONAL to { msg -> msg.asksForFinancialOrPersonalInfo() },
+            Labels.TOO_GOOD to { msg -> msg.hasTooGoodToBeTruePatterns() },
+            Labels.CREDENTIAL_VERIFICATION to { msg -> msg.hasCredentialVerificationPatterns() },
+        )
 
-    fun checkAdultContent(){
-        if (message.hasAdultContentPatterns()){
-            labels.add(Reason("Adult Content"))
-        }
-    }
+        val reasons = checks
+            .asSequence()
+            .filter { (_, predicate) -> predicate(cleanMessage) }
+            .map { (label, _) -> Reason(label) }
+            .distinct()
+            .toMutableList()
 
-    fun checkUrgency(){
-        if (message.hasUrgencyOrIntimidationPatterns()){
-            labels.add(Reason("Urgency/Intimidation"))
-        }
-    }
-
-    fun checkLinks(){
-        if (rawMessage.containsUrl()){
-            labels.add(Reason("Link Click Pressure"))
-        }
-    }
-
-    fun checkPersonalFinancialRequest(){
-        if (rawMessage.asksForFinancialOrPersonalInfo()){
-            labels.add(Reason("Financial or Personal Information"))
-        }
-    }
-
-    fun checkTooGoodToBeTrue(){
-        if(rawMessage.hasTooGoodToBeTruePatterns()){
-            labels.add(Reason("Too Good to Be True"))
-        }
-    }
-
-    fun checkCredentialVerificationRequest(){
-        if(message.hasCredentialVerificationPatterns()){
-            labels.add(Reason("Credential Verification Request"))
-        }
-    }
-
-    fun addLabels() : MutableList<Reason>{
-        checkImpersonation()
-        checkMarketing()
-        checkAdultContent()
-        checkUrgency()
-        checkLinks()
-        checkPersonalFinancialRequest()
-        checkTooGoodToBeTrue()
-        checkCredentialVerificationRequest()
-
-        if (labels.isEmpty()) {
-            labels.add(Reason("Uncategorized Spam"))
-        }
-
-        return labels;
+        return reasons.ifEmpty { mutableListOf(Reason(Labels.FALLBACK)) }
     }
 }
