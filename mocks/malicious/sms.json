@@ -1,1 +1,47 @@
-[]
+[
+    {
+        "message" : "HMRC NOTICE: Failure to update your information will result in legal action. Visit www.hmrc-tax.com"
+    },
+    {    
+        "message" : "Parking Charge Notice (PCN): The record shows you have an outstanding parking fine.  The payment deadline is December 16,2025.  If you fail to pay by then, you may face additional fines and interest.  Your driver's license may be revoked, which could also negatively impact your credit record.  After reading this message, please enter your vehicle registration number in the following link to view and pay the parking fine (the information inquiry is free).\n\nhttps://uk.paying-gw.vip/i\n\nPlease complete the payment immediately to avoid further legal disputes. Thank you again for your cooperation."
+    },
+    {    
+        "message" : "Hi,\n\nOur records indicate you could be owed up to *£2,382.58 in mis-sold car finance refunds\n\nCheck below:\n\nhttps://motorfinance.claims/su1/\n\nvsms.io/GB"
+    },
+    {    
+        "message" : "PayPal Notice: the transaction for $260 was approved, please visit https://PayPal-appsecurity.com/7XZvFjp to review this transaction."
+    },
+    {    
+        "message" : "You have received 4 Bitcoins (15367,34 USD) in your account. Register now to accept the transfer\nhttp://goo.gl/tGiPlv"
+    },
+    {    
+        "message" : "Security alert: A new Commbank app has been registered for your account. if it was not you, visit us ASAP on https://commitem.pse.is/5j4qv6 to secure your account.\nThanks, Commbank."
+    },
+    {    
+        "message" : "Attention: Your federal return was rejected by IRS. Go to http://bit.ly/irsirs to urgently rectify this within 24 hours."
+    },
+    {    
+        "message" : "Hello this is Atty\nNympha Alegado of Bangko Central ng Pilipinas. Your mobile number wins a cash price of P150,000.00Php tax free. Please call this number for more details.\nThank You. Per DTI-NCR Permit No. 7865 Series of 2018."
+    },
+    {    
+        "message" : "ATTENTION: You have been fined $85.22 for failing to return Order No. #23442314. Please log in below within 48 hours to pay this fine or to apply for waive. https://shorturl.at/hlMNT"
+    },
+    {    
+        "message" : "Hello\nWe recently noticed a suspicious sign-in attempt to your Snapchat account from IP address 209.141.50.109 near Lubbock, Texas. If you did not sign-in from this location, please reply to this alert with the 6-digit reset code that we have sent to you in a separate notification. If you did authorize this sign-in attempt, please ignore this alert\n\nSnapchat Privacy Center"
+    },
+    {    
+        "message" : "Royal Mail: Your package has a £2.99 shipping fee, to pay this now visit royalmail-redelivery.support. Actions will be taken if you do not pay this fee"
+    },
+    {    
+        "message" : "Internal Revenue Service (IRS)\n\nYou are eligible to receive a $1,400 Economic Impact Payment. Please provide your accurate personal information. We will deposit the amount into your bank account or mail a paper check within 1 to 2 business days.\n\nhttps://irs.gov-correspondence.com\n\n(Please reply with \"Y\", then exit the text message. Open it again, click the link, or copy it into your Safari browser and open it.)"
+    },
+    {    
+        "message" : "VODAFONE: Your Mobile SIM Contract(s) will be disabled, due to failure to accept our new Terms of Service. Log on: HTTPS://V0DAFONETERMS.COM to accept."
+    },
+    {    
+        "message" : "GOVUK: You are eligible for a discounted energy bill under the Energy Bills Support Scheme. You can apply here: https://energy.bill-rebate.com"
+    },
+    {    
+        "message" : "Your Royal Mail parcel is awaiting delivery. Please confirm the settlement of 1.99 (GBP) on the following link:\nhttps://mail-delivery-help.uk/RoyalMail"
+    }
+]
