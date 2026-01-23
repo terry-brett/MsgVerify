@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "message": "Amazon is sending you a refunding of £32.64. Please reply with your bank account number to receive your refund."
+  },
+  {
+    "message": "Wells Fargo Bank: Your account is temporarily locked. Please login at http://goog.gl/2a234 to secure your account."
+  },
+  {
+    "message": "HMRC: We have processed your tax return of £2560.70. Kindly visit http://mygovtax.com for more details"
+  }
+]
