@@ -18,13 +18,24 @@ fun String.extractEmailAddress(): String? {
 }
 
 fun String?.hasAdultContentPatterns(): Boolean {
-    // High-precision adult-content detector (tuned to Dataset_10191 annotations).
-    val msg = (this ?: "").normalise()
-    val adultRegex = Regex(
-        "\\b(xxx|porn|hardcore|nude|nudes|sexcam|camgirl|escort|filthy)\\b",
-        RegexOption.IGNORE_CASE
+    if (this.isNullOrBlank()) return false
+
+    val adultTerms = listOf(
+        "xxx", "p[o0]rn", "nude", "nudes", "c[u0]m", "s[e3]x",
+        "sexcam", "camgirl", "escort", "filthy", "hardcore", "cum",
+        "sexy", "laid"
     )
-    return adultRegex.containsMatchIn(msg)
+
+    val slangTerms = listOf(
+        "shag", "hookup", "flirt", "horny", "hot\\s+pics",
+        "rude\\s+chat", "private\\s+line", "gettin\\s+it", "dirty"
+    )
+
+    val patternString = "\\b(" + (adultTerms + slangTerms).joinToString("|") + ")\\b"
+
+    val adultRegex = Regex(patternString, RegexOption.IGNORE_CASE)
+
+    return adultRegex.containsMatchIn(this)
 }
 
 fun String?.hasCredentialVerificationPatterns(): Boolean {
@@ -41,11 +52,11 @@ fun String?.hasCredentialVerificationPatterns(): Boolean {
     }
 
     val actionRegex = Regex(
-        "\\b(verify|confirm|update|reset|authenticate|login|log in|sign in)\\b",
+        "\\b(verify|confirm|update|contact|reset|authenticate|login|log in|sign in)\\b",
         RegexOption.IGNORE_CASE
     )
     val nounRegex = Regex(
-        "\\b(password|passcode|pin|credentials|account|login|username|security code|verification code|otp|2fa)\\b",
+        "\\b(password|passcode|pin|expired|credentials|account|login|username|security code|verification code|otp|2fa)\\b",
         RegexOption.IGNORE_CASE
     )
 
@@ -63,14 +74,16 @@ fun String?.hasCredentialVerificationPatterns(): Boolean {
 }
 
 fun String?.hasUrgencyOrIntimidationPatterns(): Boolean {
-    val msg = (this ?: "").normalise()
+    if (this.isNullOrBlank()) return false
 
-    val urgentRegex = Regex("\\burgent\\b", RegexOption.IGNORE_CASE)
-    val immediatelyRegex = Regex("\\bimmediately\\b", RegexOption.IGNORE_CASE)
+    val msg = this.lowercase()
 
-    return urgentRegex.containsMatchIn(msg) ||
-            immediatelyRegex.containsMatchIn(msg) ||
-            msg.contains("final notice", ignoreCase = true)
+    val hasKeywordMatch = URGENCY_PATTERN.containsMatchIn(msg)
+
+    val hasImpliedThreat = msg.contains("blocked") &&
+            (msg.contains("not updated") || msg.contains("contact"))
+
+    return hasKeywordMatch || hasImpliedThreat
 }
 
 fun String.hasTooGoodToBeTruePatterns(): Boolean {
@@ -135,7 +148,7 @@ fun String.hasMarketingPatterns(): Boolean {
     }
 
     val promoRegex = Regex(
-        "\\b(discount|offer|deal|sale|limited|promo|promotion|voucher|coupon|cashback|half price|free)\\b",
+        "\\b(discount|offer|offers|deal|deals|sale|limited|promo|promotion|promotions|voucher|vouchers|coupon|coupons|cashback|half price|free)\\b",
         RegexOption.IGNORE_CASE
     )
     val telecomRegex = Regex(
