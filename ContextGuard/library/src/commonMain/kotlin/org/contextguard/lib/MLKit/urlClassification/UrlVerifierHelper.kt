@@ -6,40 +6,46 @@ import org.contextguard.lib.MLKit.urlClassification.models.UrlComponents
 
 class UrlVerifierHelper(val url: String) {
 
-    val components: UrlComponents = getUrlComponents(url)
+    val components: UrlComponents? = getUrlComponents(url)
+    val isMalformed: Boolean = components == null
 
+    private fun getUrlComponents(url: String): UrlComponents? {
+        return try {
+            // Validate URL format
+            val regex = Regex("^https?://[^\\s/$.?#]+.*")
+            if (!regex.matches(url)) {
+                return null
+            }
 
-    init {
-        validateUrl()
-    }
+            // Parse URL components
+            val parsed = Url(url)
+            val hostParts = parsed.host.split(".")
+            val subdomain = if (hostParts.size > 2) hostParts.dropLast(2).joinToString(".") else ""
+            val domain = if (hostParts.size >= 2) hostParts[hostParts.size - 2] else parsed.host
+            val tld = if (hostParts.size >= 1) hostParts.last() else ""
 
-    private fun validateUrl() {
-        val regex = Regex("https?://[^\\s/\$.?#].[^\\s]*")
-        if (!regex.matches(url)) {
-            throw IllegalArgumentException("Url is not set or valid")
+            UrlComponents(
+                subdomain = subdomain,
+                domain = domain,
+                tld = tld,
+                path = parsed.encodedPath,
+                query = parsed.encodedQuery,
+                fragment = parsed.fragment,
+                netloc = parsed.hostWithPortIfSpecified,
+                scheme = parsed.protocol.name
+            )
+        } catch (e: Exception) {
+            // URL parsing failed - return null so caller can add "malformed URL" as reason
+            null
         }
     }
 
-    private fun getUrlComponents(url: String): UrlComponents {
-        val parsed = Url(url)
-        val hostParts = parsed.host.split(".")
-        val subdomain = if (hostParts.size > 2) hostParts.dropLast(2).joinToString(".") else ""
-        val domain = if (hostParts.size >= 2) hostParts[hostParts.size - 2] else parsed.host
-        val tld = if (hostParts.size >= 1) hostParts.last() else ""
-
-        return UrlComponents(
-            subdomain = subdomain,
-            domain = domain,
-            tld = tld,
-            path = parsed.encodedPath,
-            query = parsed.encodedQuery,
-            fragment = parsed.fragment,
-            netloc = parsed.hostWithPortIfSpecified,
-            scheme = parsed.protocol.name
-        )
-    }
-
     fun extractUrlFeatures(): Map<String, Int> {
+        // Return empty map if URL is malformed - caller should check components for malformed flag
+        if (components == null) {
+            return emptyMap()
+        }
+
         val fullUrl = url
         val featureMap = mutableMapOf<String, Int>()
 
