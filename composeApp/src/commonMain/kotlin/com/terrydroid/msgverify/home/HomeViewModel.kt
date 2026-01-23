@@ -40,13 +40,8 @@ class HomeViewModel(private val msgVerifyRepository: MsgVerifyRepository) : View
   }
 
   fun onVerifyClicked(inputLink: String) {
-    val isValidUrl =
-        try {
-          UrlVerifierHelper(inputLink)
-          true
-        } catch (_: IllegalArgumentException) {
-          false
-        }
+    val urlVerifier = UrlVerifierHelper(inputLink)
+    val isValidUrl = !urlVerifier.isMalformed
 
     _linkVerificationState.value =
         LinkVerificationState.LoadingVerification(
@@ -62,7 +57,7 @@ class HomeViewModel(private val msgVerifyRepository: MsgVerifyRepository) : View
               onFailure = {
                 _linkVerificationState.value =
                     LinkVerificationState.Error(
-                        errorMessage = "Is not a valid url",
+                        errorMessage = "Malformed URL",
                         verifiedLinkHistory = _linkVerificationState.value.verifiedLinkHistory,
                         bottomSheetInformation =
                             _linkVerificationState.value.bottomSheetInformation,

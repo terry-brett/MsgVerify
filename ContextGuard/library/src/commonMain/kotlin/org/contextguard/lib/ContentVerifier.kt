@@ -4,6 +4,7 @@ import MessageReasoningLabels
 import org.contextguard.checkUrlAndSpelling
 import org.contextguard.lib.MLKit.messageClassification.MessagePrediction
 import org.contextguard.lib.MLKit.urlClassification.UrlPrediction
+import org.contextguard.lib.MLKit.urlClassification.UrlVerifierHelper
 import org.contextguard.models.Reason
 import org.contextguard.models.Result
 import org.contextguard.models.TextClassificationResult
@@ -93,6 +94,14 @@ class ContentVerifierImpl(private val platformContext: Any) : ContentVerifier {
 
     if (isMessageSpam) {
       listOfReasons = MessageReasoningLabels(content, sender.orEmpty()).addLabels()
+    }
+
+    // Check for malformed URLs and add them as reasons
+    extractedUrls.forEach { url ->
+      val verifier = UrlVerifierHelper(url)
+      if (verifier.isMalformed) {
+        listOfReasons.add(Reason("Malformed URL: $url"))
+      }
     }
 
     urlPredictionScores.forEach {
