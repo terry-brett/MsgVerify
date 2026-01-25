@@ -54,12 +54,13 @@ internal fun DemoEmailOverview(
 
 @Composable
 private fun EmailRow(message: EmailMessage, onClick: () -> Unit, modifier: Modifier = Modifier) {
-  val badge = riskBadge(message.trafficLight)
+  val badge = riskBadge(message.trafficLight ?: TrafficLight.Yellow)
   val icon =
       when (message.trafficLight) {
         TrafficLight.Green -> Icons.Outlined.Verified
-        TrafficLight.Yellow,
+        TrafficLight.Yellow -> Icons.Outlined.ReportProblem
         TrafficLight.Red -> Icons.Outlined.ReportProblem
+        null -> Icons.Outlined.Verified
       }
 
   Surface(
