@@ -55,11 +55,11 @@ import org.koin.compose.viewmodel.koinViewModel
 internal fun DemoMessageDetailsScreen(
     paddingValues: PaddingValues,
     id: Int,
-    detailsViewModel: DemoMessageDetailsViewModel = koinViewModel()
 ) {
+    val detailsViewModel: DemoMessageDetailsViewModel = koinViewModel()
     val state = detailsViewModel.state.collectAsStateWithLifecycle().value
 
-    LaunchedEffect("init") {
+    LaunchedEffect(id) {
         detailsViewModel.init(id)
     }
 

@@ -6,7 +6,6 @@ import com.terrydroid.msgverify.data.ContentVerificationResponse
 import com.terrydroid.msgverify.data.MsgVerifyRepository
 import com.terrydroid.msgverify.demo.smsoverview.TrafficLight
 import com.terrydroid.msgverify.demo.smsoverview.UrlScore
-import com.terrydroid.msgverify.demo.smsoverview.getClassification
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,56 +17,61 @@ class SocialMediaViewModel(
     private val msgVerifyRepository: MsgVerifyRepository,
     dispatcher: CoroutineDispatcher
 ): ViewModel() {
-    private val _state: MutableStateFlow<Messages> = MutableStateFlow(getMessagesMockData())
+    private val _state: MutableStateFlow<Messages> = MutableStateFlow(Messages(emptyList()))
 
     val state: StateFlow<Messages>
         get() = _state.asStateFlow()
 
     init {
         viewModelScope.launch(dispatcher) {
-            state.value.messages.forEach { message ->
-                msgVerifyRepository.verifyContent(message.message, message.title).collect { result ->
-                    result.fold(
-                        onFailure = {},
-                        onSuccess = { response ->
-                            val maliciousScorePercent: Float
-                            val reasons: List<String>
-                            val urlScores: List<UrlScore>
+            val mockData = getSocialMediaMockdata()
+            _state.value = mockData
+        }
 
-                            when (response) {
-                                is ContentVerificationResponse.Safe -> {
-                                    maliciousScorePercent = 0f
-                                    reasons = emptyList()
-                                    urlScores = emptyList()
-                                }
-                                is ContentVerificationResponse.Unsafe -> {
-                                    maliciousScorePercent = response.urlScores?.maxOrNull() ?: 0f
-                                    reasons = response.reasons.map { it.reason }
-                                    urlScores = (response.extractedUrls ?: emptyList())
-                                        .zip(response.urlScores ?: emptyList())
-                                        .map { (url, score) -> UrlScore(url, score) }
-                                }
-                            }
+        viewModelScope.launch {
+            state.collect { messages ->
+                messages.messages.forEach { message ->
+                    msgVerifyRepository.verifyContent(message.message, message.title).collect { result ->
+                        result.fold(
+                            onFailure = {},
+                            onSuccess = { response ->
+                                val classification: TrafficLight
+                                val reasons: List<String>
+                                val urlScores: List<UrlScore>
 
-                            val classification = getClassification(maliciousScorePercent)
-                            _state.update {
-                                Messages(
-                                    it.messages.replace(
-                                        Message(
-                                            id = message.id,
-                                            title = message.title,
-                                            message = message.message,
-                                            trafficLight = classification,
-                                            reasons = reasons,
-                                            urlScores = urlScores
-                                        )
-                                    ) { value ->
-                                        value == message
+                                when (response) {
+                                    is ContentVerificationResponse.Safe -> {
+                                        classification = TrafficLight.Green
+                                        reasons = emptyList()
+                                        urlScores = emptyList()
                                     }
-                                )
+                                    is ContentVerificationResponse.Unsafe -> {
+                                        classification = TrafficLight.Red
+                                        reasons = response.reasons.map { it.reason }
+                                        urlScores = (response.extractedUrls ?: emptyList())
+                                            .zip(response.urlScores ?: emptyList())
+                                            .map { (url, score) -> UrlScore(url, score) }
+                                    }
+                                }
+                                _state.update {
+                                    Messages(
+                                        it.messages.replace(
+                                            Message(
+                                                id = message.id,
+                                                title = message.title,
+                                                message = message.message,
+                                                trafficLight = classification,
+                                                reasons = reasons,
+                                                urlScores = urlScores
+                                            )
+                                        ) { value ->
+                                            value == message
+                                        }
+                                    )
+                                }
                             }
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }
@@ -90,35 +94,3 @@ data class Message(
     val reasons: List<String> = emptyList(),
     val urlScores: List<UrlScore> = emptyList()
 )
-
-private fun getMessagesMockData(): Messages {
-    return Messages(
-        messages = listOf(
-            Message(
-                id = 1,
-                title = "OsloWeatherBot",
-                message = "FYI: Roads are slick this morning. Drive safe and leave extra time 🧊🚗",
-            ),
-            Message(
-                id = 2,
-                title = "CryptoBroDaily",
-                message = "I turned 1,000 into 50,000 in a week. DM me for the 'secret method' 🔥",
-            ),
-            Message(
-                id = 3,
-                title = "BankHelpSupport",
-                message = "URGENT: Your account is locked. Verify now at bank-login-secure.example to avoid closure.",
-            ),
-            Message(
-                id = 4,
-                title = "NewsHotTake",
-                message = "Everyone who disagrees with me is paid off. They should be 'taught a lesson' soon.",
-            ),
-            Message(
-                id = 5,
-                title = "GiveawayCentral",
-                message = "CONGRATS 🎉 You won! Send your phone number + address to claim your prize today!",
-            ),
-        )
-    )
-}

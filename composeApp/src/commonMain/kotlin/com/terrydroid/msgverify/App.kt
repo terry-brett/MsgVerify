@@ -53,7 +53,7 @@ private fun AppScreen() {
 
       // TODO: Improve navigation with decompose or something when it gets a bit more complex
       val route = rememberSaveable { mutableStateOf(Routes.Home) }
-      val demoDetailsId = mutableStateOf(0)
+      val demoDetailsId = rememberSaveable { mutableStateOf(0) }
 
       when (route.value) {
         Routes.Settings -> {
