@@ -88,14 +88,22 @@ private fun EmailRow(message: EmailMessage, onClick: () -> Unit, modifier: Modif
 
       Column(modifier = Modifier.weight(1f)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-          Text(
-              text = message.fromName,
-              style = MaterialTheme.typography.titleMedium,
-              fontWeight = if (message.unread) FontWeight.Bold else FontWeight.Medium,
-              maxLines = 1,
-              overflow = TextOverflow.Ellipsis,
-              modifier = Modifier.weight(1f),
-          )
+          Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = message.fromName,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = if (message.unread) FontWeight.Bold else FontWeight.Medium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Text(
+                text = message.fromEmail,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+          }
 
           Spacer(Modifier.width(8.dp))
 
