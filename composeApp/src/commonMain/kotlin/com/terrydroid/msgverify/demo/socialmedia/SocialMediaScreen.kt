@@ -175,9 +175,9 @@ private fun AvatarCircle(initial: String) {
 @Composable
 private fun TrafficLightBadge(light: TrafficLight?) {
     val (dotColor, label) = when (light) {
-        TrafficLight.Green -> MaterialTheme.colorScheme.primary to "Low risk"
+        TrafficLight.Green -> MaterialTheme.colorScheme.primary to "Looks safe"
         TrafficLight.Yellow -> MaterialTheme.colorScheme.tertiary to "Suspicious"
-        TrafficLight.Red -> MaterialTheme.colorScheme.error to "High risk"
+        TrafficLight.Red -> MaterialTheme.colorScheme.error to "Likely malicious"
         null -> MaterialTheme.colorScheme.outline to "Unknown"
     }
 
