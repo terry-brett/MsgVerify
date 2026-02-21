@@ -25,8 +25,16 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 internal fun HomeScreen(
     homeViewModel: HomeViewModel = koinViewModel(),
+    recievedText: String?,
     paddingValues: PaddingValues
 ) {
+
+
+    LaunchedEffect(recievedText) {
+        if (recievedText != null && recievedText != "") {
+          homeViewModel.onVerifyClicked(recievedText)
+        }
+    }
     val linkVerificationState =
         homeViewModel
             .linkVerificationState
