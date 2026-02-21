@@ -15,7 +15,7 @@ internal fun LazyListScope.linkHistoryHeader(
         if (linkVerificationState.verifiedLinkHistory.isNotEmpty()) {
             Text(
                 modifier = Modifier.padding(top = 24.dp),
-                text = "Previously verified links",
+                text = "Previously verified content",
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onBackground
             )

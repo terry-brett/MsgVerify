@@ -32,13 +32,13 @@ internal fun LazyListScope.inputField(
                 textFieldValue.value = it
             },
             placeholder = {
-                Text(text = "Enter Url or text you want to verify")
+                Text(text = "Enter URL or text you want to verify")
             },
             label = {
                 if (linkVerificationState is LinkVerificationState.Error) {
                     Text(linkVerificationState.errorMessage)
                 } else {
-                    Text("Input a url to verify")
+                    Text("Input text to verify")
                 }
             },
             shape = RoundedCornerShape(8.dp),
