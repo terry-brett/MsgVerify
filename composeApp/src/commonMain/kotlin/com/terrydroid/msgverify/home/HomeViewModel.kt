@@ -24,7 +24,6 @@ class HomeViewModel(private val msgVerifyRepository: MsgVerifyRepository) : View
 
   val linkVerificationState: StateFlow<LinkVerificationState>
     get() = _linkVerificationState.asStateFlow()
-
   fun onShowBottomSheetDescription(linkResult: LinkResult) {
     viewModelScope.launch {
       _linkVerificationState.value =
