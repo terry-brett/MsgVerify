@@ -26,20 +26,23 @@ import org.koin.compose.viewmodel.koinViewModel
 internal fun HomeScreen(
     homeViewModel: HomeViewModel = koinViewModel(),
     recievedText: String?,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    onTextConsumed: () -> Unit = {}
 ) {
 
-
     LaunchedEffect(recievedText) {
-        if (recievedText != null && recievedText != "") {
-          homeViewModel.onVerifyClicked(recievedText)
+        if (!recievedText.isNullOrBlank()) {
+            homeViewModel.onVerifyClicked(recievedText)
+            onTextConsumed() // Clear the text so it won't trigger again
         }
     }
+
     val linkVerificationState =
         homeViewModel
             .linkVerificationState
             .collectAsStateWithLifecycle()
             .value
+
     HomeScreen(
         linkVerificationState = linkVerificationState,
         paddingValues = paddingValues,
