@@ -37,13 +37,13 @@ import com.terrydroid.msgverify.theme.MsgVerifyTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun App() {
-    AppScreen()
+fun App(recievedText: String? = null) {
+    AppScreen(recievedText)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun AppScreen() {
+private fun AppScreen(recievedText: String?) {
     MsgVerifyTheme {
         Column(
             modifier = Modifier.background(color = MaterialTheme.colorScheme.background)
@@ -98,6 +98,7 @@ private fun AppScreen() {
                     ) { innerPadding ->
                         HomeScreen(
                             paddingValues = innerPadding,
+                            recievedText = recievedText,
                         )
                     }
                 }
@@ -184,5 +185,5 @@ private fun AppScreen() {
 @Preview
 @Composable
 private fun AppPreview() {
-    MsgVerifyTheme { AppScreen() }
+    MsgVerifyTheme { AppScreen("") }
 }
