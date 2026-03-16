@@ -14,7 +14,7 @@ actual class MessagePrediction actual constructor(platformContext: Any) {
 
         val (inputIds, attentionMask) = tokenizer.encode(
             message = message,
-            maxLen = 128
+            maxLen = MAX_LEN
         )
 
         val probabilities = MessageVerifier().makePrediction(

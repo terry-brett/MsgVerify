@@ -2,7 +2,6 @@ package org.contextguard.lib.MLKit.messageClassification
 import android.content.Context
 import org.contextguard.lib.MLKit.messageClassification.tokenizer.WordPieceTokenizer
 import org.contextguard.lib.MLKit.messageClassification.tokenizer.loadVocab
-import kotlin.math.log
 
 actual class MessagePrediction actual constructor(private val platformContext: Any) {
     private val context: Context = platformContext as Context
@@ -17,7 +16,7 @@ actual class MessagePrediction actual constructor(private val platformContext: A
 
         val (inputIds, attentionMask) = tokenizer.encode(
             message = message,
-            maxLen = 128
+            maxLen = MAX_LEN
         )
 
         val probabilities = MessageVerifier().makePrediction(

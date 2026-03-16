@@ -6,14 +6,12 @@ class WordPieceTokenizer(
     private val clsToken: String = "[CLS]",
     private val sepToken: String = "[SEP]",
     private val padToken: String = "[PAD]",
-    private val maskToken: String = "[MASK]"
 ) {
     private val vocabMap = vocab
     private val unkId = vocabMap[unkToken] ?: error("[UNK] not in vocab")
     private val clsId = vocabMap[clsToken] ?: error("[CLS] not in vocab")
     private val sepId = vocabMap[sepToken] ?: error("[SEP] not in vocab")
     private val padId = vocabMap[padToken] ?: error("[PAD] not in vocab")
-    private val maskId = vocabMap[maskToken] ?: error("[MASK] not in vocab")
 
     private fun tokenizeWord(word: String): List<String> {
         if (word.isEmpty()) return emptyList()

@@ -31,13 +31,8 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                // ktor client
+                // ktor (URL parsing)
                 implementation(libs.ktor.client.core)
-                implementation(libs.ktor.client.content.negotiation)
-                implementation(libs.ktor.serialization.json)  // ktor's kotlinx.serialization integration
-
-                // kotlinx.serialization
-                implementation(libs.kotlinx.serialization.json) // the core JSON serialization library
 
                 // for resources
                 implementation(compose.runtime)

@@ -1,8 +1,8 @@
 package org.contextguard.lib
 
-import MessageReasoningLabels
 import org.contextguard.checkUrlAndSpelling
 import org.contextguard.lib.MLKit.messageClassification.MessagePrediction
+import org.contextguard.lib.MLKit.messageClassification.heuristics.MessageReasoningLabels
 import org.contextguard.lib.MLKit.urlClassification.UrlPrediction
 import org.contextguard.lib.MLKit.urlClassification.UrlVerifierHelper
 import org.contextguard.models.Reason
@@ -24,10 +24,10 @@ import org.contextguard.models.TextClassificationResult
  * ## Usage Example
  *
  * ```kotlin
- * val verifier = ContentVerifier.create(platformContext)
+ * val verifier = ContentVerifierImpl(platformContext)
  *
  * // Verify a message with embedded URLs
- * val result = verifier.verify("Check this out: https://example.com")
+ * val result = verifier.verify("Check this out: https://example.com", sender = "")
  *
  * // Handle the result
  * when (result.textClassificationResult) {
@@ -37,7 +37,7 @@ import org.contextguard.models.TextClassificationResult
  *     is TextClassificationResult.Unsafe -> {
  *         // Content contains suspicious elements
  *         result.textClassificationResult.listOfReasons.forEach { reason ->
- *             println("Alert: ${reason.description}")
+ *             println("Alert: ${reason.reason}")
  *         }
  *     }
  * }
@@ -81,51 +81,39 @@ class ContentVerifierImpl(private val platformContext: Any) : ContentVerifier {
       content: String,
       sender: String,
   ): Result? {
-
     if (content.isEmpty()) return null
+
     val extractedUrls = extractUrlsFromContent(content)
-    val urlPredictionScores =
-        extractedUrls.map { url ->
-          UrlPrediction(platformContext).makePrediction(url)
-        }
-
-    val isMessageSpam = MessagePrediction(platformContext).isSpam(content)
-    var listOfReasons: MutableList<Reason> = mutableListOf()
-
-    if (isMessageSpam) {
-      listOfReasons = MessageReasoningLabels(content, sender.orEmpty()).addLabels()
+    val urlHelpers = extractedUrls.map { UrlVerifierHelper(it) }
+    val urlPredictionScores = urlHelpers.map { helper ->
+      if (helper.isMalformed) 0f
+      else UrlPrediction(platformContext).makePrediction(helper.url)
     }
 
-    // Check for malformed URLs and add them as reasons
-    extractedUrls.forEach { url ->
-      val verifier = UrlVerifierHelper(url)
-      if (verifier.isMalformed) {
-        listOfReasons.add(Reason("Malformed URL: $url"))
+    val isMessageSpam = MessagePrediction(platformContext).isSpam(content)
+    val listOfReasons: MutableList<Reason> = if (isMessageSpam) {
+      MessageReasoningLabels(content, sender).addLabels()
+    } else mutableListOf()
+
+    urlHelpers.forEach { helper ->
+      if (helper.isMalformed) {
+        listOfReasons.add(Reason("Malformed URL: ${helper.url}"))
       }
     }
 
-    urlPredictionScores.forEach {
-        listOfReasons.checkUrlAndSpelling(
-            content = content,
-            platformContext = platformContext,
-            urlPredictionScore = it
-        )
+    listOfReasons.checkUrlAndSpelling(
+        content = content,
+        platformContext = platformContext,
+        urlPredictionScores = urlPredictionScores,
+    )
 
-    }
-
-    return if (isMessageSpam) {
-      Result(
-          urlScores = urlPredictionScores,
-          textClassificationResult = TextClassificationResult.Unsafe(listOfReasons),
-          extractedUrls = extractedUrls,
-      )
-    } else {
-      Result(
-          urlScores = urlPredictionScores,
-          textClassificationResult = TextClassificationResult.Safe,
-          extractedUrls = extractedUrls,
-      )
-    }
+    return Result(
+        urlScores = urlPredictionScores,
+        textClassificationResult = if (isMessageSpam) {
+          TextClassificationResult.Unsafe(listOfReasons)
+        } else TextClassificationResult.Safe,
+        extractedUrls = extractedUrls,
+    )
   }
 
   override suspend fun verifyUrl(url: String): Result? {

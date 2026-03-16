@@ -6,9 +6,9 @@ import org.contextguard.models.Reason
 internal suspend fun MutableList<Reason>.checkUrlAndSpelling(
     content: String,
     platformContext: Any,
-    urlPredictionScore: Float?
+    urlPredictionScores: List<Float>
 ): List<Reason> {
-    val hasSuspiciousLink = (urlPredictionScore != null && urlPredictionScore > 50)
+    val hasSuspiciousLink = urlPredictionScores.any { it > 50 }
 
     Spellcheck.init(platformContext)
     val hasSpellingIssues = Spellcheck.isMisspelled(content)

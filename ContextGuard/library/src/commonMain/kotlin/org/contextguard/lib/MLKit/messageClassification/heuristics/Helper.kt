@@ -39,7 +39,6 @@ fun String?.hasAdultContentPatterns(): Boolean {
 }
 
 fun String?.hasCredentialVerificationPatterns(): Boolean {
-    // High-precision credential verification request detector
     val msg = (this ?: "").normalise()
 
     // Suppress normal OTP notifications
@@ -87,13 +86,12 @@ fun String?.hasUrgencyOrIntimidationPatterns(): Boolean {
 }
 
 fun String.hasTooGoodToBeTruePatterns(): Boolean {
-    val raw = this
-    val msg = raw.normalise()
+    val msg = this.normalise()
 
     val contact =
-        PHONE_LIKE.containsMatchIn(raw) ||
-                SHORTCODE.containsMatchIn(raw) ||
-                raw.containsUrl()
+        PHONE_LIKE.containsMatchIn(this) ||
+                SHORTCODE.containsMatchIn(this) ||
+                this.containsUrl()
 
     if (!contact) return false
 
@@ -101,14 +99,14 @@ fun String.hasTooGoodToBeTruePatterns(): Boolean {
     if (
         Regex("\\burgent\\b", RegexOption.IGNORE_CASE).containsMatchIn(msg) &&
         Regex("\\b(prize|award|won|winner)\\b", RegexOption.IGNORE_CASE).containsMatchIn(msg) &&
-        Regex("[£$€]").containsMatchIn(raw)
+        Regex("[£$€]").containsMatchIn(this)
     ) {
         return true
     }
 
     // Pattern B: selected + prize/award + money (symbol or "5000 pounds", etc.)
     val money =
-        Regex("[£$€]").containsMatchIn(raw) ||
+        Regex("[£$€]").containsMatchIn(this) ||
                 Regex(
                     "\\b\\d{3,}\\s*(pounds|gbp|usd|eur|inr|nok|sek|dkk)\\b",
                     RegexOption.IGNORE_CASE
@@ -126,8 +124,7 @@ fun String.hasTooGoodToBeTruePatterns(): Boolean {
 }
 
 fun String.hasMarketingPatterns(): Boolean {
-    val raw = this
-    val msg = raw.normalise()
+    val msg = this.normalise()
 
     // Strong opt-out / compliance (common in marketing SMS)
     val optOutRegex = Regex(
@@ -170,16 +167,16 @@ fun String.hasMarketingPatterns(): Boolean {
     val contest = contestRegex.containsMatchIn(msg)
 
     val cta = ctaRegex.containsMatchIn(msg)
-    val contact = PHONE_LIKE.containsMatchIn(raw) ||
-            SHORTCODE.containsMatchIn(raw) ||
-            raw.containsUrl()
+    val contact = PHONE_LIKE.containsMatchIn(this) ||
+            SHORTCODE.containsMatchIn(this) ||
+            this.containsUrl()
 
     return (promo || telecom || contest) && (cta || contact)
 }
 
 fun String.extractEmailDomain(): String? {
     if (this.isBlank() || !this.contains("@")) return null
-    return this.split("@")[1].lowercase()
+    return this.substringAfterLast("@").lowercase()
 }
 
 fun String?.domainLooksLikeBrand(brandText: String?): Boolean {

@@ -9,14 +9,13 @@ import dev.kursor.ktensorflow.api.TensorShape
 import dev.kursor.ktensorflow.api.gpu.GpuDelegate
 import dev.kursor.ktensorflow.api.typedData
 import kotlin.math.exp
+import org.contextguard.lib.MLKit.urlClassification.constants.Constants
 
 class UrlVerifier {
     fun makePrediction(
         modelDesc: ModelDesc,
         data: ByteArray
     ): Float {
-
-
         val interpreter = Interpreter(
             modelDesc = modelDesc,
             options = InterpreterOptions(
@@ -28,7 +27,7 @@ class UrlVerifier {
 
         val input = Tensor(
             data = data,
-            shape = TensorShape(25),
+            shape = TensorShape(Constants.MODEL_INPUT_SIZE),
             dataType = TensorDataType.Float32
         )
 

@@ -61,7 +61,7 @@ class MessageVerifier {
     }
 }
 
-private const val MAX_LEN = 128
+internal const val MAX_LEN = 128
 
 private fun intArrayToByteArrayNativeOrder(ints: IntArray): ByteArray {
     val byteArray = ByteArray(ints.size * 4)
@@ -75,7 +75,7 @@ private fun intArrayToByteArrayNativeOrder(ints: IntArray): ByteArray {
     return byteArray
 }
 
-fun byteArrayToFloatArray(byteArray: ByteArray): FloatArray {
+private fun byteArrayToFloatArray(byteArray: ByteArray): FloatArray {
     if (byteArray.size % 4 != 0) {
         throw IllegalArgumentException("ByteArray size must be a multiple of 4 for Float32 conversion.")
     }
@@ -87,7 +87,6 @@ fun byteArrayToFloatArray(byteArray: ByteArray): FloatArray {
                 (byteArray[byteIndex + 1].toInt() and 0xFF shl 8) or
                 (byteArray[byteIndex].toInt() and 0xFF)               // LSB
 
-        // Convert the 32-bit integer representation into a Float.
         floatArray[i] = Float.fromBits(intBits)
     }
     return floatArray

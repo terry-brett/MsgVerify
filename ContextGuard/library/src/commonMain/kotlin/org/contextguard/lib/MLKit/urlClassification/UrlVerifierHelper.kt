@@ -4,6 +4,9 @@ import io.ktor.http.Url
 import io.ktor.http.hostWithPortIfSpecified
 import org.contextguard.lib.MLKit.urlClassification.models.UrlComponents
 
+private val PUNCTUATION_REGEX = Regex("[^\\w\\s]")
+private val DIGITS_REGEX = Regex("\\d")
+
 class UrlVerifierHelper(val url: String) {
 
     val components: UrlComponents? = getUrlComponents(url)
@@ -11,13 +14,9 @@ class UrlVerifierHelper(val url: String) {
 
     private fun getUrlComponents(url: String): UrlComponents? {
         return try {
-            // Validate URL format
             val regex = Regex("^https?://[^\\s/$.?#]+.*")
-            if (!regex.matches(url)) {
-                return null
-            }
+            if (!regex.matches(url)) return null
 
-            // Parse URL components
             val parsed = Url(url)
             val hostParts = parsed.host.split(".")
             val subdomain = if (hostParts.size > 2) hostParts.dropLast(2).joinToString(".") else ""
@@ -35,25 +34,20 @@ class UrlVerifierHelper(val url: String) {
                 scheme = parsed.protocol.name
             )
         } catch (e: Exception) {
-            // URL parsing failed - return null so caller can add "malformed URL" as reason
             null
         }
     }
 
     fun extractUrlFeatures(): Map<String, Int> {
-        // Return empty map if URL is malformed - caller should check components for malformed flag
-        if (components == null) {
-            return emptyMap()
-        }
+        if (components == null) return emptyMap()
 
-        val fullUrl = url
         val featureMap = mutableMapOf<String, Int>()
 
         fun countMatches(input: String, regex: Regex): Int = regex.findAll(input).count()
 
-        featureMap["url_length"] = fullUrl.length
-        featureMap["url_punctuations_count"] = countMatches(fullUrl, Regex("[^\\w\\s]"))
-        featureMap["url_digits_count"] = countMatches(fullUrl, Regex("\\d"))
+        featureMap["url_length"] = url.length
+        featureMap["url_punctuations_count"] = countMatches(url, PUNCTUATION_REGEX)
+        featureMap["url_digits_count"] = countMatches(url, DIGITS_REGEX)
 
         val parts = listOf(
             "subdomain" to components.subdomain,
@@ -67,8 +61,8 @@ class UrlVerifierHelper(val url: String) {
 
         for ((key, value) in parts) {
             featureMap["${key}_length"] = value.length
-            featureMap["${key}_punctuations_count"] = countMatches(value, Regex("[^\\w\\s]"))
-            featureMap["${key}_digits_count"] = countMatches(value, Regex("\\d"))
+            featureMap["${key}_punctuations_count"] = countMatches(value, PUNCTUATION_REGEX)
+            featureMap["${key}_digits_count"] = countMatches(value, DIGITS_REGEX)
         }
 
         featureMap["secured_scheme"] = if (components.scheme == "https") 1 else 0

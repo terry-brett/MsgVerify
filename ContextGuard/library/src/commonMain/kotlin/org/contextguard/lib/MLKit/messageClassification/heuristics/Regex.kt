@@ -28,11 +28,6 @@ val _PAYTM_CTX_RE = Regex("\\b(received a request|request from you|fastag|paymen
 val _ORDER_CANCEL_RE = Regex("\\b(cancel|delete)\\b.{0,25}\\border\\b", RegexOption.IGNORE_CASE)
 val _ORDER_CTA_RE = Regex("\\b(visit|call|chat|contact)\\b", RegexOption.IGNORE_CASE)
 
-// Telecom impersonation (narrow, Twitter-labeled patterns)
-val _TELECOM_BRAND_RE = Regex("\\b(vodafone|orange|t-?mobile|tmobile|o2)\\b", RegexOption.IGNORE_CASE)
-val _UPGRDCENTRE_RE = Regex("\\bupgrdcentre\\b", RegexOption.IGNORE_CASE)
-val _TELECOM_ACTION_RE = Regex("\\b(call|dial|text)\\b", RegexOption.IGNORE_CASE)
-
 // Email (TREC_06) — org claim + account action + sender mismatch
 val _EMAIL_ACTION_RE = Regex(
     "\\b(" +

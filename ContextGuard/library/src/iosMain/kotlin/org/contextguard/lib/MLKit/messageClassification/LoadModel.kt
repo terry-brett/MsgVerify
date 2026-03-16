@@ -5,10 +5,9 @@ import org.contextguard.lib.library.generated.resources.Res
 
 actual class LoadModel {
     actual suspend fun getTextModelDesc(): ModelDesc {
-        val modelDesc = ModelDesc.PathInBundle(
+        return ModelDesc.PathInBundle(
             Res.getUri("files/messageClassificationModel/otis_spam_model.tflite")
                 .removePrefix("file://")
         )
-        return modelDesc
     }
 }

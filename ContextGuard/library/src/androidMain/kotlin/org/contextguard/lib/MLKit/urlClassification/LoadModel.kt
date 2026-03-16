@@ -8,10 +8,9 @@ import java.io.File
 actual class LoadModel(private val context: Context) {
     actual suspend fun getUrlModelDesc(): ModelDesc {
         val bytes = Res.readBytes("files/urlClassificationModel/model_lite.tflite")
-        val tmpFile = File.createTempFile("prefix", "suffix", context.cacheDir)
+        val tmpFile = File.createTempFile("url_model", ".tflite", context.cacheDir)
+        tmpFile.deleteOnExit()
         tmpFile.writeBytes(bytes)
-        val modelDesc = ModelDesc.File(tmpFile)
-
-        return modelDesc
+        return ModelDesc.File(tmpFile)
     }
 }

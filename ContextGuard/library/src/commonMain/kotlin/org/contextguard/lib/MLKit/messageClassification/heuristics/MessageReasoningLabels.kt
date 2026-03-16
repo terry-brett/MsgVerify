@@ -1,12 +1,5 @@
-import org.contextguard.lib.MLKit.messageClassification.heuristics.asksForFinancialOrPersonalInfo
-import org.contextguard.lib.MLKit.messageClassification.heuristics.checkImpersonation
-import org.contextguard.lib.MLKit.messageClassification.heuristics.containsUrl
-import org.contextguard.lib.MLKit.messageClassification.heuristics.hasAdultContentPatterns
-import org.contextguard.lib.MLKit.messageClassification.heuristics.hasCredentialVerificationPatterns
-import org.contextguard.lib.MLKit.messageClassification.heuristics.hasMarketingPatterns
-import org.contextguard.lib.MLKit.messageClassification.heuristics.hasTooGoodToBeTruePatterns
-import org.contextguard.lib.MLKit.messageClassification.heuristics.hasUrgencyOrIntimidationPatterns
-import org.contextguard.lib.MLKit.messageClassification.heuristics.normalise
+package org.contextguard.lib.MLKit.messageClassification.heuristics
+
 import org.contextguard.models.Reason
 
 class MessageReasoningLabels(
@@ -43,7 +36,6 @@ class MessageReasoningLabels(
             .asSequence()
             .filter { (_, predicate) -> predicate(cleanMessage) }
             .map { (label, _) -> Reason(label) }
-            .distinct()
             .toMutableList()
 
         return reasons.ifEmpty { mutableListOf(Reason(Labels.FALLBACK)) }
