@@ -77,7 +77,7 @@ fun String?.hasUrgencyOrIntimidationPatterns(): Boolean {
 
     val msg = this.lowercase()
 
-    val hasKeywordMatch = URGENCY_PATTERN.containsMatchIn(msg)
+    val hasKeywordMatch = _URGENCY_PATTERN_RE.containsMatchIn(msg)
 
     val hasImpliedThreat = msg.contains("blocked") &&
             (msg.contains("not updated") || msg.contains("contact"))
@@ -89,8 +89,8 @@ fun String.hasTooGoodToBeTruePatterns(): Boolean {
     val msg = this.normalise()
 
     val contact =
-        PHONE_LIKE.containsMatchIn(this) ||
-                SHORTCODE.containsMatchIn(this) ||
+        _PHONE_LIKE_RE.containsMatchIn(this) ||
+                _SHORTCODE_RE.containsMatchIn(this) ||
                 this.containsUrl()
 
     if (!contact) return false
@@ -167,8 +167,8 @@ fun String.hasMarketingPatterns(): Boolean {
     val contest = contestRegex.containsMatchIn(msg)
 
     val cta = ctaRegex.containsMatchIn(msg)
-    val contact = PHONE_LIKE.containsMatchIn(this) ||
-            SHORTCODE.containsMatchIn(this) ||
+    val contact = _PHONE_LIKE_RE.containsMatchIn(this) ||
+            _SHORTCODE_RE.containsMatchIn(this) ||
             this.containsUrl()
 
     return (promo || telecom || contest) && (cta || contact)
@@ -209,8 +209,8 @@ fun String?.checkImpersonation(sender: String? = null): Boolean {
 
     val msg = text.normalise()
     val hasLink = text.containsUrlLoose()
-    val hasPhone = PHONE_LIKE.containsMatchIn(text) || SHORTCODE.containsMatchIn(text)
-    val hasEmailInBody = EMAIL_REGEX.containsMatchIn(text)
+    val hasPhone = _PHONE_LIKE_RE.containsMatchIn(text) || _SHORTCODE_RE.containsMatchIn(text)
+    val hasEmailInBody = _EMAIL_RE.containsMatchIn(text)
     val hasContactWord = Regex("\\b(call|dial|contact|reply|text|email|chat)\\b")
         .containsMatchIn(msg)
     val contact = hasLink || hasPhone || hasEmailInBody || hasContactWord
@@ -232,7 +232,7 @@ fun String?.checkImpersonation(sender: String? = null): Boolean {
                 _APPLE_DUE_EXPIRE_RE.containsMatchIn(text)
         if (appleAction && (contact || hasLink)) {
             if (text.containsUrl() && sender == null) {
-                if (!URL_REGEX.containsMatchIn(text) && hasLink) return true
+                if (!_URL_RE.containsMatchIn(text) && hasLink) return true
             } else {
                 return true
             }
@@ -304,7 +304,7 @@ fun String?.checkImpersonation(sender: String? = null): Boolean {
                 RegexOption.IGNORE_CASE
             ).containsMatchIn(raw)
         ) {
-            if (contact && (sdom in _FREE_EMAIL || sdom.isEmpty())) return true
+            if (contact && (sdom in _FREE_EMAIL_RE || sdom.isEmpty())) return true
         }
     }
 
@@ -329,7 +329,7 @@ fun String?.extractPrimaryEmailText(): String {
 fun String?.containsUrlLoose(): Boolean {
     val text = this ?: ""
     for (token in text.split(" ")) {
-        if (URL_REGEX.containsMatchIn(token) || LOOSE_URL_REGEX.containsMatchIn(token)) {
+        if (_URL_RE.containsMatchIn(token) || _LOOSE_URL_RE.containsMatchIn(token)) {
             return true
         }
     }
@@ -338,7 +338,7 @@ fun String?.containsUrlLoose(): Boolean {
 
 fun String.containsUrl(): Boolean {
     for (token in this.split(" ")) {
-        if (URL_REGEX.containsMatchIn(token)) {
+        if (_URL_RE.containsMatchIn(token)) {
             return true
         }
     }
