@@ -41,24 +41,24 @@ val _EMAIL_ACTION_RE = Regex(
 )
 
 // Free email domains for sender mismatch
-val _FREE_EMAIL = setOf(
+val _FREE_EMAIL_RE = setOf(
     "gmail.com", "googlemail.com", "yahoo.com", "ymail.com", "outlook.com", "hotmail.com", "live.com", "msn.com",
     "aol.com", "icloud.com", "me.com", "mac.com", "proton.me", "protonmail.com", "gmx.com", "mail.com"
 )
 
 
-val URL_REGEX = Regex(
+val _URL_RE = Regex(
     "(https?://\\S+|www\\.\\S+|\\b(?:bit\\.ly|t\\.co|tinyurl\\.com|goo\\.gl|ow\\.ly|is\\.gd|buff\\.ly|rebrand\\.ly)/\\S+|" +
             "\\b[a-z0-9-]{2,}\\.(?:com|net|org|info|biz|io|co|me|app|xyz|uk|in|ru|de|fr|no|se|dk|fi|nl|au|br|jp|kr|sg|za)\\b[^\\s]*)",
     RegexOption.IGNORE_CASE
 )
 
 
-val PHONE_LIKE = Regex(
+val _PHONE_LIKE_RE = Regex(
     "\\b(?:\\+?\\d[\\d\\s\\-()]{7,}\\d)\\b"
 )
 
-val SHORTCODE = Regex(
+val _SHORTCODE_RE = Regex(
     "\\b\\d{5,6}\\b"
 )
 
@@ -76,7 +76,7 @@ val _TECH_BULLETIN_RE = Regex(
     RegexOption.IGNORE_CASE
 )
 
-val LOOSE_URL_REGEX = Regex(
+val _LOOSE_URL_RE = Regex(
     "(" +
             "\\bhttps?://\\S+" +
             "|\\bhttps?/\\S+" +                     // e.g., http/example.com
@@ -86,12 +86,12 @@ val LOOSE_URL_REGEX = Regex(
     RegexOption.IGNORE_CASE
 )
 
-val EMAIL_REGEX = Regex(
+val _EMAIL_RE = Regex(
     "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}",
     RegexOption.IGNORE_CASE
 )
 
-val URGENCY_PATTERN by lazy {
+val _URGENCY_PATTERN_RE by lazy {
     val urgencyTerms = listOf(
         "urgent", "immediately", "final notice", "action required",
         "attention", "mandatory", "asap", "verify now", "within \\d+ (hour|min|day)",
@@ -105,3 +105,4 @@ val URGENCY_PATTERN by lazy {
 
     Regex("\\b(${urgencyTerms.joinToString("|")}|${threatTerms.joinToString("|")})\\b", RegexOption.IGNORE_CASE)
 }
+
