@@ -346,6 +346,7 @@ fun String.containsUrl(): Boolean {
 }
 
 fun String?.asksForFinancialOrPersonalInfo(): Boolean {
+    private const val DECISION_THRESHOLD = 3
     if (this.isNullOrBlank()) return false
 
     val msg = this.normalise()
@@ -498,5 +499,5 @@ fun String?.asksForFinancialOrPersonalInfo(): Boolean {
     if (needMoreInfo && accountContext) score += 3
 
     // Decision threshold
-    return score >= 3
+    return score >= DECISION_THRESHOLD
 }
