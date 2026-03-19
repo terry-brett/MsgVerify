@@ -106,3 +106,82 @@ val _URGENCY_PATTERN_RE by lazy {
     Regex("\\b(${urgencyTerms.joinToString("|")}|${threatTerms.joinToString("|")})\\b", RegexOption.IGNORE_CASE)
 }
 
+val _OPT_OUT_RE = Regex(
+    "\\b(unsubscribe|opt\\s*out|reply\\s*stop|text\\s*stop|send\\s*stop|stop\\s+to)\\b",
+    RegexOption.IGNORE_CASE
+)
+
+val _OTP_RE = Regex(
+    "\\b(your\\s+otp|your\\s+verification\\s+code|one[-\\s]?time\\s+pass)\\b",
+    RegexOption.IGNORE_CASE
+)
+
+val _PROMO_RE = Regex(
+    "\\b(discount|offer|offers|deal|deals|sale|limited|promo|promotion|promotions|voucher|vouchers|coupon|coupons|cashback|half price|free)\\b",
+    RegexOption.IGNORE_CASE
+)
+
+val _TELECOM_RE = Regex(
+    "\\b(line rental|free texts?|text messages|minutes|min|handset|tariff|contract)\\b",
+    RegexOption.IGNORE_CASE
+)
+
+val _CONTEST_RE = Regex(
+    "\\b(free entry|entry|competition|comp\\b|win)\\b",
+    RegexOption.IGNORE_CASE
+)
+
+val _CTA_RE = Regex(
+    "\\b(call|dial|text|reply|click|visit|join|buy|order|subscribe|claim|redeem|get)\\b",
+    RegexOption.IGNORE_CASE
+)
+
+val _PRIZE_VALUE_RE = Regex(
+    "(£|\\$|€|gbp|usd|eur)\\s*\\d+|prize|award|cash|voucher|gift\\s+card|winning",
+    RegexOption.IGNORE_CASE
+)
+
+val _PRIZE_SCAM_RE = Regex(
+    "\\b(you\\s+have\\s+won|you've\\s+won|you\\s+are\\s+a\\s+winner|won\\s+a|" +
+            "selected\\s+to\\s+receive|you\\s+have\\s+been\\s+selected|you\\s+are\\s+awarded|" +
+            "congratulations.*won|awarded\\s+a)\\b",
+    RegexOption.IGNORE_CASE
+)
+
+val _ORG_CLAIM_RE = Regex(
+    "\\b(bank|treasury|ministry|government|customs|immigration|revenue|tax|" +
+            "paypal|amazon|apple|microsoft|google|bank\\s*of\\s*america|bankofamerica|" +
+            "hmrc|govuk|gov\\.uk|irs|dhl|ups|fedex|usps|royal\\s*mail)\\b",
+    RegexOption.IGNORE_CASE
+)
+
+val _CRED_REQUEST_RE = Regex(
+    "\\b(login|log\\s*in|sign\\s*in|username|user\\s*id|password|passcode|pin\\s*code|pin\\b|" +
+            "otp|verification\\s+code|security\\s+code|authenticate|apple\\s+id)\\b.{0,60}" +
+            "\\b(verify|confirm|send|provide|enter|update)\\b",
+    RegexOption.IGNORE_CASE
+)
+
+val _CRED_REQUEST_V2_RE = Regex(
+    "\\b(verify|confirm|send|provide|enter|update).{0,60}" +
+            "\\b(login|log\\s*in|sign\\s*in|username|user\\s*id|password|passcode|pin\\s*code|pin\\b|" +
+            "otp|verification\\s+code|security\\s+code|authenticate|apple\\s+id)\\b",
+    RegexOption.IGNORE_CASE
+)
+
+val _ACTION_RE = Regex(
+    "\\b(verify|confirm|update|contact|reset|authenticate|login|log in|sign in)\\b",
+    RegexOption.IGNORE_CASE
+)
+val _NOUN_RE = Regex(
+    "\\b(password|passcode|pin|expired|credentials|account|login|username|security code|verification code|otp|2fa)\\b",
+    RegexOption.IGNORE_CASE
+)
+
+val _PRIZE_SCAM_KEYWORDS_RE = Regex("\\b(won|winner|winning|prize|award|claim|collect|receive|redeem|gain(?:ed)?)\\b", RegexOption.IGNORE_CASE)
+
+val _URGENT_INFO_REQUEST_RE = Regex(
+    "\\b(verify|confirm|update|validate|provide|send).{0,50}" +
+            "\\b(account\\s+number|identity|personal\\s+information|contact\\s+details|billing\\s+information)\\b",
+    RegexOption.IGNORE_CASE
+)

@@ -50,15 +50,6 @@ fun String?.hasCredentialVerificationPatterns(): Boolean {
         return false
     }
 
-    val actionRegex = Regex(
-        "\\b(verify|confirm|update|contact|reset|authenticate|login|log in|sign in)\\b",
-        RegexOption.IGNORE_CASE
-    )
-    val nounRegex = Regex(
-        "\\b(password|passcode|pin|expired|credentials|account|login|username|security code|verification code|otp|2fa)\\b",
-        RegexOption.IGNORE_CASE
-    )
-
     val politeRequestRegex = Regex("\\b(please|kindly)\\b", RegexOption.IGNORE_CASE)
     val ctaRegex = Regex("\\b(click|visit|reply|enter|submit)\\b", RegexOption.IGNORE_CASE)
 
@@ -67,8 +58,8 @@ fun String?.hasCredentialVerificationPatterns(): Boolean {
                 ctaRegex.containsMatchIn(msg) ||
                 msg.containsUrl()
 
-    return actionRegex.containsMatchIn(msg) &&
-            nounRegex.containsMatchIn(msg) &&
+    return _ACTION_RE.containsMatchIn(msg) &&
+            _NOUN_RE.containsMatchIn(msg) &&
             request
 }
 
@@ -127,46 +118,20 @@ fun String.hasMarketingPatterns(): Boolean {
     val msg = this.normalise()
 
     // Strong opt-out / compliance (common in marketing SMS)
-    val optOutRegex = Regex(
-        "\\b(unsubscribe|opt\\s*out|reply\\s*stop|text\\s*stop|send\\s*stop|stop\\s+to)\\b",
-        RegexOption.IGNORE_CASE
-    )
-    if (optOutRegex.containsMatchIn(msg)) {
+    if (_OPT_OUT_RE.containsMatchIn(msg)) {
         return true
     }
 
     // Suppress pure OTP / verification messages (transactional)
-    val otpRegex = Regex(
-        "\\b(your\\s+otp|your\\s+verification\\s+code|one[-\\s]?time\\s+pass)\\b",
-        RegexOption.IGNORE_CASE
-    )
-    if (otpRegex.containsMatchIn(msg)) {
+    if (_OTP_RE.containsMatchIn(msg)) {
         return false
     }
 
-    val promoRegex = Regex(
-        "\\b(discount|offer|offers|deal|deals|sale|limited|promo|promotion|promotions|voucher|vouchers|coupon|coupons|cashback|half price|free)\\b",
-        RegexOption.IGNORE_CASE
-    )
-    val telecomRegex = Regex(
-        "\\b(line rental|free texts?|text messages|minutes|min|handset|tariff|contract)\\b",
-        RegexOption.IGNORE_CASE
-    )
-    val contestRegex = Regex(
-        "\\b(free entry|entry|competition|comp\\b|win)\\b",
-        RegexOption.IGNORE_CASE
-    )
+    val promo = _PROMO_RE.containsMatchIn(msg)
+    val telecom = _TELECOM_RE.containsMatchIn(msg)
+    val contest = _CONTEST_RE.containsMatchIn(msg)
 
-    val ctaRegex = Regex(
-        "\\b(call|dial|text|reply|click|visit|join|buy|order|subscribe|claim|redeem|get)\\b",
-        RegexOption.IGNORE_CASE
-    )
-
-    val promo = promoRegex.containsMatchIn(msg)
-    val telecom = telecomRegex.containsMatchIn(msg)
-    val contest = contestRegex.containsMatchIn(msg)
-
-    val cta = ctaRegex.containsMatchIn(msg)
+    val cta = _CTA_RE.containsMatchIn(msg)
     val contact = _PHONE_LIKE_RE.containsMatchIn(this) ||
             _SHORTCODE_RE.containsMatchIn(this) ||
             this.containsUrl()
@@ -265,19 +230,10 @@ fun String?.checkImpersonation(sender: String? = null): Boolean {
             .containsMatchIn(msg) && contact
     ) return true
 
-    val prizeScam = Regex(
-        "\\b(you\\s+have\\s+won|you've\\s+won|you\\s+are\\s+a\\s+winner|won\\s+a|" +
-                "selected\\s+to\\s+receive|you\\s+have\\s+been\\s+selected|you\\s+are\\s+awarded|" +
-                "congratulations.*won|awarded\\s+a)\\b",
-        RegexOption.IGNORE_CASE
-    ).containsMatchIn(msg)
+    val isPrizeScamMatch = _PRIZE_SCAM_RE.containsMatchIn(msg)
+    val containsPrizeValue = _PRIZE_VALUE_RE.containsMatchIn(msg)
 
-    val prizeValue = Regex(
-        "(£|\\$|€|gbp|usd|eur)\\s*\\d+|prize|award|cash|voucher|gift\\s+card|winning",
-        RegexOption.IGNORE_CASE
-    ).containsMatchIn(msg)
-
-    if (prizeScam && prizeValue && contact) return true
+    if (isPrizeScamMatch && containsPrizeValue && contact) return true
 
     if (sender != null) {
         val sdom = (sender.extractEmailDomain() ?: "").lowercase()
@@ -287,14 +243,7 @@ fun String?.checkImpersonation(sender: String? = null): Boolean {
             if (!_EMAIL_ACTION_RE.containsMatchIn(raw)) return false
         }
 
-        val orgClaimRe = Regex(
-            "\\b(bank|treasury|ministry|government|customs|immigration|revenue|tax|" +
-                    "paypal|amazon|apple|microsoft|google|bank\\s*of\\s*america|bankofamerica|" +
-                    "hmrc|govuk|gov\\.uk|irs|dhl|ups|fedex|usps|royal\\s*mail)\\b",
-            RegexOption.IGNORE_CASE
-        )
-
-        if (orgClaimRe.containsMatchIn(raw)) {
+        if (_ORG_CLAIM_RE.containsMatchIn(raw)) {
             if (contact && _EMAIL_ACTION_RE.containsMatchIn(raw)) return true
         }
 
@@ -352,17 +301,7 @@ fun String?.asksForFinancialOrPersonalInfo(): Boolean {
     val msg = this.normalise()
 
     // Exclusions: Credential verification
-    val credentialRequest = Regex(
-        "\\b(login|log\\s*in|sign\\s*in|username|user\\s*id|password|passcode|pin\\s*code|pin\\b|" +
-                "otp|verification\\s+code|security\\s+code|authenticate|apple\\s+id)\\b.{0,60}" +
-                "\\b(verify|confirm|send|provide|enter|update)\\b",
-        RegexOption.IGNORE_CASE
-    ).containsMatchIn(msg) || Regex(
-        "\\b(verify|confirm|send|provide|enter|update).{0,60}" +
-                "\\b(login|log\\s*in|sign\\s*in|username|user\\s*id|password|passcode|pin\\s*code|pin\\b|" +
-                "otp|verification\\s+code|security\\s+code|authenticate|apple\\s+id)\\b",
-        RegexOption.IGNORE_CASE
-    ).containsMatchIn(msg)
+    val credentialRequest = _CRED_REQUEST_RE.containsMatchIn(msg) || _CRED_REQUEST_V2_RE.containsMatchIn(msg)
 
     if (credentialRequest) return false
 
@@ -426,8 +365,7 @@ fun String?.asksForFinancialOrPersonalInfo(): Boolean {
     ) score += 5
 
     // Pattern 3: Prize/lottery + multi-field info request
-    val prizePattern = Regex("\\b(won|winner|winning|prize|award|claim|collect|receive|redeem|gain(?:ed)?)\\b", RegexOption.IGNORE_CASE)
-        .containsMatchIn(msg)
+    val prizePattern = _PRIZE_SCAM_KEYWORDS_RE.containsMatchIn(msg)
     val explicitFields = Regex(
         "\\b(send|provide|reply|forward).{0,80}(name.{0,40}(address|phone|number|age|postcode)|" +
                 "address.{0,40}(name|phone|number|age)|phone.{0,40}(name|address))\\b",
@@ -436,11 +374,7 @@ fun String?.asksForFinancialOrPersonalInfo(): Boolean {
     if (prizePattern && explicitFields) score += 6
 
     // Pattern 4: Urgent request for account info
-    val urgentInfoRequest = Regex(
-        "\\b(verify|confirm|update|validate|provide|send).{0,50}" +
-                "\\b(account\\s+number|identity|personal\\s+information|contact\\s+details|billing\\s+information)\\b",
-        RegexOption.IGNORE_CASE
-    ).containsMatchIn(msg)
+    val urgentInfoRequest = _URGENT_INFO_REQUEST_RE.containsMatchIn(msg)
     val hasUrgency = Regex("\\b(urgent|immediately|now|today|asap)\\b", RegexOption.IGNORE_CASE).containsMatchIn(msg)
     if (urgentInfoRequest) {
         score += 4
