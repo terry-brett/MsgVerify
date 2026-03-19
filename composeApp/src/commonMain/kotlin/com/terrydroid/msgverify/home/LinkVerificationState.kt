@@ -50,7 +50,8 @@ data class LinkResult(
     val linkMaliciousPercentage: Float,
     val classificationColor: ClassificationColor,
     val url: String,
-    val description: String
+    val description: String,
+    val hasUrls: Boolean = true
 )
 
 enum class ClassificationColor {

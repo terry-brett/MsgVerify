@@ -53,7 +53,11 @@ internal fun LazyListScope.historicalLinkResults(
 
                 Text(
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                    text = "Malicious Safety Percentage: ${item.linkMaliciousPercentage} %",
+                    text = if (item.hasUrls) {
+                        "Malicious Percentage: ${item.linkMaliciousPercentage} %"
+                    } else {
+                        "No URL found"
+                    },
                     color = MaterialTheme.colorScheme.onBackground,
                     textAlign = TextAlign.Center
                 )

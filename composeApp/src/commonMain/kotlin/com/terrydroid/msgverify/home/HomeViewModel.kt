@@ -3,14 +3,11 @@ package com.terrydroid.msgverify.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.terrydroid.msgverify.data.ContentVerificationResponse
-import com.terrydroid.msgverify.data.LinkVerificationResponse
 import com.terrydroid.msgverify.data.MsgVerifyRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.contextguard.lib.MLKit.urlClassification.UrlVerifierHelper
-import org.contextguard.models.Reason
 
 class HomeViewModel(private val msgVerifyRepository: MsgVerifyRepository) : ViewModel() {
 
@@ -38,78 +35,80 @@ class HomeViewModel(private val msgVerifyRepository: MsgVerifyRepository) : View
     }
   }
 
-  fun onVerifyClicked(inputLink: String) {
-    val urlVerifier = UrlVerifierHelper(inputLink)
-    val isValidUrl = !urlVerifier.isMalformed
-
+  fun onVerifyClicked(inputContent: String) {
     _linkVerificationState.value =
         LinkVerificationState.LoadingVerification(
             verifiedLinkHistory = _linkVerificationState.value.verifiedLinkHistory,
             bottomSheetInformation = _linkVerificationState.value.bottomSheetInformation,
         )
 
-    if (!isValidUrl) {
-      viewModelScope.launch {
-        msgVerifyRepository.verifyLink(inputLink).collect { result ->
-          result.fold(
-              onSuccess = { onLinkSuccessResult(it, inputLink) },
-              onFailure = {
-                _linkVerificationState.value =
-                    LinkVerificationState.Error(
-                        errorMessage = "Malformed URL",
-                        verifiedLinkHistory = _linkVerificationState.value.verifiedLinkHistory,
-                        bottomSheetInformation =
-                            _linkVerificationState.value.bottomSheetInformation,
-                    )
-              },
-          )
-        }
-      }
-    } else {
-      viewModelScope.launch {
-        msgVerifyRepository.verifyContent(inputLink, "").collect { result ->
-          result.fold(
-              onSuccess = { onContentSuccessResult(it, inputLink) },
-              onFailure = {
-                _linkVerificationState.value =
-                    LinkVerificationState.Error(
-                        errorMessage = "Could not verify this content",
-                        verifiedLinkHistory = _linkVerificationState.value.verifiedLinkHistory,
-                        bottomSheetInformation =
-                            _linkVerificationState.value.bottomSheetInformation,
-                    )
-              },
-          )
-        }
+    viewModelScope.launch {
+      msgVerifyRepository.verifyContent(inputContent, "").collect { result ->
+        result.fold(
+            onSuccess = { onContentSuccessResult(it, inputContent) },
+            onFailure = {
+              _linkVerificationState.value =
+                  LinkVerificationState.Error(
+                      errorMessage = "Could not verify this content",
+                      verifiedLinkHistory = _linkVerificationState.value.verifiedLinkHistory,
+                      bottomSheetInformation =
+                          _linkVerificationState.value.bottomSheetInformation,
+                  )
+            },
+        )
       }
     }
   }
 
   private fun onContentSuccessResult(response: ContentVerificationResponse, inputContent: String) {
+      println("response is $response")
     when (response) {
       is ContentVerificationResponse.Safe -> {
+        val hasUrls = !response.extractedUrls.isNullOrEmpty()
+        val maxUrlScore = response.urlScores?.maxOrNull() ?: 0f
+        val classificationColor = getClassificationColor(maxUrlScore)
+
+        val linkResult = LinkResult(
+            linkMaliciousPercentage = maxUrlScore,
+            classificationColor = classificationColor,
+            url = inputContent,
+            description = "Content is safe",
+            hasUrls = hasUrls
+        )
+        val newVerifierLinkHistory =
+            listOf(linkResult) + _linkVerificationState.value.verifiedLinkHistory
+
         _linkVerificationState.value =
             LinkVerificationState.Success(
-                linkResult = LinkResult(
-                    linkMaliciousPercentage = 0f,
-                    classificationColor = ClassificationColor.Green,
-                    url = inputContent,
-                    description = "Content is safe",
-                ),
-                verifiedLinkHistory = _linkVerificationState.value.verifiedLinkHistory,
-                bottomSheetInformation = null,
+                linkResult = linkResult,
+                verifiedLinkHistory = newVerifierLinkHistory,
+                bottomSheetInformation = linkResult,
             )
       }
       is ContentVerificationResponse.Unsafe -> {
+        val hasUrls = !response.extractedUrls.isNullOrEmpty()
         val maxUrlScore = response.urlScores?.maxOrNull() ?: 0f
         val classificationColor = getClassificationColor(maxUrlScore)
-        val reasonsDescription = response.reasons.joinToString(", ") { it.reason }
+
+        // Check if input is URL-only (no extra text)
+        val isUrlOnly = hasUrls && response.extractedUrls?.any {
+            inputContent.trim() == it.trim()
+        } == true
+
+        val reasonsDescription = if (isUrlOnly) {
+            // For URL-only input, don't show text spam reasons
+            "URL analysis result"
+        } else {
+            // For text with URLs, show all reasons
+            response.reasons.joinToString(", ") { it.reason }
+        }
 
         val linkResult = LinkResult(
             linkMaliciousPercentage = maxUrlScore,
             classificationColor = classificationColor,
             url = inputContent,
             description = reasonsDescription,
+            hasUrls = hasUrls
         )
         val newVerifierLinkHistory =
             listOf(linkResult) + _linkVerificationState.value.verifiedLinkHistory
@@ -122,28 +121,6 @@ class HomeViewModel(private val msgVerifyRepository: MsgVerifyRepository) : View
             )
       }
     }
-  }
-
-  private fun onLinkSuccessResult(response: LinkVerificationResponse, inputLink: String) {
-    val maliciousScorePercent = response.maliciousScore
-    val classificationColor = getClassificationColor(maliciousScorePercent)
-
-    val linkResult =
-        LinkResult(
-            linkMaliciousPercentage = maliciousScorePercent,
-            classificationColor = classificationColor,
-            url = inputLink,
-            description = response.description,
-        )
-    val newVerifierLinkHistory =
-        listOf(linkResult) + _linkVerificationState.value.verifiedLinkHistory
-
-    _linkVerificationState.value =
-        LinkVerificationState.Success(
-            linkResult = linkResult,
-            verifiedLinkHistory = newVerifierLinkHistory,
-            bottomSheetInformation = linkResult,
-        )
   }
 
   private fun getClassificationColor(maliciousScore: Float): ClassificationColor {

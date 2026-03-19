@@ -74,7 +74,8 @@ private fun HomeScreen(
             maliciousPercentScore = linkVerificationState.bottomSheetInformation?.linkMaliciousPercentage
                 ?: 0f,
             classificationColor = linkVerificationState.bottomSheetInformation?.classificationColor
-                ?: ClassificationColor.Yellow
+                ?: ClassificationColor.Yellow,
+            hasUrls = linkVerificationState.bottomSheetInformation?.hasUrls ?: false
         )
     }
 

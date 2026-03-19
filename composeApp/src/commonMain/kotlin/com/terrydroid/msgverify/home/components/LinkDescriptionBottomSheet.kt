@@ -31,7 +31,8 @@ internal fun LinkDescriptionBottomSheet(
     maliciousPercentScore: Float,
     onHideBottomSheet: () -> Unit,
     sheetState: SheetState,
-    classificationColor: ClassificationColor
+    classificationColor: ClassificationColor,
+    hasUrls: Boolean
 ) {
     ModalBottomSheet(
         onDismissRequest = {
@@ -59,15 +60,17 @@ internal fun LinkDescriptionBottomSheet(
             //TODO: Implement warning and success colors
             val textColor = getColorForLinkScore(classificationColor)
 
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = "There is a $maliciousPercentScore % " +
-                        "chance it's safe",
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.labelMedium,
-                color = textColor
-            )
-            Spacer(modifier = Modifier.height(16.dp))
+            if (hasUrls) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "There is a $maliciousPercentScore % " +
+                            "chance it's malicious",
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = textColor
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+            }
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = description,

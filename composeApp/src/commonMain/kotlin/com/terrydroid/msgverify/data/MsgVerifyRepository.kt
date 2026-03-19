@@ -48,7 +48,14 @@ class MsgVerifyRepository(val platformContext: PlatformContext) : KoinComponent 
         )
       }
       is TextClassificationResult.Safe -> {
-        flowOf(Result.success(ContentVerificationResponse.Safe))
+        flowOf(
+            Result.success(
+                ContentVerificationResponse.Safe(
+                    result.urlScores,
+                    result.extractedUrls
+                )
+            )
+        )
       }
     }
   }
@@ -63,7 +70,10 @@ class MsgVerifyRepository(val platformContext: PlatformContext) : KoinComponent 
 data class LinkVerificationResponse(val maliciousScore: Float, val description: String)
 
 sealed class ContentVerificationResponse {
-  data object Safe : ContentVerificationResponse()
+  data class Safe(
+      val urlScores: List<Float>?,
+      val extractedUrls: List<String>? = null
+  ) : ContentVerificationResponse()
 
   data class Unsafe(
       val urlScores: List<Float>?,
