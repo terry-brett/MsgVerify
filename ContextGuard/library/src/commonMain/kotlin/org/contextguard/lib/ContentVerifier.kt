@@ -86,8 +86,7 @@ class ContentVerifierImpl(private val platformContext: Any) : ContentVerifier {
     val extractedUrls = extractUrlsFromContent(content)
     val urlHelpers = extractedUrls.map { UrlVerifierHelper(it) }
     val urlPredictionScores = urlHelpers.map { helper ->
-      if (helper.isMalformed) 0f
-      else UrlPrediction(platformContext).makePrediction(helper.url)
+        UrlPrediction(platformContext).makePrediction(helper.url)
     }
 
     val isMessageSpam = MessagePrediction(platformContext).isSpam(content)

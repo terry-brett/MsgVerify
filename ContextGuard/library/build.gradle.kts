@@ -46,6 +46,12 @@ kotlin {
             }
         }
 
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+        }
+
         val iosMain by creating {
             dependsOn(commonMain)
 
@@ -76,6 +82,37 @@ kotlin {
 android {
     namespace = "org.contextguard.lib"
     compileSdk = 36
+
+    defaultConfig {
+        minSdk = 31
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled = true
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "/META-INF/INDEX.LIST"
+            excludes += "/META-INF/io.netty.versions.properties"
+        }
+    }
+}
+
+// Android instrumented test dependencies
+dependencies {
+    add("androidTestImplementation", kotlin("test"))
+    add("androidTestImplementation", "androidx.test.ext:junit:1.1.5")
+    add("androidTestImplementation", "androidx.test:runner:1.5.2")
+    add("androidTestImplementation", "androidx.test:core:1.5.0")
+    add("androidTestImplementation", "androidx.test:rules:1.5.0")
+    add("androidTestImplementation", "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    add("androidTestImplementation", "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    add("androidTestImplementation", "androidx.multidex:multidex:2.0.1")
 }
 
 //Publishing your Kotlin Multiplatform library to Maven Central
