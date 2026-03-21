@@ -1,7 +1,6 @@
 import com.vanniktech.maven.publish.SonatypeHost
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.gradle.plugins.signing.SigningExtension
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -10,7 +9,6 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    id("org.gradle.signing") // keep this for signing for local maven repository
 }
 
 group = "org.contextguard.lib"
@@ -119,7 +117,11 @@ dependencies {
 //https://www.jetbrains.com/help/kotlin-multiplatform-dev/multiplatform-publish-libraries.html
 mavenPublishing {
     publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
-    coordinates("org.contextguard.lib", "ContextGuard", "1.0.0")
+    coordinates(
+        groupId = "org.contextguard.lib",
+        artifactId = "contextguard",
+        version = "1.0.0"
+    )
 
     pom {
         name = "ContextGuard"
@@ -145,10 +147,8 @@ mavenPublishing {
             url = "https://github.com/terry-brett/MsgVerify"
         }
     }
-    if (project.hasProperty("signing.keyId")) signAllPublications()
+
+    signAllPublications()
 }
 
-configure<SigningExtension> {
-    useGpgCmd()
-    sign(publishing.publications)
-}
+task("testClasses") {}
