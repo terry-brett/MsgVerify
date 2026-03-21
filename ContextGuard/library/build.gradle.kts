@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "org.contextguard.lib"
-version = "1.0.0"
+version = "1.0.1"
 kotlin {
     androidTarget {
         publishLibraryVariants("release")
@@ -120,7 +120,7 @@ mavenPublishing {
     coordinates(
         groupId = "org.contextguard.lib",
         artifactId = "contextguard",
-        version = "1.0.0"
+        version = "1.0.1"
     )
 
     pom {
@@ -137,9 +137,25 @@ mavenPublishing {
 
         developers {
             developer {
-                id = "contextguard"
-                name = "Terry Brett, Yash Soni, Odin Asbjørnsen"
+                id = "terrybrett"
+                name = "Terry Brett"
                 email = "terry.marcin.brett@dnb.no"
+                organization = "DNB"
+                organizationUrl = "https://www.dnb.no"
+            }
+            developer {
+                id = "yashsoni"
+                name = "Yash Soni"
+                email = "yash.soni5999@gmail.com"
+                organization = "Reading Scientific Services Limited"
+                organizationUrl = "https://www.rssl.com/"
+            }
+            developer {
+                id = "odinasbjornsen"
+                name = "Odin Asbjørnsen"
+                email = "odin.asbjornsen@dnb.no"
+                organization = "DNB"
+                organizationUrl = "https://www.dnb.no"
             }
         }
 
