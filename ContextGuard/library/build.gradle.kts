@@ -124,7 +124,7 @@ mavenPublishing {
     pom {
         name = "ContextGuard"
         description = "Kotlin Multiplatform library"
-        url = "github url" //todo
+        url = "https://github.com/terry-brett/MsgVerify"
 
         licenses {
             license {
@@ -135,14 +135,14 @@ mavenPublishing {
 
         developers {
             developer {
-                id = "" //todo
-                name = "" //todo
-                email = "" //todo
+                id = "contextguard"
+                name = "Terry Brett, Yash Soni, Odin Asbjørnsen"
+                email = "terry.marcin.brett@dnb.no"
             }
         }
 
         scm {
-            url = "github url" //todo
+            url = "https://github.com/terry-brett/MsgVerify"
         }
     }
     if (project.hasProperty("signing.keyId")) signAllPublications()
