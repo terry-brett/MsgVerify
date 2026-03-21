@@ -2,9 +2,9 @@ package org.contextguard.lib
 
 import org.contextguard.checkUrlAndSpelling
 import org.contextguard.lib.MLKit.messageClassification.MessagePrediction
-import org.contextguard.lib.MLKit.messageClassification.heuristics.MessageReasoningLabels
 import org.contextguard.lib.MLKit.urlClassification.UrlPrediction
 import org.contextguard.lib.MLKit.urlClassification.UrlVerifierHelper
+import org.contextguard.lib.mlkit.messageClassification.heuristics.MessageReasoningLabels
 import org.contextguard.models.Reason
 import org.contextguard.models.Result
 import org.contextguard.models.TextClassificationResult
