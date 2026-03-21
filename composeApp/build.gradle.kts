@@ -47,7 +47,7 @@ kotlin {
       implementation(libs.koin.compose)
       implementation(libs.koin.compose.viewmodel)
       implementation(libs.material.icons)
-      implementation(libs.context.guard)
+      implementation(libs.contextguard.lib)
 
       implementation(libs.kotlinx.serialization.json)
     }

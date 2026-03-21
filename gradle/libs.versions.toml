@@ -22,6 +22,7 @@ kotlinx-serialization = "1.6.3"
 kotlinx-coroutines = "1.8.0"
 pytorchLiteMultiplatform = "0.7.0"
 koin = "4.0.3"
+contextguard = "1.0.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -42,7 +43,7 @@ androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlinStdlib" }
 androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
 androidx-core = { group = "androidx.test", name = "core", version.ref = "core" }
-context-guard = { module = "org.contextguard.lib:library", version.require = "1.0.0" }
+contextguard-lib = { group = "org.contextguard.lib", name = "contextguard", version.ref = "contextguard" }
 
 # Material
 material-icons = { module = "org.jetbrains.compose.material:material-icons-core", version.require = "1.7.3"}
