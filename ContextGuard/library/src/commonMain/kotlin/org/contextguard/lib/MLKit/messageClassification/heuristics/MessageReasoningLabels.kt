@@ -1,4 +1,4 @@
-package org.contextguard.lib.MLKit.messageClassification.heuristics
+package org.contextguard.lib.mlkit.messageClassification.heuristics
 
 import org.contextguard.models.Reason
 
