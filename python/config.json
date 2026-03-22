@@ -1,5 +1,5 @@
 {
     "mode" : "offline",
-    "url_classifier_model_path" : "ml-assets/model2_assets/model.pth",
-    "url_features_transformation_scaler_path" : "ml-assets/model2_assets/scaler.pkl"
+    "url_classifier_model_path" : "ml-assets/URL classification model/model.pth",
+    "url_features_transformation_scaler_path" : "ml-assets/URL classification model/scaler.save"
 }
