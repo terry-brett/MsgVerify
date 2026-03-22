@@ -1,4 +1,4 @@
-import helper
+from URLBinaryClassifier import Helper
 
 def main():
     url = "https://uk-covid-19.webredirect.org/to"
@@ -6,7 +6,8 @@ def main():
 
 
 def check_url(url: str):
-    probs = helper.get_model_predictions(url)
+    helper = Helper()
+    probs = helper.predict(url)
     label = "Phishing" if (float(probs[0]) > 0.5) else "Safe"
 
     probs = round((float(probs[0]) * 100), 2)
