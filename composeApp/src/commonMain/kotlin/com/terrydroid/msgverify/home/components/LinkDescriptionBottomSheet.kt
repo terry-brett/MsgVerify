@@ -57,7 +57,6 @@ internal fun LinkDescriptionBottomSheet(
             modifier = Modifier.padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            //TODO: Implement warning and success colors
             val textColor = getColorForLinkScore(classificationColor)
 
             if (hasUrls) {

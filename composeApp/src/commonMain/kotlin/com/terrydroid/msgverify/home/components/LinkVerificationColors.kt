@@ -9,11 +9,10 @@ object LinkVerificationColors {
 
     @Composable
     fun getColorForLinkScore(classificationColor: ClassificationColor): Color {
-        //TODO: Implement warning and success colors
         return when (classificationColor) {
             ClassificationColor.Red -> MaterialTheme.colorScheme.error
-            ClassificationColor.Yellow -> MaterialTheme.colorScheme.onBackground
-            ClassificationColor.Green -> MaterialTheme.colorScheme.onBackground
+            ClassificationColor.Yellow -> Color(0xFFF59E0B)
+            ClassificationColor.Green -> Color(0xFF22C55E)
         }
     }
 }
