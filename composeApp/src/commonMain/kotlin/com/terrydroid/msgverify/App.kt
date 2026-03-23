@@ -48,7 +48,6 @@ private fun AppScreen(recievedText: String?, onTextConsumed: () -> Unit) {
             val scrollBehavior =
                 TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
-            // TODO: Improve navigation with decompose or something when it gets a bit more complex
             val route = rememberSaveable { mutableStateOf(Routes.Home) }
             val demoDetailsId = rememberSaveable { mutableStateOf(0) }
             val emailDetailsId = rememberSaveable { mutableStateOf(0) }
