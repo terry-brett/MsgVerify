@@ -58,13 +58,7 @@ class DemoEmailOverviewViewModel(
                                 _state.update {
                                     Messages(
                                         it.messages.replace(
-                                            EmailMessage(
-                                                id = message.id,
-                                                fromName = message.fromName,
-                                                fromEmail = message.fromEmail,
-                                                subject = message.subject,
-                                                preview = message.preview,
-                                                unread = message.unread,
+                                            message.copy(
                                                 trafficLight = classification,
                                                 reasons = reasons,
                                                 urlScores = urlScores
@@ -100,6 +94,7 @@ data class EmailMessage(
     val fromEmail: String,
     val subject: String,
     val preview: String,
+    val body: String,
     val unread: Boolean,
     val trafficLight: TrafficLight? = null,
     val reasons: List<String> = emptyList(),

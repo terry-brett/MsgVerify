@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.terrydroid.msgverify.compose.MsgVerifyScaffold
+import com.terrydroid.msgverify.demo.emaildetails.DemoEmailDetailsScreen
 import com.terrydroid.msgverify.demo.emailoverview.DemoEmailOverview
 import com.terrydroid.msgverify.demo.overview.DemoOverviewScreen
 import com.terrydroid.msgverify.demo.smsdetails.DemoMessageDetailsScreen
@@ -56,6 +57,7 @@ private fun AppScreen(recievedText: String?, onTextConsumed: () -> Unit) {
             // TODO: Improve navigation with decompose or something when it gets a bit more complex
             val route = rememberSaveable { mutableStateOf(Routes.Home) }
             val demoDetailsId = rememberSaveable { mutableStateOf(0) }
+            val emailDetailsId = rememberSaveable { mutableStateOf(0) }
 
             when (route.value) {
                 Routes.Settings -> {
@@ -161,7 +163,28 @@ private fun AppScreen(recievedText: String?, onTextConsumed: () -> Unit) {
                         iconDescription = "Navigate Back",
                         onClick = { route.value = Routes.DemoOverview }
                     ){ innerPadding ->
-                        DemoEmailOverview(innerPadding)
+                        DemoEmailOverview(
+                            padding = innerPadding,
+                            navigateToDetails = { id ->
+                                emailDetailsId.value = id
+                                route.value = Routes.DemoEmailDetails
+                            }
+                        )
+                    }
+                }
+
+                Routes.DemoEmailDetails -> {
+                    MsgVerifyScaffold(
+                        scrollBehavior = scrollBehavior,
+                        title = "Email",
+                        icon = Icons.AutoMirrored.Filled.ArrowBack,
+                        iconDescription = "Navigate Back",
+                        onClick = { route.value = Routes.DemoEmailOverview }
+                    ) { innerPadding ->
+                        DemoEmailDetailsScreen(
+                            paddingValues = innerPadding,
+                            id = emailDetailsId.value
+                        )
                     }
                 }
 

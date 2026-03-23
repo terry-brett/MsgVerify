@@ -24,6 +24,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 internal fun DemoEmailOverview(
     padding: PaddingValues,
+    navigateToDetails: (Int) -> Unit,
     detailsViewModel: DemoEmailOverviewViewModel = koinViewModel(),
 ) {
   val inbox = detailsViewModel.state.collectAsStateWithLifecycle().value.messages
@@ -43,7 +44,7 @@ internal fun DemoEmailOverview(
     items(inbox, key = { it.id }) { msg ->
       EmailRow(
           message = msg,
-          onClick = { /* TODO: navigate to details */ },
+          onClick = { navigateToDetails(msg.id) },
           modifier = Modifier.padding(horizontal = 16.dp),
       )
     }
