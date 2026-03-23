@@ -25,12 +25,12 @@ import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.WarningAmber
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -49,6 +49,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.terrydroid.msgverify.demo.smsdetails.model.DemoMessageUiState
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -57,53 +58,100 @@ internal fun DemoMessageDetailsScreen(
     id: Int,
 ) {
     val detailsViewModel: DemoMessageDetailsViewModel = koinViewModel()
-    val state = detailsViewModel.state.collectAsStateWithLifecycle().value
+    val state = detailsViewModel.uiState.collectAsStateWithLifecycle().value
 
     LaunchedEffect(id) {
         detailsViewModel.init(id)
     }
 
-    if (state != null) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            LazyColumn(
-                contentPadding = paddingValues,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                if (state.reasons.isNotEmpty()) {
-                    item {
-                        SafetyNoticeItem(
-                            text = "Potentially unsafe message detected",
-                            details = state.reasons.joinToString("\n• ", prefix = "• ")
-                        )
-                    }
-                }
-
-                item {
-                    Spacer(modifier = Modifier.size(32.dp))
-                }
-                item {
-                    Row(Modifier.fillMaxWidth()) {
-                        Surface(
-                            shape = RoundedCornerShape(18.dp),
-                            color = MaterialTheme.colorScheme.surfaceVariant,
-                            tonalElevation = 1.dp,
-                            modifier = Modifier.fillMaxWidth(0.85f)
-                        ) {
-                            Text(
-                                text = state.message,
-                                modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+    when(state){
+        is DemoMessageUiState.Loading -> {
+            Box(modifier = Modifier.fillMaxSize().padding(paddingValues), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        }
+        is DemoMessageUiState.Success -> {
+            Box(modifier = Modifier.fillMaxSize()) {
+                LazyColumn(
+                    contentPadding = paddingValues,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    if (state.message.reasons.isNotEmpty()) {
+                        item {
+                            SafetyNoticeItem(
+                                text = "Potentially unsafe message detected",
+                                details = state.message.reasons.joinToString("\n• ", prefix = "• ")
                             )
                         }
-                        Spacer(Modifier.weight(1f))
+                    }
+
+                    item {
+                        Spacer(modifier = Modifier.size(32.dp))
+                    }
+                    item {
+                        Row(Modifier.fillMaxWidth()) {
+                            Surface(
+                                shape = RoundedCornerShape(18.dp),
+                                color = MaterialTheme.colorScheme.surfaceVariant,
+                                tonalElevation = 1.dp,
+                                modifier = Modifier.fillMaxWidth(0.85f)
+                            ) {
+                                Text(
+                                    text = state.message.message,
+                                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                            Spacer(Modifier.weight(1f))
+                        }
                     }
                 }
+                ChatBox(modifier = Modifier.align(Alignment.BottomCenter))
             }
-            ChatBox(modifier = Modifier.align(Alignment.BottomCenter))
         }
-    } else {
-        LinearProgressIndicator()
     }
+
+//    if (state != null) {
+//        Box(modifier = Modifier.fillMaxSize()) {
+//            LazyColumn(
+//                contentPadding = paddingValues,
+//                modifier = Modifier.fillMaxSize()
+//            ) {
+//                if (state.reasons.isNotEmpty()) {
+//                    item {
+//                        SafetyNoticeItem(
+//                            text = "Potentially unsafe message detected",
+//                            details = state.reasons.joinToString("\n• ", prefix = "• ")
+//                        )
+//                    }
+//                }
+//
+//                item {
+//                    Spacer(modifier = Modifier.size(32.dp))
+//                }
+//                item {
+//                    Row(Modifier.fillMaxWidth()) {
+//                        Surface(
+//                            shape = RoundedCornerShape(18.dp),
+//                            color = MaterialTheme.colorScheme.surfaceVariant,
+//                            tonalElevation = 1.dp,
+//                            modifier = Modifier.fillMaxWidth(0.85f)
+//                        ) {
+//                            Text(
+//                                text = state.message,
+//                                modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+//                                color = MaterialTheme.colorScheme.onSurfaceVariant
+//                            )
+//                        }
+//                        Spacer(Modifier.weight(1f))
+//                    }
+//                }
+//            }
+//            ChatBox(modifier = Modifier.align(Alignment.BottomCenter))
+//        }
+//    } else {
+//        LinearProgressIndicator()
+//    }
 }
 
 @Composable

@@ -4,75 +4,61 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.terrydroid.msgverify.data.ContentVerificationResponse
 import com.terrydroid.msgverify.data.MsgVerifyRepository
+import com.terrydroid.msgverify.demo.mapper.toUiModels
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class DemoMessageOverviewViewModel(
     private val msgVerifyRepository: MsgVerifyRepository,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
-  private val _state: MutableStateFlow<Messages> = MutableStateFlow(Messages(emptyList()))
 
-  val state: StateFlow<Messages>
-    get() = _state.asStateFlow()
+    private val _messages = MutableStateFlow<List<Message>>(emptyList())
+    val state: StateFlow<Messages> = _messages
+        .map { Messages(it) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Messages(emptyList()))
 
-  init {
-    viewModelScope.launch {
-      val mockData = getMessagesMockdata()
-      _state.value = mockData
-      mockData.messages.forEach { message ->
-        launch {
-          msgVerifyRepository.verifyContent(message.message, message.title).collect { result ->
-            result.fold(
-                onFailure = {},
-                onSuccess = { response ->
-                  val classification: TrafficLight
-                  val reasons: List<String>
-                  val urlScores: List<UrlScore>
-
-                  when (response) {
-                    is ContentVerificationResponse.Safe -> {
-                      classification = TrafficLight.Green
-                      reasons = emptyList()
-                      urlScores = emptyList()
-                    }
-                    is ContentVerificationResponse.Unsafe -> {
-                      classification = TrafficLight.Red
-                      reasons = response.reasons.map { it.reason }
-                      urlScores = (response.extractedUrls ?: emptyList())
-                          .zip(response.urlScores ?: emptyList())
-                          .map { (url, score) -> UrlScore(url, score) }
-                    }
-                  }
-                  _state.update {
-                    Messages(
-                        it.messages.replace(
-                            Message(
-                                id = message.id,
-                                title = message.title,
-                                message = message.message,
-                                trafficLight = classification,
-                                reasons = reasons,
-                                urlScores = urlScores,
-                            )
-                        ) { value ->
-                          value == message
-                        }
-                    )
-                  }
-                },
-            )
-          }
-        }
-      }
+    init {
+        loadAndVerifyMessages()
     }
-  }
-}
 
-private fun <T> List<T>.replace(newValue: T, block: (T) -> Boolean): List<T> {
-  return map { if (block(it)) newValue else it }
+    private fun loadAndVerifyMessages() {
+        viewModelScope.launch(ioDispatcher) {
+            val mockData = getMessagesMockdata().messages
+            _messages.value = mockData
+
+            // Launch verification for each message
+            mockData.forEach { message ->
+                launch {
+                    msgVerifyRepository.verifyContent(message.message, message.title)
+                        .collect { result ->
+                            result.onSuccess { response ->
+                                updateSingleMessage(message.id, response)
+                            }
+                        }
+                }
+            }
+        }
+    }
+
+    private fun updateSingleMessage(id: Int, response: ContentVerificationResponse) {
+        _messages.update { currentList ->
+            currentList.map { msg ->
+                if (msg.id == id) {
+                    val (light, reasons, scores) = response.toUiModels()
+                    msg.copy(trafficLight = light, reasons = reasons, urlScores = scores)
+                } else msg
+            }
+        }
+    }
 }
 
 data class Messages(

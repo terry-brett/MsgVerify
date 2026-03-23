@@ -14,7 +14,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.terrydroid.msgverify.demo.smsoverview.TrafficLight
+import com.terrydroid.msgverify.demo.socialmedia.model.SocialMediaUiState
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -23,7 +25,7 @@ internal fun SocialMediaScreen(
     paddingValues: PaddingValues,
     viewModel: SocialMediaViewModel = koinViewModel()
 ) {
-    val state by viewModel.state.collectAsState()
+    val state = viewModel.uiState.collectAsStateWithLifecycle().value
 
     LazyColumn(
         modifier = Modifier
@@ -39,16 +41,28 @@ internal fun SocialMediaScreen(
             )
         }
 
-        items(
-            items = state.messages,
-            key = { it.id }
-        ) { msg ->
-            MessageCard(
-                message = msg,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp, vertical = 6.dp)
-            )
+        when (state) {
+            is SocialMediaUiState.Loading -> {
+               item {
+                   Box(modifier = Modifier.fillMaxSize().padding(paddingValues), contentAlignment = Alignment.Center) {
+                       CircularProgressIndicator()
+                   }
+               }
+            }
+
+            is SocialMediaUiState.Success -> {
+                items(
+                    items = state.message,
+                    key = { it.id }
+                ) { msg ->
+                    MessageCard(
+                        message = msg,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp, vertical = 6.dp)
+                    )
+                }
+            }
         }
     }
 }

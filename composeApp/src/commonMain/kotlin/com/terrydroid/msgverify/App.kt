@@ -141,7 +141,7 @@ private fun AppScreen(recievedText: String?, onTextConsumed: () -> Unit) {
                         onClick = { navController.navigateUp() }
                     ) { innerPadding ->
                         DemoEmailOverview(
-                            padding = innerPadding,
+                            paddingValues = innerPadding,
                             navigateToDetails = { id ->
                                 navController.navigate(Route.DemoEmailDetails(id))
                             },

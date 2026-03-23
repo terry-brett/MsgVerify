@@ -18,20 +18,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.terrydroid.msgverify.demo.emailoverview.model.DemoEmailUiState
 import com.terrydroid.msgverify.demo.smsoverview.TrafficLight
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 internal fun DemoEmailOverview(
-    padding: PaddingValues,
+    paddingValues: PaddingValues,
     navigateToDetails: (Int) -> Unit,
     detailsViewModel: DemoEmailOverviewViewModel = koinViewModel(),
 ) {
-  val inbox = detailsViewModel.state.collectAsStateWithLifecycle().value.messages
+  val state = detailsViewModel.uiState.collectAsStateWithLifecycle().value
 
   LazyColumn(
       verticalArrangement = Arrangement.spacedBy(10.dp),
-      modifier = Modifier.fillMaxSize().padding(padding).padding(top = 24.dp),
+      modifier = Modifier.fillMaxSize().padding(paddingValues).padding(top = 24.dp),
   ) {
     item {
       Text(
@@ -41,12 +42,23 @@ internal fun DemoEmailOverview(
       )
     }
 
-    items(inbox, key = { it.id }) { msg ->
-      EmailRow(
-          message = msg,
-          onClick = { navigateToDetails(msg.id) },
-          modifier = Modifier.padding(horizontal = 16.dp),
-      )
+    when(state){
+        is DemoEmailUiState.Loading -> {
+            item {
+                Box(modifier = Modifier.fillMaxSize().padding(paddingValues), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            }
+        }
+        is DemoEmailUiState.Success -> {
+            items(state.emails, key = { it.id }) { msg ->
+                EmailRow(
+                    message = msg,
+                    onClick = { navigateToDetails(msg.id) },
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                )
+            }
+        }
     }
 
     item { Spacer(Modifier.height(8.dp)) }
