@@ -3,17 +3,13 @@ package com.terrydroid.msgverify
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
@@ -23,7 +19,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.terrydroid.msgverify.compose.MsgVerifyScaffold
 import com.terrydroid.msgverify.demo.emaildetails.DemoEmailDetailsScreen
@@ -33,7 +28,6 @@ import com.terrydroid.msgverify.demo.smsdetails.DemoMessageDetailsScreen
 import com.terrydroid.msgverify.demo.smsoverview.DemoMessagesScreen
 import com.terrydroid.msgverify.demo.socialmedia.SocialMediaScreen
 import com.terrydroid.msgverify.home.HomeScreen
-import com.terrydroid.msgverify.settings.SettingsScreen
 import com.terrydroid.msgverify.theme.MsgVerifyTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -60,20 +54,6 @@ private fun AppScreen(recievedText: String?, onTextConsumed: () -> Unit) {
             val emailDetailsId = rememberSaveable { mutableStateOf(0) }
 
             when (route.value) {
-                Routes.Settings -> {
-                    MsgVerifyScaffold(
-                        scrollBehavior = scrollBehavior,
-                        title = "Settings",
-                        icon = Icons.AutoMirrored.Filled.ArrowBack,
-                        iconDescription = "Navigate Back",
-                        onClick = { route.value = Routes.Home }
-                    ) { innerPadding ->
-                        SettingsScreen(
-                            paddingValues = innerPadding
-                        )
-                    }
-                }
-
                 Routes.Home -> {
                     MsgVerifyScaffold(
                         scrollBehavior = scrollBehavior,
@@ -89,14 +69,8 @@ private fun AppScreen(recievedText: String?, onTextConsumed: () -> Unit) {
                             ) {
                                 Text(text = "Demos")
                             }
-                            IconButton(onClick = { route.value = Routes.Settings }) {
-                                Icon(
-                                    imageVector = Icons.Default.Settings,
-                                    contentDescription = "Go to settings",
-                                )
-                            }
                         },
-                        onClick = { route.value = Routes.Settings }
+                        onClick = { route.value = Routes.DemoOverview }
                     ) { innerPadding ->
                         HomeScreen(
                             paddingValues = innerPadding,
