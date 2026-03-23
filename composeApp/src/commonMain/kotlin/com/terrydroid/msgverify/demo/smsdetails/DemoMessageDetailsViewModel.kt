@@ -13,7 +13,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class DemoMessageDetailsViewModel(
     private val msgVerifyRepository: MsgVerifyRepository,
@@ -31,41 +30,36 @@ class DemoMessageDetailsViewModel(
             val message = getMessage(id)
             _state.value = message
             if (message != null) {
-                // Switch to main thread for verification that accesses Android UI APIs
-                withContext(viewModelScope.coroutineContext) {
-                    msgVerifyRepository.verifyContent(message.message, message.title).collect { result ->
-                        result.fold(
-                            onSuccess = { response ->
-                                val classification: TrafficLight
-                                val reasons: List<String>
-                                val urlScores: List<UrlScore>
+                msgVerifyRepository.verifyContent(message.message, message.title).collect { result ->
+                    result.fold(
+                        onSuccess = { response ->
+                            val classification: TrafficLight
+                            val reasons: List<String>
+                            val urlScores: List<UrlScore>
 
-                                when (response) {
-                                    is ContentVerificationResponse.Safe -> {
-                                        classification = TrafficLight.Green
-                                        reasons = emptyList()
-                                        urlScores = emptyList()
-                                    }
-                                    is ContentVerificationResponse.Unsafe -> {
-                                        classification = TrafficLight.Red
-                                        reasons = response.reasons.map { it.reason }
-                                        urlScores = (response.extractedUrls ?: emptyList())
-                                            .zip(response.urlScores ?: emptyList())
-                                            .map { (url, score) -> UrlScore(url, score) }
-                                    }
+                            when (response) {
+                                is ContentVerificationResponse.Safe -> {
+                                    classification = TrafficLight.Green
+                                    reasons = emptyList()
+                                    urlScores = emptyList()
                                 }
-
-                                _state.value = message.copy(
-                                    trafficLight = classification,
-                                    reasons = reasons,
-                                    urlScores = urlScores
-                                )
-                            },
-                            onFailure = {
-                                // No-OP
+                                is ContentVerificationResponse.Unsafe -> {
+                                    classification = TrafficLight.Red
+                                    reasons = response.reasons.map { it.reason }
+                                    urlScores = (response.extractedUrls ?: emptyList())
+                                        .zip(response.urlScores ?: emptyList())
+                                        .map { (url, score) -> UrlScore(url, score) }
+                                }
                             }
-                        )
-                    }
+
+                            _state.value = message.copy(
+                                trafficLight = classification,
+                                reasons = reasons,
+                                urlScores = urlScores
+                            )
+                        },
+                        onFailure = {}
+                    )
                 }
             }
         }

@@ -28,11 +28,8 @@ class DemoEmailOverviewViewModel(
         viewModelScope.launch(dispatcher) {
             val mockData = getEmailMockdata()
             _state.value = mockData
-        }
-
-        viewModelScope.launch {
-            state.collect { messages ->
-                messages.messages.forEach { message ->
+            mockData.messages.forEach { message ->
+                launch {
                     msgVerifyRepository.verifyContent(message.preview, message.fromName).collect { result ->
                         result.fold(
                             onFailure = {},

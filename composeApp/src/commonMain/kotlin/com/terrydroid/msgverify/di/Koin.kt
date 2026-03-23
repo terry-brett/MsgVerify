@@ -32,7 +32,7 @@ fun commonModule(platformContext: PlatformContext) = module {
     single { platformContext }
     singleOf(::MsgVerifyRepository)
     viewModel { HomeViewModel(msgVerifyRepository = get()) }
-    viewModel { DemoMessageOverviewViewModel(msgVerifyRepository = get(), dispatcher = Dispatchers.IO) }
+    viewModel { DemoMessageOverviewViewModel(msgVerifyRepository = get()) }
     viewModel { DemoMessageDetailsViewModel(msgVerifyRepository = get(), dispatcher = Dispatchers.IO) }
     viewModel { DemoEmailOverviewViewModel(msgVerifyRepository = get(), dispatcher = Dispatchers.IO) }
     viewModel { SocialMediaViewModel(msgVerifyRepository = get(), dispatcher = Dispatchers.IO) }
