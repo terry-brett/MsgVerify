@@ -50,6 +50,7 @@ kotlin {
       implementation(libs.contextguard.lib)
 
       implementation(libs.kotlinx.serialization.json)
+      implementation(libs.navigation.compose)
     }
     commonTest.dependencies { implementation(libs.kotlin.test) }
     val commonMain by getting { resources.srcDir(generatedCommonResourcesDir) }

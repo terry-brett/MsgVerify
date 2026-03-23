@@ -1,5 +1,13 @@
 package com.terrydroid.msgverify
 
-enum class Routes {
-    Home, DemoSmsOverview, DemoSmsDetails, DemoOverview, DemoEmailOverview, DemoEmailDetails, SocialMediaDemo
+import kotlinx.serialization.Serializable
+
+sealed interface Route {
+    @Serializable data object Home : Route
+    @Serializable data object DemoOverview : Route
+    @Serializable data object DemoSmsOverview : Route
+    @Serializable data class DemoSmsDetails(val id: Int) : Route
+    @Serializable data object DemoEmailOverview : Route
+    @Serializable data class DemoEmailDetails(val id: Int) : Route
+    @Serializable data object SocialMediaDemo : Route
 }

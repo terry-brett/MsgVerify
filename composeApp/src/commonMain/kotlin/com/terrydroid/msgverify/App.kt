@@ -13,11 +13,13 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.terrydroid.msgverify.compose.MsgVerifyScaffold
 import com.terrydroid.msgverify.demo.emaildetails.DemoEmailDetailsScreen
 import com.terrydroid.msgverify.demo.emailoverview.DemoEmailOverview
@@ -43,31 +45,27 @@ private fun AppScreen(recievedText: String?, onTextConsumed: () -> Unit) {
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            val scrollBehavior =
-                TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+            val navController = rememberNavController()
 
-            val route = rememberSaveable { mutableStateOf(Routes.Home) }
-            val demoDetailsId = rememberSaveable { mutableStateOf(0) }
-            val emailDetailsId = rememberSaveable { mutableStateOf(0) }
-
-            when (route.value) {
-                Routes.Home -> {
+            NavHost(navController = navController, startDestination = Route.Home) {
+                composable<Route.Home> {
+                    val scrollBehavior =
+                        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
                     MsgVerifyScaffold(
                         scrollBehavior = scrollBehavior,
                         title = "MsgVerify",
                         actions = {
                             TextButton(
-                                onClick = { route.value = Routes.DemoOverview },
-                                border =
-                                    BorderStroke(
-                                        width = 1.dp,
-                                        color = MaterialTheme.colorScheme.secondary,
-                                    ),
+                                onClick = { navController.navigate(Route.DemoOverview) },
+                                border = BorderStroke(
+                                    width = 1.dp,
+                                    color = MaterialTheme.colorScheme.secondary,
+                                ),
                             ) {
                                 Text(text = "Demos")
                             }
                         },
-                        onClick = { route.value = Routes.DemoOverview }
+                        onClick = { navController.navigate(Route.DemoOverview) }
                     ) { innerPadding ->
                         HomeScreen(
                             paddingValues = innerPadding,
@@ -77,96 +75,108 @@ private fun AppScreen(recievedText: String?, onTextConsumed: () -> Unit) {
                     }
                 }
 
-                Routes.DemoSmsOverview -> {
-                    MsgVerifyScaffold(
-                        scrollBehavior = scrollBehavior,
-                        title = "Demo Messages",
-                        icon = Icons.AutoMirrored.Filled.ArrowBack,
-                        iconDescription = "Navigate Back",
-                        onClick = { route.value = Routes.DemoOverview }
-                    ) { innerPadding ->
-                        DemoMessagesScreen(
-                            paddingValues = innerPadding,
-                            navigateToDetails = { id ->
-                                demoDetailsId.value = id
-                                route.value = Routes.DemoSmsDetails
-                            },
-                        )
-                    }
-                }
-
-                Routes.DemoSmsDetails -> {
-                    MsgVerifyScaffold(
-                        scrollBehavior = scrollBehavior,
-                        title = "Demo Message",
-                        icon = Icons.AutoMirrored.Filled.ArrowBack,
-                        iconDescription = "Navigate Back",
-                        onClick = { route.value = Routes.DemoSmsOverview }
-                    ){ innerPadding ->
-                        DemoMessageDetailsScreen(
-                            paddingValues = innerPadding,
-                            id = demoDetailsId.value
-                        )
-                    }
-                }
-
-                Routes.DemoOverview -> {
+                composable<Route.DemoOverview> {
+                    val scrollBehavior =
+                        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
                     MsgVerifyScaffold(
                         scrollBehavior = scrollBehavior,
                         title = "Demo Overview",
                         icon = Icons.AutoMirrored.Filled.ArrowBack,
                         iconDescription = "Navigate Back",
-                        onClick = { route.value = Routes.Home }
-                    ){
+                        onClick = { navController.navigateUp() }
+                    ) {
                         DemoOverviewScreen(
-                            onSmsDemoClicked = { route.value = Routes.DemoSmsOverview },
-                            onEmailDemoClicked = { route.value = Routes.DemoEmailOverview },
-                            onSocialMediaDemoClicked = { route.value = Routes.SocialMediaDemo },
+                            onSmsDemoClicked = { navController.navigate(Route.DemoSmsOverview) },
+                            onEmailDemoClicked = { navController.navigate(Route.DemoEmailOverview) },
+                            onSocialMediaDemoClicked = { navController.navigate(Route.SocialMediaDemo) },
                         )
                     }
                 }
 
-                Routes.DemoEmailOverview -> {
+                composable<Route.DemoSmsOverview> {
+                    val scrollBehavior =
+                        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+                    MsgVerifyScaffold(
+                        scrollBehavior = scrollBehavior,
+                        title = "Demo Messages",
+                        icon = Icons.AutoMirrored.Filled.ArrowBack,
+                        iconDescription = "Navigate Back",
+                        onClick = { navController.navigateUp() }
+                    ) { innerPadding ->
+                        DemoMessagesScreen(
+                            paddingValues = innerPadding,
+                            navigateToDetails = { id ->
+                                navController.navigate(Route.DemoSmsDetails(id))
+                            },
+                        )
+                    }
+                }
+
+                composable<Route.DemoSmsDetails> { backStackEntry ->
+                    val route = backStackEntry.toRoute<Route.DemoSmsDetails>()
+                    val scrollBehavior =
+                        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+                    MsgVerifyScaffold(
+                        scrollBehavior = scrollBehavior,
+                        title = "Demo Message",
+                        icon = Icons.AutoMirrored.Filled.ArrowBack,
+                        iconDescription = "Navigate Back",
+                        onClick = { navController.navigateUp() }
+                    ) { innerPadding ->
+                        DemoMessageDetailsScreen(
+                            paddingValues = innerPadding,
+                            id = route.id,
+                        )
+                    }
+                }
+
+                composable<Route.DemoEmailOverview> {
+                    val scrollBehavior =
+                        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
                     MsgVerifyScaffold(
                         scrollBehavior = scrollBehavior,
                         title = "Email Client Demo",
                         icon = Icons.AutoMirrored.Filled.ArrowBack,
                         iconDescription = "Navigate Back",
-                        onClick = { route.value = Routes.DemoOverview }
-                    ){ innerPadding ->
+                        onClick = { navController.navigateUp() }
+                    ) { innerPadding ->
                         DemoEmailOverview(
                             padding = innerPadding,
                             navigateToDetails = { id ->
-                                emailDetailsId.value = id
-                                route.value = Routes.DemoEmailDetails
-                            }
+                                navController.navigate(Route.DemoEmailDetails(id))
+                            },
                         )
                     }
                 }
 
-                Routes.DemoEmailDetails -> {
+                composable<Route.DemoEmailDetails> { backStackEntry ->
+                    val route = backStackEntry.toRoute<Route.DemoEmailDetails>()
+                    val scrollBehavior =
+                        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
                     MsgVerifyScaffold(
                         scrollBehavior = scrollBehavior,
                         title = "Email",
                         icon = Icons.AutoMirrored.Filled.ArrowBack,
                         iconDescription = "Navigate Back",
-                        onClick = { route.value = Routes.DemoEmailOverview }
+                        onClick = { navController.navigateUp() }
                     ) { innerPadding ->
                         DemoEmailDetailsScreen(
                             paddingValues = innerPadding,
-                            id = emailDetailsId.value
+                            id = route.id,
                         )
                     }
                 }
 
-                Routes.SocialMediaDemo -> {
+                composable<Route.SocialMediaDemo> {
+                    val scrollBehavior =
+                        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
                     MsgVerifyScaffold(
                         scrollBehavior = scrollBehavior,
                         title = "Social Media Demo",
                         icon = Icons.AutoMirrored.Filled.ArrowBack,
-                        iconDescription =  "Navigate Back",
-                        onClick = { route.value = Routes.DemoOverview }
-                    ){ innerPadding ->
+                        iconDescription = "Navigate Back",
+                        onClick = { navController.navigateUp() }
+                    ) { innerPadding ->
                         SocialMediaScreen(
                             paddingValues = innerPadding,
                         )
