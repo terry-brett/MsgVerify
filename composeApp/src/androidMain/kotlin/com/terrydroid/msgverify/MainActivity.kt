@@ -8,7 +8,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.getValue
 
 class MainActivity : ComponentActivity() {
     private val sharedTextState = mutableStateOf<String?>(null)
@@ -22,7 +21,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             // Read .value directly in the composition to observe changes
             App(
-                recievedText = sharedTextState.value,
+                receivedText = sharedTextState.value,
                 onTextConsumed = { sharedTextState.value = null }
             )
         }

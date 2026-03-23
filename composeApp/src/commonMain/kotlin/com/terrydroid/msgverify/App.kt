@@ -32,8 +32,8 @@ import com.terrydroid.msgverify.theme.MsgVerifyTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun App(recievedText: String? = null, onTextConsumed: () -> Unit = {}) {
-    AppScreen(recievedText, onTextConsumed)
+fun App(receivedText: String? = null, onTextConsumed: () -> Unit = {}) {
+    AppScreen(receivedText, onTextConsumed)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -7,7 +7,7 @@ private val sharedTextState = mutableStateOf<String?>(null)
 
 fun MainViewController() = ComposeUIViewController {
     App(
-        recievedText = sharedTextState.value,
+        receivedText = sharedTextState.value,
         onTextConsumed = { sharedTextState.value = null }
     )
 }
