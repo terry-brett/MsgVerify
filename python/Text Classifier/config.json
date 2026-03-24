@@ -1,0 +1,4 @@
+{
+    "text_classifier_model_path" : "assets/model.tflite",
+    "tokenizer_path" : "assets/tokenizer"
+}
