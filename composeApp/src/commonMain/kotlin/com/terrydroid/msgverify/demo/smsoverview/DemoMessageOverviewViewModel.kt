@@ -15,11 +15,15 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 
 class DemoMessageOverviewViewModel(
     private val msgVerifyRepository: MsgVerifyRepository,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
+
+    private val verificationSemaphore = Semaphore(5)
 
     private val _messages = MutableStateFlow<List<Message>>(emptyList())
     val state: StateFlow<Messages> = _messages
@@ -38,12 +42,14 @@ class DemoMessageOverviewViewModel(
             // Launch verification for each message
             mockData.forEach { message ->
                 launch {
-                    msgVerifyRepository.verifyContent(message.message, message.title)
-                        .collect { result ->
-                            result.onSuccess { response ->
-                                updateSingleMessage(message.id, response)
+                    verificationSemaphore.withPermit {
+                        msgVerifyRepository.verifyContent(message.message, message.title)
+                            .collect { result ->
+                                result.onSuccess { response ->
+                                    updateSingleMessage(message.id, response)
+                                }
                             }
-                        }
+                    }
                 }
             }
         }
