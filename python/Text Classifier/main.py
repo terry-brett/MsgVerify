@@ -8,7 +8,13 @@ def main():
     text = "hey how are you?"
     probs = predict(text)
     spam_prob = probs[1]
-    print(spam_prob)
+    label = "Spam" if (float(spam_prob) > 0.5) else "Ham"
+
+    probs = round((float(spam_prob) * 100), 2)
+
+    print("Text: ", text)
+    print("Prediction: ", label)
+    print("Probability of text being a spam: ", spam_prob, " %")
 
 
 def predict(text):
