@@ -2,6 +2,37 @@
 
 Kotlin Multiplatform Library
 
+### Installing Dependencies
+
+All dependencies are managed via Gradle:
+
+```bash
+./gradlew build
+```
+
+### iOS Dependencies
+
+Navigate to ios app with `cd iosApp` and install the dependency
+
+```bash
+pod install
+```
+
+#### Manual installation
+Create file named `Podfile` in the iOS app directory. Copy and paste the following:
+
+```bash
+platform :ios, '13.0'
+use_frameworks!
+
+target 'iosApp' do
+  pod 'TensorFlowLiteObjC', '2.17.0'
+  pod 'TensorFlowLiteObjC/Metal', '2.17.0'
+end
+```
+
+Install with `pod install`
+
 ### Run Sample App
 
  - Android: `open project in Android Studio and run the sample app`
