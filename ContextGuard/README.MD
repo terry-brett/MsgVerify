@@ -16,7 +16,7 @@ A Kotlin Multiplatform library for offline phishing and scam detection. ContextG
 
 ```kotlin
 // build.gradle.kts
-implementation("org.contextguard.lib:contextguard:1.0.1")
+implementation("org.contextguard.lib:contextguard:1.0.2")
 ```
 
 ### iOS (CocoaPods)
