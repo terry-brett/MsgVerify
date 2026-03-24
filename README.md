@@ -101,12 +101,6 @@ LinkVerificationState Updates
 2. Select your target device/simulator
 3. Build and run (⌘+R)
 
-#### Run on Desktop (JVM)
-
-```bash
-./gradlew :composeApp:run
-```
-
 ### Installing Dependencies
 
 All dependencies are managed via Gradle:
@@ -201,5 +195,3 @@ To test with a local build of the ContextGuard library:
 - **Email Demo**: Phishing email detection examples
 - **Social Media Demo**: Social media content analysis examples
 
-### Settings
-- **Configuration**: User preferences and app settings

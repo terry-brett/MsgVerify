@@ -70,6 +70,11 @@ internal fun DemoMessageDetailsScreen(
                 CircularProgressIndicator()
             }
         }
+        is DemoMessageUiState.Error -> {
+            Box(modifier = Modifier.fillMaxSize().padding(paddingValues), contentAlignment = Alignment.Center) {
+                Text("Message not found")
+            }
+        }
         is DemoMessageUiState.Success -> {
             Box(modifier = Modifier.fillMaxSize()) {
                 LazyColumn(
@@ -111,47 +116,6 @@ internal fun DemoMessageDetailsScreen(
         }
     }
 
-//    if (state != null) {
-//        Box(modifier = Modifier.fillMaxSize()) {
-//            LazyColumn(
-//                contentPadding = paddingValues,
-//                modifier = Modifier.fillMaxSize()
-//            ) {
-//                if (state.reasons.isNotEmpty()) {
-//                    item {
-//                        SafetyNoticeItem(
-//                            text = "Potentially unsafe message detected",
-//                            details = state.reasons.joinToString("\n• ", prefix = "• ")
-//                        )
-//                    }
-//                }
-//
-//                item {
-//                    Spacer(modifier = Modifier.size(32.dp))
-//                }
-//                item {
-//                    Row(Modifier.fillMaxWidth()) {
-//                        Surface(
-//                            shape = RoundedCornerShape(18.dp),
-//                            color = MaterialTheme.colorScheme.surfaceVariant,
-//                            tonalElevation = 1.dp,
-//                            modifier = Modifier.fillMaxWidth(0.85f)
-//                        ) {
-//                            Text(
-//                                text = state.message,
-//                                modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
-//                                color = MaterialTheme.colorScheme.onSurfaceVariant
-//                            )
-//                        }
-//                        Spacer(Modifier.weight(1f))
-//                    }
-//                }
-//            }
-//            ChatBox(modifier = Modifier.align(Alignment.BottomCenter))
-//        }
-//    } else {
-//        LinearProgressIndicator()
-//    }
 }
 
 @Composable

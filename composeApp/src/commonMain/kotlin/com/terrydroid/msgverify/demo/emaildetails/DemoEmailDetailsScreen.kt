@@ -58,12 +58,12 @@ internal fun DemoEmailDetailsScreen(
         viewModel.init(id)
     }
 
-    if (state != null) {
+    val email = state
+    if (email != null) {
         LazyColumn(
             contentPadding = paddingValues,
             modifier = Modifier.fillMaxSize()
         ) {
-            val email = state!!
 
             if (email.trafficLight != null && email.trafficLight != TrafficLight.Green) {
                 item {

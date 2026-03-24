@@ -29,7 +29,10 @@ class DemoMessageDetailsViewModel(
         viewModelScope.launch(dispatcher) {
             _uiState.value = DemoMessageUiState.Loading
 
-            val message = getMessage(id) ?: return@launch // Add proper error state here
+            val message = getMessage(id) ?: run {
+                _uiState.value = DemoMessageUiState.Error
+                return@launch
+            }
 
             msgVerifyRepository.verifyContent(message.message, message.title).collect { result ->
                 val updatedMessage = result.fold(
