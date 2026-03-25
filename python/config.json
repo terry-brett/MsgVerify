@@ -1,0 +1,6 @@
+{
+    "text_classifier_model_path" : "classifiers/assets/text-model.tflite",
+    "tokenizer_path" : "classifiers/assets/tokenizer",
+    "url_classifier_model_path" : "classifiers/assets/url-model.pth",
+    "url_features_transformation_scaler_path" : "classifiers/assets/scaler.save"
+}

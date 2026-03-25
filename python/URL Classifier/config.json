@@ -1,4 +1,0 @@
-{
-    "url_classifier_model_path" : "assets/model.pth",
-    "url_features_transformation_scaler_path" : "assets/scaler.save"
-}
