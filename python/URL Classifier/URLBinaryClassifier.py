@@ -22,7 +22,7 @@ class URLBinaryClassifier(nn.Module):
         x = F.relu(self.fc3(x))
         return self.output(x)  # No sigmoid here; we'll use BCEWithLogitsLoss
     
-class Helper():
+class Classifier():
     def __init__(self):
         pass
     

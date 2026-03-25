@@ -4,7 +4,7 @@ import tensorflow as tf
 from transformers import AutoTokenizer
 import json
 
-class TextBinaryClassifier():
+class Classifier():
     def __init__(self):
         pass
 
