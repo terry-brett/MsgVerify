@@ -1,0 +1,88 @@
+import re
+
+URL_REGEX = re.compile(
+    r'^(https?:\/\/)(www\.)?[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+(:\d+)?'
+    r'(\/[A-Za-z0-9._~!$&\'()*+,;=:@%-]*)*'
+    r'(\?[A-Za-z0-9._~!$&\'()*+,;=:@%-]*)?'
+    r'(#[A-Za-z0-9._~!$&\'()*+,;=:@%-]*)?$',
+    re.IGNORECASE
+)
+
+PHONE_LIKE  = r"\b(?:\+?\d[\d\s\-()]{7,}\d)\b"
+SHORTCODE   = r"\b\d{5,6}\b"
+
+BRANDS = {'phishing_targets': [{'name': 'DHL', 'abbr': 'DHL'}, {'name': 'Allied Bank Limited', 'abbr': 'ABL'}, {'name': 'Santander UK', 'abbr': 'SAN'}, {'name': 'Coinbase', 'abbr': 'COIN'}, {'name': 'East Japan Railway Company', 'abbr': 'JR East'}, {'name': 'Steam', 'abbr': 'STM'}, {'name': 'Bank Millennium', 'abbr': 'MIL'}, {'name': 'Virustotal', 'abbr': 'VT'}, {'name': 'DocuSign', 'abbr': 'DOCU'}, {'name': 'Apple', 'abbr': 'AAPL'}, {'name': 'Nationwide', 'abbr': 'NBS'} , {'name': 'Banco Bilbao Vizcaya Argentaria', 'abbr': 'BBVA'}, {'name': 'WeTransfer', 'abbr': 'WT'}, {'name': 'Adobe', 'abbr': 'ADBE'}, {'name': 'Das kann Bank', 'abbr': 'DKB'}, {'name': 'Orange', 'abbr': 'ORA'}, {'name': 'Regions Bank', 'abbr': 'RF'}, {'name': 'Allegro', 'abbr': 'ALE'}, {'name': 'Royal Bank of Canada', 'abbr': 'RY'}, {'name': 'AEON Card', 'abbr': 'AEON'}, {'name': 'Microsoft', 'abbr': 'MSFT'}, {'name': 'The Brazilian Development Bank', 'abbr': 'BNDES'}, {'name': 'Caixa', 'abbr': 'CEF'}, {'name': 'Dropbox', 'abbr': 'DBX'}, {'name': 'Comcast', 'abbr': 'CMCSA'}, {'name': 'Wachovia', 'abbr': 'WB'}, {'name': 'Mercari', 'abbr': 'MERC'}, {'name': 'Other', 'abbr': 'MISC'}, {'name': 'HSBC Group', 'abbr': 'HSBC'}, {'name': 'Wells Fargo', 'abbr': 'WFC'}, {'name': "Her Majesty's Revenue and Customs", 'abbr': 'HMRC'}, {'name': 'US Bank', 'abbr': 'USB'}, {'name': 'PayPay Bank', 'abbr': 'PPB'}, {'name': 'Aetna Health Plans & Dental Coverage', 'abbr': 'AET'}, {'name': 'Telefónica UK', 'abbr': 'O2'}, {'name': 'Visa', 'abbr': 'V'}, {'name': 'Banco De Brasil', 'abbr': 'BBAS'}, {'name': 'UniCredit', 'abbr': 'UCG'}, {'name': 'PKO Polish Bank', 'abbr': 'PKO'}, {'name': 'Bradesco', 'abbr': 'BBD'}, {'name': 'AT&T', 'abbr': 'T'}, {'name': 'Barclays Bank PLC', 'abbr': 'BARC'}, {'name': 'Co-operative Bank', 'abbr': 'COOP'}, {'name': 'Huntington National Bank', 'abbr': 'HBAN'}, {'name': 'ABN AMRO Bank', 'abbr': 'ABN'}, {'name': 'Internal Revenue Service', 'abbr': 'IRS'}, {'name': 'RuneScape', 'abbr': 'RS'}, {'name': 'Sumitomo Mitsui Banking Corporation', 'abbr': 'SMBC'}, {'name': 'Banco Santander, S.A.', 'abbr': 'SAN'}, {'name': 'Navy Federal Credit Union', 'abbr': 'NFCU'}, {'name': 'Netflix', 'abbr': 'NFLX'}, {'name': 'JPMorgan Chase and Co.', 'abbr': 'JPM'}, {'name': 'Bank of America Corporation', 'abbr': 'BAC'}, {'name': 'Raiffeisen Bank', 'abbr': 'RBI'}, {'name': 'Yahoo', 'abbr': 'YHOO'}, {'name': 'Accurint', 'abbr': 'ACC'}, {'name': 'Rakuten', 'abbr': 'RKUNY'}, {'name': 'British Telecom', 'abbr': 'BT'}, {'name': 'Hotmail', 'abbr': 'MSFT'}, {'name': 'AOL', 'abbr': 'AOL'}, {'name': 'Google', 'abbr': 'GOOGL'}, {'name': 'Intesa Sanpaolo', 'abbr': 'ISP'}, {'name': 'Volksbanken Raiffeisenbanken', 'abbr': 'VR'}, {'name': 'TSB', 'abbr': 'TSB'}, {'name': 'Nets', 'abbr': 'NETS'}, {'name': 'Binance', 'abbr': 'BNB'}, {'name': 'Itau', 'abbr': 'ITUB'}, {'name': 'Mastercard', 'abbr': 'MA'}, {'name': 'American Express', 'abbr': 'AMEX'}, {'name': 'ABSA Bank', 'abbr': 'ABSA'}, {'name': 'Westpac', 'abbr': 'WBC'}, {'name': 'PayPal', 'abbr': 'PYPL'}, {'name': 'Facebook', 'abbr': 'META'}, {'name': 'Swiss Post', 'abbr': 'SWP'}, {'name': 'Abonné Free Mobile', 'abbr': 'FREE'}, {'name': 'Nubank', 'abbr': 'NU'}, {'name': 'eBay, Inc.', 'abbr': 'EBAY'}, {'name': 'Nordea Bank', 'abbr': 'NDA'}, {'name': 'Development Bank of Singapore', 'abbr': 'DBS'}, {'name': 'Rackspace', 'abbr': 'RAX'}, {'name': 'Scotiabank', 'abbr': 'BNS'}, {'name': 'Interactive Brokers', 'abbr': 'IBKR'}, {'name': 'ING Direct', 'abbr': 'ING'}, {'name': 'Amazon.com', 'abbr': 'AMZN'}, {'name': 'Optus', 'abbr': 'OPT'}, {'name': 'Sulake Corporation', 'abbr': 'SUL'}, {'name': 'Instagram', 'abbr': 'IG'}, {'name': 'Capital One', 'abbr': 'COF'}, {'name': 'Capitec Bank', 'abbr': 'CPI'}]}
+
+LOOSE_URL_REGEX = re.compile(
+    r"("
+    r"\bhttps?://\S+"
+    r"|\bhttps?/\S+"                  # e.g., http/example.com
+    r"|\bwww\.\S+"
+    r"|\b[a-z0-9-]{2,}\s*\.\s*[a-z]{2,}(?:\s*\.\s*[a-z]{2,})*\b"  # e.g., daal.au or a.b.co (with spaces)
+    r")",
+    re.IGNORECASE
+)
+
+EMAIL_REGEX = re.compile(r"[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}", re.I)
+
+QUOTE_CUTOFF_RE = re.compile(
+    r"(^\s*-----\s*original message\s*-----\s*$|"
+    r"^\s*begin forwarded message\s*$|"
+    r"^\s*on .{0,60} wrote:\s*$|"
+    r"^\s*from:\s*.+$)",
+    re.I | re.M
+)
+
+TECH_BULLETIN_RE = re.compile(
+    r"\b(cve-\d{4}-\d+|us-cert|cert\b|rfc\s*\d+|"
+    r"vulnerability|exploit|patch|advisory|mailing list|bugtraq)\b",
+    re.I
+)
+
+# Bank/card account restriction cues (SMS)
+BANK_ACTION_RE = re.compile(r"\b(blocked|lock(?:ed)?|suspend(?:ed)?|disabled|frozen|restricted|jam)\b", re.I)
+BANK_CARD_RE = re.compile(r"\b(bank|debit|credit|atm)\b.*\bcard\b|\bcard\b.*\b(bank|debit|credit|atm)\b", re.I)
+
+# Apple ID / iCloud (SMS)
+APPLE_CLAIM_RE = re.compile(r"\b(apple\s*(?:id|1d)|icloud|apple\s+support)\b", re.I)
+APPLE_ACTION_RE = re.compile(
+    r"\b(unauthori[sz]ed|sign[-\s]?in|password|login|verify|confirm)\b", re.I
+)
+APPLE_EXPIRE_RE = re.compile(r"\b(expir\w*)\b", re.I)
+APPLE_DUE_EXPIRE_RE = re.compile(r"due\s+to.{0,25}expir", re.I)  # tolerant to noise between 'due to' and 'expire'
+
+# Bank of America suspended restore (SMS)
+BOA_RE = re.compile(r"\b(bank\s*of\s*america|bankofamerica)\b", re.I)
+BOA_SUSP_RE = re.compile(r"\b(suspend(?:ed)?|restricted|limited)\b", re.I)
+BOA_LOGIN_RE = re.compile(r"\b(log\s*in|login|sign\s*in)\b", re.I)
+BOA_RESTORE_RE = re.compile(r"\b(restore|reconstruct|regenerate|reactivat\w*)\b", re.I)
+
+# Tax agency refund (SMS)
+TAX_AGENCY_RE = re.compile(r"\b(hmrc|govuk|gov\.uk|irs)\b", re.I)
+REFUND_RE = re.compile(r"\b(refund|rebate)\b", re.I)
+
+# Paytm FASTag (SMS)
+PAYTM_RE = re.compile(r"\bpaytm\b", re.I)
+PAYTM_CTX_RE = re.compile(r"\b(received a request|request from you|fastag|payments bank)\b", re.I)
+
+# Order cancel/delete (SMS)
+ORDER_CANCEL_RE = re.compile(r"\b(cancel|delete)\b.{0,25}\border\b", re.I)
+ORDER_CTA_RE = re.compile(r"\b(visit|call|chat|contact)\b", re.I)
+
+# Email (TREC_06) — org claim + account action + sender mismatch
+EMAIL_ACTION_RE = re.compile(
+    r"\b("
+    r"(verify|confirm|update|validate|authenticate)\s+(your\s+)?(account|profile|billing|payment|information|details)"
+    r"|((log\s*in|login|sign\s*in)\s+(to\s+)?(your\s+)?(account|profile))"
+    r"|((reset|change|update)\s+(your\s+)?password)"
+    r"|((account|profile)\s+(locked|suspended|disabled|restricted))"
+    r"|(limited\s+access|security\s+alert|unusual\s+activity|unauthori[sz]ed)"
+    r")\b",
+    re.I
+)
+
+# Free email domains for sender mismatch
+FREE_EMAIL = {
+    "gmail.com","googlemail.com","yahoo.com","ymail.com","outlook.com","hotmail.com","live.com","msn.com",
+    "aol.com","icloud.com","me.com","mac.com","proton.me","protonmail.com","gmx.com","mail.com"
+}
