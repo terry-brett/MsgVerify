@@ -1,5 +1,5 @@
 import re
-from helpers import *
+from heuristics.helpers import *
 
 class MessageReasoningLabels:
     def __init__(self, message, sender = None):

@@ -608,4 +608,3 @@ def contains_url(message):
         re.IGNORECASE
     )
     return bool(url_any.search(str(message)))
-
