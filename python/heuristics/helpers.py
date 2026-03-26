@@ -1,6 +1,6 @@
 import re
 from spellchecker import SpellChecker
-from constants import *
+from heuristics.constants import *
 # Initialize spell checker once at module level for performance
 _spell = SpellChecker()
 
@@ -484,41 +484,6 @@ def _sender_domain(sender: str):
         return None
     return em.split("@", 1)[1].lower()
 
-def _sender_display(sender: str) -> str:
-    if not sender:
-        return ""
-    s = str(sender)
-    return normalise(s.split("<", 1)[0])
-
-# Build a matcher for BRAND names (exclude generic "Other"; do not rely on short ambiguous abbrs)
-def _brand_patterns():
-    pats = []
-    for b in BRANDS.get("phishing_targets", []):
-        name = (b.get("name") or "").strip()
-        abbr = (b.get("abbr") or "").strip()
-        if not name or name.lower() == "other":
-            continue
-        # match name words in order
-        toks = [t for t in re.split(r"[\s,&()\-]+", name.lower()) if t and t not in {"the","and","of"}]
-        if toks:
-            pats.append(r"\b" + r"\s+".join(map(re.escape, toks)) + r"\b")
-        # keep a small allowlist of 3-letter abbrs that are actually distinctive
-        if abbr and len(abbr) >= 4:
-            pats.append(r"\b" + re.escape(abbr.lower()) + r"\b")
-        elif abbr and abbr.upper() in {"DHL","UPS","IRS","HMRC"}:
-            pats.append(r"\b" + re.escape(abbr.lower()) + r"\b")
-    return re.compile("|".join(pats), re.I) if pats else re.compile(r"a^")
-
-_BRAND_RE = _brand_patterns()
-
-def _domain_looks_like_brand(domain: str, brand_text: str) -> bool:
-    if not domain or not brand_text:
-        return False
-    d = domain.lower().replace(".", "")
-    # use first meaningful token from brand_text
-    toks = [t for t in re.split(r"[\s,&()\-]+", brand_text.lower()) if t and t not in {"the","and","of","inc","corp","corporation","ltd","limited","llc","plc"}]
-    toks = [t for t in toks if len(t) >= 3]
-    return any(t.replace(".", "") in d for t in toks)
 
 def check_impersonation(message, sender=None):
 
