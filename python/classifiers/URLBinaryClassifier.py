@@ -26,19 +26,6 @@ class Classifier():
     def __init__(self):
         pass
     
-    def validate_url(func):
-        def wrapper_validate_url(*args, **kwargs):
-            self = args[0]
-            url = self.url    
-            url_regex = r"https?://[^\s/$.?#].[^\s]*"
-            result = re.match(url_regex, url)
-
-            if (result == None):
-                raise ValueError("URL is not set or valid.")
-            else: 
-                return func(*args, **kwargs)
-        return wrapper_validate_url
-
     def get_url_components(self, url):
         parsed = urlparse(url)
         extracted = tldextract.extract(url)
