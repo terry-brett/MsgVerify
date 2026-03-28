@@ -24,7 +24,16 @@ class URLBinaryClassifier(nn.Module):
     
 class Classifier():
     def __init__(self):
-        pass
+        with open('config.json') as f:
+            config = json.load(f)
+            
+        self.model_path = config["url_classifier_model_path"]
+        self.scaler_path = config["url_features_transformation_scaler_path"]
+        self.scaler = joblib.load(self.scaler_path) # getting standard scaler
+        self.model = URLBinaryClassifier(25)  # initialising the neural network model
+        self.model_weights = torch.load(self.model_path, weights_only=True) # getting model weights
+        self.model.load_state_dict(self.model_weights) # loading model weights in the model
+        self.model.eval()
     
     def get_url_components(self, url):
         parsed = urlparse(url)
@@ -66,24 +75,13 @@ class Classifier():
         return feature_dict
     
     def predict(self, url):
-        with open('config.json') as f:
-            config = json.load(f)
-            
-        model_path = config["url_classifier_model_path"]
-        scaler_path = config["url_features_transformation_scaler_path"]
-        scaler = joblib.load(scaler_path) # getting standard scaler
 
         feature_dict = self.extract_url_features(url)
 
         X = pd.DataFrame([feature_dict])
-        X = scaler.transform(X)
+        X = self.scaler.transform(X)
         
-        model = URLBinaryClassifier(25)  # initialising the neural network model
-        model_weights = torch.load(model_path, weights_only=True) # getting model weights
-        model.load_state_dict(model_weights) # loading model weights in the model
-        
-        model.eval()
         with torch.no_grad():
-            logits = model(torch.tensor(X, dtype=torch.float32))
+            logits = self.model(torch.tensor(X, dtype=torch.float32))
             probs = torch.sigmoid(logits)
             return probs
