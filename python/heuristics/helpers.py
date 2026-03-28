@@ -9,7 +9,7 @@ _spell = SpellChecker()
 def extract_email_address(sender: str):
     if not sender:
         return None
-    m = re.search(r"([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,})", sender)
+    m = re.search(r"([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,})", sender, re.I)
     return m.group(1).lower() if m else None
 
 
