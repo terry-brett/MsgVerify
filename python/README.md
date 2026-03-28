@@ -92,7 +92,7 @@ print(text + " has labels: " + str(labels))
 
 ## Notes
 
-* Python version 3.13.12 or above is required to run 
+* Python version 3.13.12 or above is required
 * Update the model paths in the config file if required
 * Validate URL/Text datatype before parsing
 * Non-Latin characters are not supported
