@@ -10,4 +10,4 @@ probs = round((float(spam_prob) * 100), 2)
 
 print("Text: ", text)
 print("Prediction: ", label)
-print("Probability of text being a spam: ", spam_prob, " %")
+print("Probability of text being a spam: ", probs, " %")

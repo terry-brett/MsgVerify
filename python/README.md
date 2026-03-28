@@ -72,7 +72,7 @@ probs = round((float(spam_prob) * 100), 2)
 
 print("Text: ", text)
 print("Prediction: ", label)
-print("Probability of text being a spam: ", spam_prob, " %")
+print("Probability of text being a spam: ", probs, " %")
 ```
 
 ### Heuristics
@@ -92,6 +92,7 @@ print(text + " has labels: " + str(labels))
 
 ## Notes
 
+* Python version 3.13.12 or above is required to run 
 * Update the model paths in the config file if required
 * Validate URL/Text datatype before parsing
 * Non-Latin characters are not supported
