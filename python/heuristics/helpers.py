@@ -595,12 +595,3 @@ def check_impersonation(message, sender=None):
                 return True
 
     return False
-
-def contains_url(message):
-    """Detects URLs more robustly than URL_REGEX.match(token)."""
-    url_any = re.compile(
-        r"(https?://\S+|www\.\S+|\b(?:bit\.ly|t\.co|tinyurl\.com|goo\.gl|ow\.ly|is\.gd|buff\.ly|rebrand\.ly)/\S+|"
-        r"\b[a-z0-9-]{2,}\.(?:com|net|org|info|biz|io|co|me|app|xyz|uk|in|ru|de|fr|no|se|dk|fi|nl|au|br|jp|kr|sg|za)\b[^\s]*)",
-        re.IGNORECASE
-    )
-    return bool(url_any.search(str(message)))
