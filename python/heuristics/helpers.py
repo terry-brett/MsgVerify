@@ -17,10 +17,6 @@ def extract_email_address(sender: str):
     m = re.search(r"([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,})", sender)
     return m.group(1).lower() if m else None
 
-def get_domain_from_email(email: str):
-    if not email or "@" not in email:
-        return None
-    return email.split("@", 1)[1].lower()
 
 # marketing helpers
 def has_marketing_patterns(message):
