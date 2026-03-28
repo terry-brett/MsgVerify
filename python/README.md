@@ -96,9 +96,3 @@ print(text + " has labels: " + str(labels))
 * Update the model paths in the config file if required
 * Validate URL/Text datatype before parsing
 * Non-Latin characters are not supported
-
----
-
-## License
-
-Refer to the MsgVerify’s license for usage terms.
