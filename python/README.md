@@ -7,13 +7,13 @@ This folder contains the python implementation of machine learning models used i
 ```
 python/
 │
-├── requirements.txt/               #Required python libraries  
+├── requirements.txt                #Required python libraries  
 ├── classifiers/                    #Module for ML model implementation
     ├── assets/                     #ML model weights and dependencies
     ├── TextBinaryClassifier.py     #Text (Spam/Ham) classification implementation
     ├── URLBinaryClassifier.py      #URL (Phishing/Safe) classification implementation
 ├── config.json                     #Configuration for models and dependencies paths
-├── datasets                        #Datasets used for training/evaluating ML models and heuristics module
+├── datasets/                       #Datasets used for training/evaluating ML models and heuristics module
 ├── heuristics/                     #Text spam category classification implementation
 ├── heuristics-sample.py            #Test sample for heuristics module
 ├── text-sample.py                  #Test sample for text classification ML model
