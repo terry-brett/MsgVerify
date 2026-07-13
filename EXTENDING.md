@@ -211,7 +211,204 @@ fun detectCustomPattern(content: String): Boolean {
 - Localise for language-specific patterns
 - Research-specific categorisation schemes
 
-### 5. ContextGuard Integration
+### 5. Live Data Source Integration
+
+MsgVerify can receive and analyse content from external sources in real-time, enabling longitudinal field studies and ecological assessments. The framework provides platform-native hooks for receiving live message streams.
+
+#### Android: Intent Handling
+
+MsgVerify registers as a share target, allowing users to forward suspicious content from any app.
+
+**File:** `composeApp/src/androidMain/AndroidManifest.xml`
+
+```xml
+<intent-filter>
+    <action android:name="android.intent.action.SEND" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <data android:mimeType="text/plain" />
+</intent-filter>
+```
+
+**File:** `composeApp/src/androidMain/kotlin/com/terrydroid/msgverify/MainActivity.kt`
+
+```kotlin
+private fun handleIntent(intent: Intent?) {
+    if (intent?.action == Intent.ACTION_SEND && intent.type == "text/plain") {
+        val sharedText = intent.getStringExtra(Intent.EXTRA_TEXT)
+        receivedText.value = sharedText
+    }
+}
+```
+
+**Extending for custom data sources:**
+
+```kotlin
+// Add support for additional MIME types
+<data android:mimeType="text/*" />
+<data android:mimeType="application/json" />
+
+// Or register a BroadcastReceiver for specific apps
+class SmsReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) {
+        // Extract SMS content and forward to MsgVerify
+    }
+}
+```
+
+#### iOS: App Intents and Shortcuts
+
+MsgVerify integrates with iOS Shortcuts and Siri, enabling automated analysis workflows.
+
+**File:** `iosApp/iosApp/VerifyMessageIntent.swift`
+
+```swift
+struct VerifyMessageIntent: AppIntent {
+    static var title: LocalizedStringResource = "Verify Message"
+    
+    @Parameter(title: "Message Text")
+    var text: String
+    
+    func perform() async throws -> some IntentResult {
+        MainViewControllerKt.setSharedText(text: text)
+        return .result()
+    }
+}
+```
+
+**File:** `iosApp/iosApp/MsgVerifyShortcuts.swift`
+
+```swift
+struct MsgVerifyShortcuts: AppShortcutsProvider {
+    static var appShortcuts: [AppShortcut] {
+        AppShortcut(
+            intent: VerifyMessageIntent(),
+            phrases: [
+                "Verify a message with \(.applicationName)",
+                "Check a message with \(.applicationName)",
+                "Scan a message with \(.applicationName)"
+            ]
+        )
+    }
+}
+```
+
+**iOS Automation workflows:**
+Users can configure iOS Automations to trigger MsgVerify analysis automatically:
+1. When a message arrives from an unknown sender
+2. At scheduled intervals for batch processing
+3. When specific keywords are detected
+
+#### URL Scheme Integration
+
+MsgVerify supports deep linking via custom URL schemes:
+
+**iOS:** `msgverify://share?text=<encoded_content>`
+
+```swift
+// In iOSApp.swift
+.onOpenURL { url in
+    if url.scheme == "msgverify", 
+       let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
+       let text = components.queryItems?.first(where: { $0.name == "text" })?.value {
+        MainViewControllerKt.setSharedText(text: text)
+    }
+}
+```
+
+**Use cases:**
+- Longitudinal field studies capturing real threat encounters
+- Automated analysis pipelines for security operations
+- Integration with notification monitoring tools
+- Browser extensions forwarding suspicious links
+
+#### Implementing Custom Data Sources
+
+MsgVerify provides a `LiveDataProvider` interface and `LiveDataRegistry` for integrating custom data sources.
+
+**File:** `composeApp/src/commonMain/kotlin/com/terrydroid/msgverify/data/LiveDataProvider.kt`
+
+```kotlin
+interface LiveDataProvider {
+    val id: String
+    val displayName: String
+    fun start()
+    fun stop()
+    fun isActive(): Boolean
+}
+```
+
+**Example: SMS Monitor Provider**
+
+```kotlin
+class SmsMonitorProvider(private val context: Context) : LiveDataProvider {
+    override val id = "sms-monitor"
+    override val displayName = "SMS Monitor"
+    private var isRunning = false
+
+    override fun start() {
+        isRunning = true
+        // Register BroadcastReceiver for incoming SMS
+        context.registerReceiver(smsReceiver, IntentFilter("android.provider.Telephony.SMS_RECEIVED"))
+    }
+
+    override fun stop() {
+        isRunning = false
+        context.unregisterReceiver(smsReceiver)
+    }
+
+    override fun isActive() = isRunning
+
+    private val smsReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val messages = Telephony.Sms.Intents.getMessagesFromIntent(intent)
+            messages.forEach { sms ->
+                // Emit content for analysis
+                runBlocking {
+                    LiveDataRegistry.emitContent(
+                        content = sms.messageBody,
+                        sender = sms.originatingAddress,
+                        sourceId = id
+                    )
+                }
+            }
+        }
+    }
+}
+```
+
+**Registering and Using Providers**
+
+```kotlin
+// At app startup (e.g., in Application.onCreate or Koin module)
+val smsProvider = SmsMonitorProvider(context)
+LiveDataRegistry.register(smsProvider)
+
+// Start monitoring
+LiveDataRegistry.startAll()
+
+// Collect incoming content for analysis
+scope.launch {
+    LiveDataRegistry.contentFlow.collect { liveContent ->
+        val result = msgVerifyRepository.verifyContent(
+            input = liveContent.content,
+            sender = liveContent.sender ?: ""
+        )
+        // Handle verification result
+    }
+}
+
+// Stop when done
+LiveDataRegistry.stopAll()
+```
+
+**LiveDataRegistry API:**
+- `register(provider)` — Add a data provider
+- `unregister(id)` — Remove a provider by ID
+- `startAll()` / `stopAll()` — Control all providers
+- `contentFlow` — SharedFlow of incoming `LiveContent` for analysis
+- `emitContent(...)` — Send content from within a provider
+
+### 6. ContextGuard Integration
 
 For deeper customisation, you can modify or replace the ContextGuard library components.
 
@@ -266,6 +463,25 @@ MsgVerify uses Kotlin Multiplatform to ensure identical detection logic on Andro
 Platform-specific code is isolated to:
 - `composeApp/src/androidMain/` — Android intents, file I/O
 - `composeApp/src/iosMain/` — iOS Shortcuts, file I/O
+
+### In-the-Wild Ecological Assessments
+
+Leverage the live data source integration (Section 5) to conduct longitudinal field studies:
+
+1. **Configure platform hooks:**
+   - Android: Enable share intent handling in AndroidManifest.xml
+   - iOS: Set up Shortcuts and Automations for participants
+
+2. **Enable research logging:**
+   ```kotlin
+   MsgVerifyConfig.enableLogging = true
+   ```
+
+3. **Deploy to participant devices** with appropriate consent flows
+
+4. **Collect data** as participants forward real suspicious messages they encounter
+
+This approach captures genuine threat-assessment behaviours in participants' natural environments, providing ecological validity that controlled lab studies cannot achieve.
 
 ## Building Custom Variants
 
