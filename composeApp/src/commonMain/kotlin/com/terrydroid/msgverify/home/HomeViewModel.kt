@@ -2,6 +2,7 @@ package com.terrydroid.msgverify.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.terrydroid.msgverify.config.MsgVerifyConfig
 import com.terrydroid.msgverify.data.ContentVerificationResponse
 import com.terrydroid.msgverify.data.MsgVerifyRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,11 +11,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class HomeViewModel(private val msgVerifyRepository: MsgVerifyRepository) : ViewModel() {
-
-  private companion object {
-    const val HIGH_RISK_THRESHOLD = 70
-    const val MEDIUM_RISK_THRESHOLD = 40
-  }
 
   private val _linkVerificationState: MutableStateFlow<LinkVerificationState> =
       MutableStateFlow(
@@ -105,8 +101,8 @@ class HomeViewModel(private val msgVerifyRepository: MsgVerifyRepository) : View
   private fun getClassificationColor(maliciousScore: Float): ClassificationColor {
     val scorePercent = maliciousScore * 100
     return when {
-      scorePercent > HIGH_RISK_THRESHOLD -> ClassificationColor.Red
-      scorePercent >= MEDIUM_RISK_THRESHOLD -> ClassificationColor.Yellow
+      scorePercent > MsgVerifyConfig.highRiskThreshold -> ClassificationColor.Red
+      scorePercent >= MsgVerifyConfig.mediumRiskThreshold -> ClassificationColor.Yellow
       else -> ClassificationColor.Green
     }
   }

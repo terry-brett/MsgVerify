@@ -1,10 +1,22 @@
 # MsgVerify
 
-A cross-platform message and content verification application that detects phishing, scams, and malicious content in text using embedded machine learning models. Works completely offline with on-device inference.
+A cross-platform mobile application framework for phishing detection research. Built with Kotlin Multiplatform, MsgVerify provides an extensible platform for studying cybersecurity awareness on mobile devices.
 
 ## Overview
 
-MsgVerify is a Kotlin Multiplatform (KMP) application with a shared codebase deployed on Android and iOS. It serves as a sample implementation and demonstration of the **ContextGuard** library, showcasing how to integrate embedded machine learning models with heuristic-based detection to provide users with real-time content safety analysis without requiring an internet connection.
+MsgVerify is a Kotlin Multiplatform (KMP) application framework with a shared codebase deployed on Android and iOS. It integrates the **ContextGuard** library for on-device machine learning inference and provides extensible architecture for researchers to customise datasets, visual indicators, and detection heuristics.
+
+### For Researchers
+
+MsgVerify is designed as an **extensible research platform** for mobile security studies. Key extension points include:
+
+- **Configurable Risk Thresholds** — Adjust sensitivity via `MsgVerifyConfig.kt`
+- **Swappable Demo Datasets** — Replace JSON files with custom threat scenarios
+- **Custom Heuristics** — Register detection rules via `HeuristicRegistry`
+- **Themeable UI** — Modify visual indicators for A/B testing warning designs
+- **Cross-Platform Consistency** — Identical detection logic on Android and iOS
+
+See **[EXTENDING.md](EXTENDING.md)** for detailed documentation on framework customisation.
 
 ### Relationship with ContextGuard
 
@@ -75,9 +87,13 @@ LinkVerificationState Updates
 
 ### Risk Classification
 
+Risk thresholds are configurable via `MsgVerifyConfig.kt`. Default values:
+
 - **Green**: <40% malicious confidence (Safe)
 - **Yellow**: 40-70% malicious confidence (Medium Risk)
 - **Red**: >70% malicious confidence (High Risk)
+
+See [EXTENDING.md](EXTENDING.md) for customisation instructions.
 
 ## Getting Started
 
