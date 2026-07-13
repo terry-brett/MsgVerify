@@ -9,19 +9,31 @@ import dev.kursor.ktensorflow.api.TensorShape
 
 class MessageVerifier {
 
-    fun makePrediction(
-        modelDesc: ModelDesc,
-        inputIds: IntArray,
-        attentionMask: IntArray
-    ): FloatArray {
+    private var cachedInterpreter: Interpreter? = null
+    private var cachedModelDesc: ModelDesc? = null
 
-        val interpreter = Interpreter(
+    private fun getOrCreateInterpreter(modelDesc: ModelDesc): Interpreter {
+        if (cachedInterpreter != null && cachedModelDesc == modelDesc) {
+            return cachedInterpreter!!
+        }
+        cachedInterpreter = Interpreter(
             modelDesc = modelDesc,
             options = InterpreterOptions(
                 numThreads = 4,
                 useXNNPACK = true
             )
         )
+        cachedModelDesc = modelDesc
+        return cachedInterpreter!!
+    }
+
+    fun makePrediction(
+        modelDesc: ModelDesc,
+        inputIds: IntArray,
+        attentionMask: IntArray
+    ): FloatArray {
+
+        val interpreter = getOrCreateInterpreter(modelDesc)
 
         val inputIdsTensor = Tensor(
             data = intArrayToByteArrayNativeOrder(inputIds),
@@ -58,6 +70,17 @@ class MessageVerifier {
         val exp = logits.map { kotlin.math.exp(it.toDouble()) }
         val sum = exp.sum()
         return exp.map { (it / sum).toFloat() }.toFloatArray()
+    }
+
+    companion object {
+        private var instance: MessageVerifier? = null
+
+        fun getInstance(): MessageVerifier {
+            if (instance == null) {
+                instance = MessageVerifier()
+            }
+            return instance!!
+        }
     }
 }
 

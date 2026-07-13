@@ -1,8 +1,12 @@
 package com.terrydroid.msgverify.data
 
 import com.terrydroid.msgverify.PlatformContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.withContext
+import org.contextguard.lib.ContentVerifier
 import org.contextguard.lib.ContentVerifierImpl
 import org.contextguard.models.Reason
 import org.contextguard.models.TextClassificationResult
@@ -12,13 +16,15 @@ class MsgVerifyRepository(val platformContext: PlatformContext) : KoinComponent 
 
   private val verifier by lazy { ContentVerifierImpl(platformContext.getNativeContext()) }
 
+  fun getContentVerifier(): ContentVerifier = verifier
+
   suspend fun verifyContent(
       input: String,
       sender: String,
   ): Flow<Result<ContentVerificationResponse>> {
-    val result =
-        verifier
-            .verify(content = input, sender = sender)
+      val result = withContext(Dispatchers.IO) {
+          verifier.verify(content = input, sender = sender)
+      }
 
     if (result == null) {
       return flowOf(Result.failure(Exception("Unable to verify content")))

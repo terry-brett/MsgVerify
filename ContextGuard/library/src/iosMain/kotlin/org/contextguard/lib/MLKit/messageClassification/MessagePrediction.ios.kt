@@ -5,9 +5,7 @@ import org.contextguard.lib.MLKit.messageClassification.tokenizer.loadVocab
 
 actual class MessagePrediction actual constructor(platformContext: Any) {
     actual suspend fun isSpam(message: String): Boolean {
-        val vocab = loadVocab()
-
-        val tokenizer = WordPieceTokenizer(vocab)
+        val tokenizer = getOrCreateTokenizer()
 
         val loadModel = LoadModel()
         val modelDesc = loadModel.getTextModelDesc()
@@ -17,7 +15,7 @@ actual class MessagePrediction actual constructor(platformContext: Any) {
             maxLen = MAX_LEN
         )
 
-        val probabilities = MessageVerifier().makePrediction(
+        val probabilities = MessageVerifier.getInstance().makePrediction(
             modelDesc = modelDesc,
             inputIds = inputIds,
             attentionMask = attentionMask
@@ -27,5 +25,16 @@ actual class MessagePrediction actual constructor(platformContext: Any) {
         val spamScore = probabilities[1]
 
         return spamScore > notSpamScore
+    }
+
+    companion object {
+        private var cachedTokenizer: WordPieceTokenizer? = null
+
+        private suspend fun getOrCreateTokenizer(): WordPieceTokenizer {
+            cachedTokenizer?.let { return it }
+            val vocab = loadVocab()
+            cachedTokenizer = WordPieceTokenizer(vocab)
+            return cachedTokenizer!!
+        }
     }
 }

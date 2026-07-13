@@ -21,7 +21,7 @@ actual class UrlPrediction actual constructor(platformContext: Any) {
         val featuresMap = UrlVerifierHelper(url).extractUrlFeatures()
         val rawFeatures = Constants.URL_FEATURE_KEYS.map { featuresMap[it]?.toFloat() ?: 0f }
 
-        return UrlVerifier().makePrediction(
+        return UrlVerifier.getInstance().makePrediction(
             modelDesc = modelDesc,
             data = floatArrayToByteArray(scaler.transform(rawFeatures))
         )

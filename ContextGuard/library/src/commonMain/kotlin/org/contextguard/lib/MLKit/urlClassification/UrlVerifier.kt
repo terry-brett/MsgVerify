@@ -6,24 +6,34 @@ import dev.kursor.ktensorflow.api.ModelDesc
 import dev.kursor.ktensorflow.api.Tensor
 import dev.kursor.ktensorflow.api.TensorDataType
 import dev.kursor.ktensorflow.api.TensorShape
-import dev.kursor.ktensorflow.api.gpu.GpuDelegate
 import dev.kursor.ktensorflow.api.typedData
 import kotlin.math.exp
 import org.contextguard.lib.MLKit.urlClassification.constants.Constants
 
 class UrlVerifier {
+    private var cachedInterpreter: Interpreter? = null
+    private var cachedModelDesc: ModelDesc? = null
+
+    private fun getOrCreateInterpreter(modelDesc: ModelDesc): Interpreter {
+        if (cachedInterpreter != null && cachedModelDesc == modelDesc) {
+            return cachedInterpreter!!
+        }
+        cachedInterpreter = Interpreter(
+            modelDesc = modelDesc,
+            options = InterpreterOptions(
+                numThreads = 4,
+                useXNNPACK = true
+            )
+        )
+        cachedModelDesc = modelDesc
+        return cachedInterpreter!!
+    }
+
     fun makePrediction(
         modelDesc: ModelDesc,
         data: ByteArray
     ): Float {
-        val interpreter = Interpreter(
-            modelDesc = modelDesc,
-            options = InterpreterOptions(
-                numThreads = 4,
-                useXNNPACK = true,
-                delegates = listOf(GpuDelegate())
-            )
-        )
+        val interpreter = getOrCreateInterpreter(modelDesc)
 
         val input = Tensor(
             data = data,
@@ -37,6 +47,17 @@ class UrlVerifier {
         )
         interpreter.run(listOf(input), listOf(output))
         return sigmoid(output.typedData<FloatArray>().first()) * 100
+    }
+
+    companion object {
+        private var instance: UrlVerifier? = null
+
+        fun getInstance(): UrlVerifier {
+            if (instance == null) {
+                instance = UrlVerifier()
+            }
+            return instance!!
+        }
     }
 }
 
