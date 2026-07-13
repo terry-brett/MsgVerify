@@ -90,6 +90,15 @@ mocks/
 ]
 ```
 
+**JSON format for social media:**
+```json
+[
+  {
+    "message": "URGENT: Your account is locked. Verify now at secure-login.example"
+  }
+]
+```
+
 **Use cases:**
 - Controlled experiments with specific threat scenarios
 - Localised phishing campaigns (language, regional threats)
