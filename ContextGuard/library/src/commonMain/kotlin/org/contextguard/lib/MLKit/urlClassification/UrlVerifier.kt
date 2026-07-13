@@ -11,29 +11,19 @@ import kotlin.math.exp
 import org.contextguard.lib.MLKit.urlClassification.constants.Constants
 
 class UrlVerifier {
-    private var cachedInterpreter: Interpreter? = null
-    private var cachedModelDesc: ModelDesc? = null
 
-    private fun getOrCreateInterpreter(modelDesc: ModelDesc): Interpreter {
-        if (cachedInterpreter != null && cachedModelDesc == modelDesc) {
-            return cachedInterpreter!!
-        }
-        cachedInterpreter = Interpreter(
+    fun makePrediction(
+        modelDesc: ModelDesc,
+        data: ByteArray
+    ): Float {
+        // Create fresh interpreter for each prediction to avoid state corruption
+        val interpreter = Interpreter(
             modelDesc = modelDesc,
             options = InterpreterOptions(
                 numThreads = 4,
                 useXNNPACK = true
             )
         )
-        cachedModelDesc = modelDesc
-        return cachedInterpreter!!
-    }
-
-    fun makePrediction(
-        modelDesc: ModelDesc,
-        data: ByteArray
-    ): Float {
-        val interpreter = getOrCreateInterpreter(modelDesc)
 
         val input = Tensor(
             data = data,

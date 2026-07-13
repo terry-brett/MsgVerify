@@ -9,31 +9,20 @@ import dev.kursor.ktensorflow.api.TensorShape
 
 class MessageVerifier {
 
-    private var cachedInterpreter: Interpreter? = null
-    private var cachedModelDesc: ModelDesc? = null
-
-    private fun getOrCreateInterpreter(modelDesc: ModelDesc): Interpreter {
-        if (cachedInterpreter != null && cachedModelDesc == modelDesc) {
-            return cachedInterpreter!!
-        }
-        cachedInterpreter = Interpreter(
-            modelDesc = modelDesc,
-            options = InterpreterOptions(
-                numThreads = 4,
-                useXNNPACK = true
-            )
-        )
-        cachedModelDesc = modelDesc
-        return cachedInterpreter!!
-    }
-
     fun makePrediction(
         modelDesc: ModelDesc,
         inputIds: IntArray,
         attentionMask: IntArray
     ): FloatArray {
 
-        val interpreter = getOrCreateInterpreter(modelDesc)
+        // Create fresh interpreter for each prediction to avoid state corruption
+        val interpreter = Interpreter(
+            modelDesc = modelDesc,
+            options = InterpreterOptions(
+                numThreads = 4,
+                useXNNPACK = true
+            )
+        )
 
         val inputIdsTensor = Tensor(
             data = intArrayToByteArrayNativeOrder(inputIds),
