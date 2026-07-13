@@ -154,7 +154,39 @@ The heuristic label system generates human-readable explanations for detected th
 - `Too Good to Be True` — Unrealistic offers or prizes
 - `Credential Verification Request` — Fake login/verification requests
 
-**To add custom labels:**
+#### Using HeuristicProvider and HeuristicRegistry
+
+For adding custom heuristics without modifying ContextGuard source code, use the `HeuristicProvider` interface and `HeuristicRegistry`:
+
+**File:** `ContextGuard/library/src/commonMain/kotlin/org/contextguard/lib/MLKit/messageClassification/heuristics/HeuristicProvider.kt`
+
+```kotlin
+// Define a custom heuristic
+val cryptoScamHeuristic = object : HeuristicProvider {
+    override val label: String = "Cryptocurrency Scam"
+
+    override fun detect(content: String, sender: String?): Boolean {
+        val patterns = listOf("bitcoin", "btc", "ethereum", "crypto wallet", "seed phrase")
+        return patterns.any { content.lowercase().contains(it) }
+    }
+}
+
+// Register at app startup
+HeuristicRegistry.register(cryptoScamHeuristic)
+
+// Or register multiple heuristics
+HeuristicRegistry.register(jobScamHeuristic)
+HeuristicRegistry.register(romanceScamHeuristic)
+
+// Clear all custom heuristics
+HeuristicRegistry.clear()
+```
+
+Custom heuristics are automatically evaluated alongside built-in detection rules and their labels appear in the results.
+
+#### Modifying Built-in Labels
+
+To add custom labels directly to ContextGuard:
 
 1. Add the label constant:
 ```kotlin

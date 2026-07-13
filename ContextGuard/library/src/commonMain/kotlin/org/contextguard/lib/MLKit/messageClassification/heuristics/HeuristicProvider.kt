@@ -5,7 +5,7 @@ import org.contextguard.models.Reason
 /**
  * Interface for providing custom heuristic detection rules.
  *
- * Researchers can implement this interface to add custom threat detection patterns
+ * Developers can implement this interface to add custom threat detection patterns
  * beyond the built-in heuristics. Custom providers are registered via [HeuristicRegistry].
  *
  * Example implementation:
@@ -41,7 +41,7 @@ interface HeuristicProvider {
 /**
  * Registry for custom heuristic providers.
  *
- * Researchers can register custom heuristics that will be evaluated alongside
+ * Developers can register custom heuristics that will be evaluated alongside
  * the built-in detection rules.
  *
  * Example usage:

@@ -21,6 +21,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.terrydroid.msgverify.compose.MsgVerifyScaffold
+import com.terrydroid.msgverify.config.MsgVerifyConfig
 import com.terrydroid.msgverify.demo.emaildetails.DemoEmailDetailsScreen
 import com.terrydroid.msgverify.demo.emailoverview.DemoEmailOverview
 import com.terrydroid.msgverify.demo.overview.DemoOverviewScreen
@@ -47,7 +48,10 @@ private fun AppScreen(recievedText: String?, onTextConsumed: () -> Unit) {
         ) {
             val navController = rememberNavController()
 
-            NavHost(navController = navController, startDestination = Route.Home) {
+            // Set MsgVerifyConfig.startInDemoMode = true to launch directly into demo mode
+            val startDestination: Any = if (MsgVerifyConfig.startInDemoMode) Route.DemoOverview else Route.Home
+
+            NavHost(navController = navController, startDestination = startDestination) {
                 composable<Route.Home> {
                     val scrollBehavior =
                         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())

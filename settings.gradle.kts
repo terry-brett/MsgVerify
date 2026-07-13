@@ -35,6 +35,8 @@ dependencyResolutionManagement {
 
 include(":composeApp")
 
+// Set to true to use local ContextGuard with framework extension features (HeuristicProvider, etc.)
+// Set to false to use the published Maven version (extension features may not be available)
 private val testLocally = false
 
 if (testLocally) {

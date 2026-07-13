@@ -3,7 +3,7 @@ package com.terrydroid.msgverify.config
 /**
  * Central configuration for MsgVerify framework.
  *
- * Researchers can modify these values to customise the application's behaviour
+ * Developers can modify these values to customise the application's behaviour
  * for empirical studies, A/B testing, or different threat landscapes.
  *
  * See EXTENDING.md for detailed documentation on framework customisation.
@@ -34,10 +34,10 @@ object MsgVerifyConfig {
     // ============================================
 
     /**
-     * Enable detailed logging for research data collection.
+     * Enable detailed logging for data collection.
      * When true, verification events are logged with timestamps and scores.
      */
-    var enableResearchLogging: Boolean = false
+    var enableLogging: Boolean = false
 
     /**
      * Enable demo mode by default on app launch.

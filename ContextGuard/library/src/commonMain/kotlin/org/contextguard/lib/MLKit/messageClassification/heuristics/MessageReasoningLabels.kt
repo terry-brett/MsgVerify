@@ -38,7 +38,7 @@ class MessageReasoningLabels(
             .map { (label, _) -> Reason(label) }
             .toMutableList()
 
-        // Evaluate custom heuristics registered by researchers
+        // Evaluate custom heuristics
         val customReasons = HeuristicRegistry.evaluate(cleanMessage, sender)
         reasons.addAll(customReasons)
 

@@ -1,6 +1,7 @@
 package com.terrydroid.msgverify.data
 
 import com.terrydroid.msgverify.PlatformContext
+import com.terrydroid.msgverify.config.MsgVerifyConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
@@ -15,6 +16,7 @@ import org.koin.core.component.KoinComponent
 class MsgVerifyRepository(val platformContext: PlatformContext) : KoinComponent {
 
   private val verifier by lazy { ContentVerifierImpl(platformContext.getNativeContext()) }
+  private var logSequence = 0L
 
   fun getContentVerifier(): ContentVerifier = verifier
 
@@ -27,32 +29,54 @@ class MsgVerifyRepository(val platformContext: PlatformContext) : KoinComponent 
       }
 
     if (result == null) {
+      logEvent("VERIFICATION_FAILED", input, null, null)
       return flowOf(Result.failure(Exception("Unable to verify content")))
     }
 
     return when (val classificationResult = result.textClassificationResult) {
       is TextClassificationResult.Unsafe -> {
-        flowOf(
-            Result.success(
-                ContentVerificationResponse.Unsafe(
-                    result.urlScores,
-                    classificationResult.listOfReasons,
-                    result.extractedUrls,
-                )
-            )
+        val response = ContentVerificationResponse.Unsafe(
+            result.urlScores,
+            classificationResult.listOfReasons,
+            result.extractedUrls,
         )
+        logEvent("UNSAFE", input, result.urlScores, classificationResult.listOfReasons)
+        flowOf(Result.success(response))
       }
       is TextClassificationResult.Safe -> {
-        flowOf(
-            Result.success(
-                ContentVerificationResponse.Safe(
-                    result.urlScores,
-                    result.extractedUrls
-                )
-            )
+        val response = ContentVerificationResponse.Safe(
+            result.urlScores,
+            result.extractedUrls
         )
+        logEvent("SAFE", input, result.urlScores, null)
+        flowOf(Result.success(response))
       }
     }
+  }
+
+  /**
+   * Logging hook. When MsgVerifyConfig.enableLogging is true,
+   * logs verification events for data collection.
+   *
+   * This method can be customised to::
+   * - Write to a local database
+   * - Export to a data file
+   * - Send to a secure backend (with participant consent)
+   */
+  private fun logEvent(
+      classification: String,
+      input: String,
+      urlScores: List<Float>?,
+      reasons: List<Reason>?
+  ) {
+    if (!MsgVerifyConfig.enableLogging) return
+
+    logSequence++
+    val maxUrlScore = urlScores?.maxOrNull() ?: 0f
+    val reasonLabels = reasons?.joinToString(";") { it.reason } ?: ""
+
+    // Uncomment to customise this output format for your data collection needs
+    // println("[LOG] seq=$logSequence | $classification | urlScore=$maxUrlScore | reasons=$reasonLabels | inputLength=${input.length}")
   }
 }
 
