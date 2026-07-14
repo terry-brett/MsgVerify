@@ -90,6 +90,7 @@ class ContentVerifierImpl(private val platformContext: Any) : ContentVerifier {
     }
 
     val isMessageSpam = MessagePrediction(platformContext).isSpam(content)
+    val hasHighRiskUrl = urlPredictionScores.any { it > 0.5f }
     val listOfReasons: MutableList<Reason> = if (isMessageSpam) {
       MessageReasoningLabels(content, sender).addLabels()
     } else mutableListOf()
@@ -108,7 +109,7 @@ class ContentVerifierImpl(private val platformContext: Any) : ContentVerifier {
 
     return Result(
         urlScores = urlPredictionScores,
-        textClassificationResult = if (isMessageSpam) {
+        textClassificationResult = if (isMessageSpam || hasHighRiskUrl) {
           TextClassificationResult.Unsafe(listOfReasons)
         } else TextClassificationResult.Safe,
         extractedUrls = extractedUrls,

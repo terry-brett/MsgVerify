@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "org.contextguard.lib"
-version = "1.0.2"
+version = "1.0.3"
 kotlin {
     androidTarget {
         publishLibraryVariants("release")
@@ -120,7 +120,7 @@ mavenPublishing {
     coordinates(
         groupId = "org.contextguard.lib",
         artifactId = "contextguard",
-        version = "1.0.2"
+        version = "1.0.3"
     )
 
     pom {

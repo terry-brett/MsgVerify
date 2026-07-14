@@ -23,7 +23,7 @@ kotlinx-coroutines = "1.8.0"
 pytorchLiteMultiplatform = "0.7.0"
 koin = "4.0.3"
 navigation = "2.9.2"
-contextguard = "1.0.2"
+contextguard = "1.0.3"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }

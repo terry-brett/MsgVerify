@@ -8,7 +8,7 @@ internal suspend fun MutableList<Reason>.checkUrlAndSpelling(
     platformContext: Any,
     urlPredictionScores: List<Float>
 ): List<Reason> {
-    val hasSuspiciousLink = urlPredictionScores.any { it > 50 }
+    val hasSuspiciousLink = urlPredictionScores.any { it > 0.5f }
 
     Spellcheck.init(platformContext)
     val hasSpellingIssues = Spellcheck.isMisspelled(content)

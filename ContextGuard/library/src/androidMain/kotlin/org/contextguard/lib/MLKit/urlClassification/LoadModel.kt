@@ -12,14 +12,11 @@ actual class LoadModel(private val context: Context) {
         cached?.let { return it }
         return mutex.withLock {
             cached ?: run {
-                // Clean up any leftover temp files from previous runs.
-                context.cacheDir.listFiles { f -> f.name.startsWith("url_model") && f.name.endsWith(".tflite") }
-                    ?.forEach { it.delete() }
-
                 val bytes = Res.readBytes("files/urlClassificationModel/model_lite.tflite")
-                val tmpFile = File.createTempFile("url_model", ".tflite", context.cacheDir)
-                tmpFile.writeBytes(bytes)
-                ModelDesc.File(tmpFile).also { cached = it }
+                // Use a fixed filename to avoid accumulating temp files
+                val modelFile = File(context.cacheDir, "url_model.tflite")
+                modelFile.writeBytes(bytes)
+                ModelDesc.File(modelFile).also { cached = it }
             }
         }
     }
