@@ -53,7 +53,7 @@ object MsgVerifyConfig {
 
 Demo scenarios use JSON files that can be replaced with custom research datasets.
 
-**Location:** `composeApp/src/commonMain/composeResources/files/mocks/`
+**Location:** `mocks/` (root directory - copied to composeResources during build)
 
 ```
 mocks/
