@@ -8,19 +8,19 @@ MsgVerify is designed as an extensible research platform. While it ships with de
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    MsgVerify Application                     │
+│                    MsgVerify Application                    │
 ├─────────────────────────────────────────────────────────────┤
-│  Presentation Layer (Compose Multiplatform)                  │
+│  Presentation Layer (Compose Multiplatform)                 │
 │  ├── Theme & Styling (MsgVerifyTheme.kt)                    │
 │  ├── Risk Indicators (configurable thresholds)              │
 │  └── Demo Screens (swappable datasets)                      │
 ├─────────────────────────────────────────────────────────────┤
-│  Business Logic Layer                                        │
+│  Business Logic Layer                                       │
 │  ├── MsgVerifyRepository (orchestration)                    │
 │  ├── Configuration (MsgVerifyConfig.kt)                     │
 │  └── ViewModels (state management)                          │
 ├─────────────────────────────────────────────────────────────┤
-│  ContextGuard Library (Detection Engine)                     │
+│  ContextGuard Library (Detection Engine)                    │
 │  ├── URL Classifier (Neural Network)                        │
 │  ├── Text Classifier (DistilBERT)                           │
 │  └── Heuristic Labels (Pattern Matching)                    │
