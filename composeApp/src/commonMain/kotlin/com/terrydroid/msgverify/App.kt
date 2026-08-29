@@ -135,40 +135,25 @@ private fun AppScreen(recievedText: String?, onTextConsumed: () -> Unit) {
                 }
 
                 composable<Route.DemoEmailOverview> {
-                    val scrollBehavior =
-                        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-                    MsgVerifyScaffold(
-                        scrollBehavior = scrollBehavior,
-                        title = "Email Client Demo",
-                        icon = Icons.AutoMirrored.Filled.ArrowBack,
-                        iconDescription = "Navigate Back",
-                        onClick = { navController.navigateUp() }
-                    ) { innerPadding ->
-                        DemoEmailOverview(
-                            paddingValues = innerPadding,
-                            navigateToDetails = { id ->
-                                navController.navigate(Route.DemoEmailDetails(id))
-                            },
-                        )
-                    }
+                    DemoEmailOverview(
+                        navigateBack = {
+                            navController.navigateUp()
+                        },
+                        navigateToDetails = { id ->
+                            navController.navigate(Route.DemoEmailDetails(id))
+                        },
+                    )
                 }
 
                 composable<Route.DemoEmailDetails> { backStackEntry ->
                     val route = backStackEntry.toRoute<Route.DemoEmailDetails>()
-                    val scrollBehavior =
-                        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-                    MsgVerifyScaffold(
-                        scrollBehavior = scrollBehavior,
-                        title = "Email",
-                        icon = Icons.AutoMirrored.Filled.ArrowBack,
-                        iconDescription = "Navigate Back",
-                        onClick = { navController.navigateUp() }
-                    ) { innerPadding ->
-                        DemoEmailDetailsScreen(
-                            paddingValues = innerPadding,
-                            id = route.id,
-                        )
-                    }
+
+                    DemoEmailDetailsScreen(
+                        id = route.id,
+                        navigateBack = {
+                            navController.navigateUp()
+                        },
+                    )
                 }
 
                 composable<Route.SocialMediaDemo> {
