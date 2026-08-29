@@ -10,4 +10,5 @@ sealed interface Route {
     @Serializable data object DemoEmailOverview : Route
     @Serializable data class DemoEmailDetails(val id: Int) : Route
     @Serializable data object SocialMediaDemo : Route
+    @Serializable data class SocialMediaDetailsDemo(val id: Int) : Route
 }

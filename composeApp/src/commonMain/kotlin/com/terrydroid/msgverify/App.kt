@@ -27,6 +27,7 @@ import com.terrydroid.msgverify.demo.emailoverview.DemoEmailOverview
 import com.terrydroid.msgverify.demo.overview.DemoOverviewScreen
 import com.terrydroid.msgverify.demo.smsdetails.DemoMessageDetailsScreen
 import com.terrydroid.msgverify.demo.smsoverview.DemoMessagesScreen
+import com.terrydroid.msgverify.demo.socialmedia.SocialMediaDetailsScreen
 import com.terrydroid.msgverify.demo.socialmedia.SocialMediaScreen
 import com.terrydroid.msgverify.home.HomeScreen
 import com.terrydroid.msgverify.theme.MsgVerifyTheme
@@ -157,19 +158,28 @@ private fun AppScreen(recievedText: String?, onTextConsumed: () -> Unit) {
                 }
 
                 composable<Route.SocialMediaDemo> {
-                    val scrollBehavior =
-                        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-                    MsgVerifyScaffold(
-                        scrollBehavior = scrollBehavior,
-                        title = "Social Media Demo",
-                        icon = Icons.AutoMirrored.Filled.ArrowBack,
-                        iconDescription = "Navigate Back",
-                        onClick = { navController.navigateUp() }
-                    ) { innerPadding ->
-                        SocialMediaScreen(
-                            paddingValues = innerPadding,
-                        )
-                    }
+                    SocialMediaScreen(
+                        navigateBack = {
+                            navController.navigateUp()
+                        },
+                        navigateToDetails = { id ->
+                            navController.navigate(
+                                Route.SocialMediaDetailsDemo(id)
+                            )
+                        },
+                    )
+                }
+
+                composable<Route.SocialMediaDetailsDemo> { backStackEntry ->
+                    val route =
+                        backStackEntry.toRoute<Route.SocialMediaDetailsDemo>()
+
+                    SocialMediaDetailsScreen(
+                        id = route.id,
+                        navigateBack = {
+                            navController.navigateUp()
+                        },
+                    )
                 }
             }
         }
