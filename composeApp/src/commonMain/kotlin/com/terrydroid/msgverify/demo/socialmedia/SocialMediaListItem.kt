@@ -1,6 +1,5 @@
 package com.terrydroid.msgverify.demo.socialmedia
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,11 +22,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.terrydroid.msgverify.demo.smsoverview.TrafficLight
+import io.github.feliperce.avatarkt.Avatar
+import io.github.feliperce.avatarkt.AvatarVariant
 
 @Composable
 internal fun SocialMediaListItem(
@@ -51,6 +51,9 @@ internal fun SocialMediaListItem(
         ) {
             Avatar(
                 name = message.title,
+                variant = AvatarVariant.BEAM,
+                size = 52.dp,
+                shape = CircleShape,
             )
 
             Spacer(
@@ -101,30 +104,7 @@ internal fun SocialMediaListItem(
     }
 }
 
-@Composable
-private fun Avatar(
-    name: String,
-) {
-    Box(
-        modifier = Modifier
-            .size(52.dp)
-            .clip(CircleShape)
-            .background(
-                MaterialTheme.colorScheme.secondaryContainer,
-            ),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = name
-                .trim()
-                .take(1)
-                .uppercase(),
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSecondaryContainer,
-        )
-    }
-}
+
 
 @Composable
 private fun VerificationIndicator(

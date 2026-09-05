@@ -48,9 +48,9 @@ kotlin {
       implementation(libs.koin.compose.viewmodel)
       implementation(libs.material.icons)
       implementation(libs.contextguard.lib)
-
       implementation(libs.kotlinx.serialization.json)
       implementation(libs.navigation.compose)
+      implementation("io.github.feliperce:avatarkt:0.3.0")
     }
     commonTest.dependencies { implementation(libs.kotlin.test) }
     val commonMain by getting { resources.srcDir(generatedCommonResourcesDir) }

@@ -18,7 +18,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -28,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.terrydroid.msgverify.demo.socialmedia.model.SocialMediaUiState
 import org.koin.compose.viewmodel.koinViewModel
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -104,6 +104,24 @@ internal fun SocialMediaScreen(
                     ),
                     verticalArrangement = Arrangement.spacedBy(0.dp),
                 ) {
+
+                    val storyAvatars = state.message.map {
+                        StoryAvatar(
+                            name = it.title,
+                            isOnline = true
+                        )
+                    }
+
+                    item {
+                        AvatarCarousel(
+                            avatars = storyAvatars,
+                            modifier = Modifier.padding(
+                                top = 12.dp,
+                                bottom = 20.dp
+                            )
+                        )
+                    }
+
                     items(
                         items = state.message,
                         key = { it.id },

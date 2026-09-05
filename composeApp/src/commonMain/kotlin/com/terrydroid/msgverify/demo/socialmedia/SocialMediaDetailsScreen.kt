@@ -45,6 +45,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.terrydroid.msgverify.demo.emaildetails.VerificationCard
 import com.terrydroid.msgverify.demo.socialmedia.model.SocialMediaUiState
 import org.koin.compose.viewmodel.koinViewModel
+import io.github.feliperce.avatarkt.Avatar
+import io.github.feliperce.avatarkt.AvatarVariant
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -248,25 +250,12 @@ private fun ConversationHeader(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Box(
-            modifier = Modifier
-                .size(72.dp)
-                .clip(CircleShape)
-                .background(
-                    MaterialTheme.colorScheme.secondaryContainer,
-                ),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(
-                text = name
-                    .trim()
-                    .take(1)
-                    .uppercase(),
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
-            )
-        }
+        Avatar(
+            name = name,
+            variant = AvatarVariant.BEAM,
+            size = 52.dp,
+            shape = CircleShape,
+        )
 
         Spacer(
             modifier = Modifier.size(8.dp),
