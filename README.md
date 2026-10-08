@@ -6,6 +6,19 @@ A cross-platform mobile application framework for phishing detection research. B
 
 MsgVerify is a Kotlin Multiplatform (KMP) application framework with a shared codebase deployed on Android and iOS. It integrates the **ContextGuard** library for on-device machine learning inference and provides extensible architecture for researchers to customise datasets, visual indicators, and detection heuristics.
 
+### Software metadata
+
+| Nr | Code metadata description | Metadata |
+|----|----------------------------|----------|
+| C1 | Current code version | v1.0.0 |
+| C2 | Permanent link to code/repository used for this code version | https://github.com/terry-brett/MsgVerify |
+| C3 | Legal code license | MIT License |
+| C4 | Code versioning system used | Git |
+| C5 | Software code languages, tools and services used | Kotlin, Jetpack Compose, Swift, Xcode, CocoaPods |
+| C6 | Compilation requirements, operating environments and dependencies | macOS, Java 17+, Gradle 8.0+, Android SDK 34+, Xcode 15+ |
+| C7 | If available, link to developer documentation/manual | https://github.com/terry-brett/MsgVerify/blob/main/README.md |
+| C8 | Support email for questions | odin.asbjornsen@dnb.no |
+
 ### For Researchers
 
 MsgVerify is designed as an **extensible research platform** for mobile security studies. Key extension points include:
