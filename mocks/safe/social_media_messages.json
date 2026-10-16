@@ -1,8 +1,68 @@
 [
-  {"message": "FYI: Roads are slick this morning. Drive safe!"},
-  {"message": "Great article on climate solutions. Link in bio."},
-  {"message": "Just finished reading an amazing book. Highly recommend!"},
-  {"message": "Happy birthday to my best friend!"},
-  {"message": "Beautiful sunset at the beach today."},
-  {"message": "New recipe alert! Made homemade pasta for dinner."}
+  {
+    "message": "FYI: Roads are slick this morning. Drive safe!"
+  },
+  {
+    "message": "Great article on climate solutions. Link in bio."
+  },
+  {
+    "message": "Just finished reading an amazing book. Highly recommend!"
+  },
+  {
+    "message": "Happy birthday to my best friend!"
+  },
+  {
+    "message": "Beautiful sunset at the beach today."
+  },
+  {
+    "message": "New recipe alert! Made homemade pasta for dinner."
+  },
+  {
+    "message": "Finally finished that puzzle we started in January 🧩"
+  },
+  {
+    "message": "Anyone else's bins not collected today? Checking if it's just my street"
+  },
+  {
+    "message": "Found the best little bakery near the station, the sourdough is unreal"
+  },
+  {
+    "message": "Match day! Nervous but excited, let's go"
+  },
+  {
+    "message": "PSA: the car park on Mill Lane is free after 6pm now"
+  },
+  {
+    "message": "Just planted the tomatoes, fingers crossed for a good summer"
+  },
+  {
+    "message": "Can't believe how fast this year is going"
+  },
+  {
+    "message": "Dog insisted on three walks today, who am I to argue"
+  },
+  {
+    "message": "Lost a glove somewhere between the gym and the bus stop, typical"
+  },
+  {
+    "message": "Repainted the fence this weekend, feels like a whole new garden"
+  },
+  {
+    "message": "Reminder: book club moved to Thursday this week, same time"
+  },
+  {
+    "message": "That storm last night was wild, anyone lose power?"
+  },
+  {
+    "message": "Finally got round to fixing the squeaky door, small wins"
+  },
+  {
+    "message": "Great turnout at the community clean-up today, thank you all"
+  },
+  {
+    "message": "Slow cooker chilli for the fourth time this month, no regrets"
+  },
+  {
+    "message": "Early night tonight, this week has been a lot"
+  }
 ]

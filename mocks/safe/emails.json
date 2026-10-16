@@ -1,7 +1,102 @@
 [
   {
-    "sender": "",
-    "subject": "",
-    "message": ""
+    "sender": "sarah.mitchell@brightpathconsulting.co.uk",
+    "subject": "Notes from today's planning meeting",
+    "message": "Hi team,\n\nThanks for joining today's session. A quick summary of what we agreed:\n\n- Q3 milestones stay as originally scoped, no changes needed\n- Dev will circulate the updated timeline by Friday\n- Next check-in is the 14th at 10am, usual link\n\nLet me know if I've missed anything.\n\nBest,\nSarah"
+  },
+  {
+    "sender": "noreply@citylibrary.org",
+    "subject": "Your reserved item is ready for pickup",
+    "message": "Hello,\n\nThe item you reserved, 'The Overstory' by Richard Powers, is now available for pickup at your local branch. Please collect it within 7 days, after which the reservation will be released to the next person on the list.\n\nBranch hours: Mon-Sat 9am-6pm.\n\nThank you for using City Library services."
+  },
+  {
+    "sender": "no-reply@parcelhub-delivery.co.uk",
+    "subject": "Your parcel is on its way",
+    "message": "Hi,\n\nYour order #48213 has been dispatched and is expected to arrive tomorrow between 9am and 1pm.\n\nYou can track its progress using the link in your original order confirmation.\n\nThanks for shopping with us."
+  },
+  {
+    "sender": "reminders@brightsmile-dental.co.uk",
+    "subject": "Appointment reminder: Thursday 10:30am",
+    "message": "Hello,\n\nThis is a reminder that you have a check-up appointment on Thursday at 10:30am with Dr. Fenwick.\n\nIf you need to reschedule, please call the practice at least 24 hours in advance.\n\nSee you soon."
+  },
+  {
+    "sender": "newsletter@localgardenclub.org",
+    "subject": "This month's gardening tips",
+    "message": "Hi everyone,\n\nHere's what's happening in the garden club this month:\n\n- Pruning workshop on the 12th\n- Seed swap at the community hall\n- Tips for overwintering tender perennials\n\nFull details are on the noticeboard. See you at the next meeting."
+  },
+  {
+    "sender": "billing@fitlifegym.co.uk",
+    "subject": "Your membership renewal receipt",
+    "message": "Hi,\n\nThis confirms your monthly membership payment of GBP34.99 was processed successfully.\n\nYour next payment will be taken on the same date next month. You can manage your membership anytime in the app.\n\nThanks for being a member."
+  },
+  {
+    "sender": "james.okafor@northgate-architects.co.uk",
+    "subject": "Updated floor plans attached",
+    "message": "Hi,\n\nAttached are the revised floor plans incorporating the changes we discussed on Tuesday. Let me know if the kitchen layout works for you now.\n\nHappy to jump on a call this week if useful.\n\nBest,\nJames"
+  },
+  {
+    "sender": "events@cityphilharmonic.org",
+    "subject": "Reminder: concert this Saturday",
+    "message": "Hello,\n\nJust a reminder that our Saturday evening concert begins at 7:30pm. Doors open at 6:45pm.\n\nPlease bring your e-ticket or booking reference for entry.\n\nWe look forward to seeing you there."
+  },
+  {
+    "sender": "hr@meridiansoftware.com",
+    "subject": "Updated holiday calendar for next year",
+    "message": "Hi team,\n\nThe holiday calendar for next year has been finalised and is now available on the intranet.\n\nPlease submit any pre-approved leave requests through the usual portal.\n\nThanks,\nHR Team"
+  },
+  {
+    "sender": "orders@brewhouse-supplies.co.uk",
+    "subject": "Order confirmation #90281",
+    "message": "Thank you for your order!\n\nOrder #90281 (2x grain bags, 1x airlock) has been received and will be processed within 1-2 business days.\n\nA separate email will follow once your order has shipped."
+  },
+  {
+    "sender": "coach.megan@riversideswimclub.co.uk",
+    "subject": "Training schedule change this week",
+    "message": "Hi all,\n\nDue to pool maintenance, Wednesday's session is moving to Thursday at the same time.\n\nAll other sessions remain as normal. Let me know if this causes any issues.\n\nThanks,\nCoach Megan"
+  },
+  {
+    "sender": "noreply@citylibrary.org",
+    "subject": "Your loan is due back soon",
+    "message": "Hello,\n\nThis is a reminder that 'Klara and the Sun' is due back on the 19th. You can renew online if no one else has requested it.\n\nThank you for using City Library services."
+  },
+  {
+    "sender": "no-reply@weatherwatch-alerts.co.uk",
+    "subject": "Weather advisory for your area",
+    "message": "Hello,\n\nA yellow weather warning for heavy rain is in effect for your region from 6pm today until midday tomorrow.\n\nPlease allow extra time for travel. This is an automated advisory."
+  },
+  {
+    "sender": "accounts@homeheat-energy.co.uk",
+    "subject": "Your latest meter reading submission",
+    "message": "Hi,\n\nThanks for submitting your meter reading. Your updated reading has been applied to your account and your next bill will reflect it.\n\nNo action is needed from you at this time."
+  },
+  {
+    "sender": "support@craftycorner-marketplace.com",
+    "subject": "Your listing has been approved",
+    "message": "Hi,\n\nGood news - your listing 'Handmade oak coasters (set of 4)' has been approved and is now live on the marketplace.\n\nYou'll receive an email whenever you get an order or message from a buyer."
+  },
+  {
+    "sender": "committee@oakwoodallotments.org.uk",
+    "subject": "Plot inspection dates confirmed",
+    "message": "Hi plot holders,\n\nAnnual plot inspections will take place over the first two weekends of next month. No need to be present, just make sure paths are kept clear.\n\nAny questions, reply to this email."
+  },
+  {
+    "sender": "noreply@trainline-updates.co.uk",
+    "subject": "Platform change for your 08:14 service",
+    "message": "Hello,\n\nYour 08:14 service to Leeds will now depart from Platform 4 instead of Platform 2.\n\nPlease allow a little extra time to reach the new platform."
+  },
+  {
+    "sender": "feedback@sunnysidecafe.co.uk",
+    "subject": "Thanks for visiting us last week",
+    "message": "Hi,\n\nThanks for stopping by last week! If you have a minute, we'd love to hear how your visit went - just reply to this email with any feedback.\n\nHope to see you again soon."
+  },
+  {
+    "sender": "volunteer@riverside-cleanup.org",
+    "subject": "Thank you for signing up to volunteer",
+    "message": "Hi,\n\nThanks for signing up for Saturday's river cleanup. Please meet at the boathouse car park at 9am, gloves and bags will be provided.\n\nWear sturdy shoes as the path can be muddy."
+  },
+  {
+    "sender": "no-reply@mobileprovider-billing.co.uk",
+    "subject": "Your bill is ready to view",
+    "message": "Hi,\n\nYour latest bill is now available to view in the app. Your payment of GBP22.00 will be collected automatically on the 3rd as usual.\n\nNo action is needed."
   }
 ]
