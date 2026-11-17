@@ -8,22 +8,30 @@ import dev.kursor.ktensorflow.api.TensorDataType
 import dev.kursor.ktensorflow.api.TensorShape
 import dev.kursor.ktensorflow.api.typedData
 import kotlin.math.exp
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.contextguard.lib.MLKit.urlClassification.constants.Constants
 
 class UrlVerifier {
 
-    fun makePrediction(
+    // One interpreter is created on first use and reused for every prediction. Creating one per
+    // prediction leaked native memory on iOS, where Interpreter.close() is a no-op in
+    // ktensorflow 0.2. The mutex serialises access, since an interpreter must not run
+    // concurrently (the reason the previous code created a fresh one each time).
+    private val mutex = Mutex()
+    private var interpreter: Interpreter? = null
+
+    suspend fun makePrediction(
         modelDesc: ModelDesc,
         data: ByteArray
-    ): Float {
-        // Create fresh interpreter for each prediction to avoid state corruption
-        val interpreter = Interpreter(
+    ): Float = mutex.withLock {
+        val interpreter = interpreter ?: Interpreter(
             modelDesc = modelDesc,
             options = InterpreterOptions(
                 numThreads = 4,
                 useXNNPACK = true
             )
-        )
+        ).also { interpreter = it }
 
         val input = Tensor(
             data = data,
@@ -36,7 +44,7 @@ class UrlVerifier {
             dataType = TensorDataType.Float32
         )
         interpreter.run(listOf(input), listOf(output))
-        return sigmoid(output.typedData<FloatArray>().first()) * 100
+        sigmoid(output.typedData<FloatArray>().first()) * 100
     }
 
     companion object {
