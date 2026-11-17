@@ -87,4 +87,10 @@ object Constants {
     )
 
     const val MODEL_INPUT_SIZE = 25
+
+    /**
+     * URL scores are on a 0-100 scale (sigmoid output x 100). A URL scoring above this value is
+     * treated as high risk, matching the model's decision boundary at a probability of 0.5.
+     */
+    const val HIGH_RISK_URL_SCORE = 50f
 }

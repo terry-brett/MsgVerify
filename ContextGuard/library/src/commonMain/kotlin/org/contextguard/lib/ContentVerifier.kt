@@ -4,6 +4,7 @@ import org.contextguard.checkUrlAndSpelling
 import org.contextguard.lib.MLKit.messageClassification.MessagePrediction
 import org.contextguard.lib.MLKit.urlClassification.UrlPrediction
 import org.contextguard.lib.MLKit.urlClassification.UrlVerifierHelper
+import org.contextguard.lib.MLKit.urlClassification.constants.Constants
 import org.contextguard.lib.mlkit.messageClassification.heuristics.MessageReasoningLabels
 import org.contextguard.models.Reason
 import org.contextguard.models.Result
@@ -90,7 +91,7 @@ class ContentVerifierImpl(private val platformContext: Any) : ContentVerifier {
     }
 
     val isMessageSpam = MessagePrediction(platformContext).isSpam(content)
-    val hasHighRiskUrl = urlPredictionScores.any { it > 0.5f }
+    val hasHighRiskUrl = urlPredictionScores.any { it > Constants.HIGH_RISK_URL_SCORE }
     val listOfReasons: MutableList<Reason> = if (isMessageSpam) {
       MessageReasoningLabels(content, sender).addLabels()
     } else mutableListOf()
