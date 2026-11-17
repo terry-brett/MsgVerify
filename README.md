@@ -34,7 +34,7 @@ See **[EXTENDING.md](EXTENDING.md)** for detailed documentation on framework cus
 ### Relationship with ContextGuard
 
 MsgVerify is built on top of the **ContextGuard** library, which provides the core content verification engine. ContextGuard is a Kotlin Multiplatform library that encapsulates:
-- Machine learning models (PyTorch Lite) for text classification
+- Machine learning models (TensorFlow Lite) for URL and text classification: a feed-forward URL classifier and a compact BERT text classifier
 - URL extraction and analysis algorithms
 - Heuristic-based detection rules
 - Risk scoring and reasoning generation
@@ -112,7 +112,7 @@ See [EXTENDING.md](EXTENDING.md) for customisation instructions.
 
 ### Prerequisites
 
-- **JDK**: Java 11 or higher
+- **JDK**: Java 17 or higher (required by Gradle 8.13 and the Android Gradle plugin 8.10; the code targets Java 11)
 - **Android Studio**: Latest stable version with Kotlin plugin
 - **Xcode**: For iOS development (macOS only)
 
@@ -172,10 +172,10 @@ Install with `pod install`
 - Koin: 4.0.3
 
 ### Content Verification
-- ContextGuard: 1.0.0 (Custom ML-based verification library)
+- ContextGuard: 1.0.3 (Custom ML-based verification library)
 
 ### ML & Data Processing
-- PyTorch Lite Multiplatform: 0.7.0
+- TensorFlow Lite, through ContextGuard (ktensorflow 0.2; `TensorFlowLiteObjC` 2.17.0 on iOS)
 
 ## Demo Data
 
@@ -197,9 +197,9 @@ mocks/
 
 MsgVerify supports iOS Shortcuts via `VerifyMessageIntent.swift`:
 
-1. **Add Shortcut**: Use the Shortcuts app to create a custom action
-2. **Voice Command**: Say "Hey Siri, verify this message"
-3. **System Integration**: Seamlessly integrates with iOS share sheets
+1. **Shortcuts action**: the "Verify Message" action appears in the Shortcuts app once the app is installed, and takes the message text as input
+2. **Siri**: say "Verify a message with MsgVerify" (also "Check a message with MsgVerify" or "Scan a message with MsgVerify")
+3. **Automations**: a personal automation with the Message trigger can pass incoming messages to the action; see [EXTENDING.md](EXTENDING.md)
 
 ## Configuration
 
