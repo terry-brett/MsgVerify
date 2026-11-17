@@ -79,3 +79,6 @@ This writes the following to `benchmark/results/summary/`:
 ## Known issue
 
 ContextGuard waits for the platform spellchecker with no timeout. On a device whose spell-checker service doesn't respond, each verification blocks indefinitely: the `MSGVERIFY_BENCHMARK_PROGRESS` lines in the device log stop advancing. This has been seen on a headless Android emulator.
+
+On Android 11 (seen on a OnePlus 6T), `Debug.getMemoryInfo` returns the same cached total PSS for every sample of a run, while resident size and the heap figures vary normally. Android caches this value for several minutes, longer than a run. `analyze.py` detects a footprint that never changes during a run and excludes it from the memory results with a warning. Reading PSS from `/proc/self/smaps_rollup` instead would avoid the cache, but that would change the method after the recorded runs.
+

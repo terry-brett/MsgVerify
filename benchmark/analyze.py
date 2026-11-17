@@ -46,6 +46,14 @@ CHANNELS = ["sms", "email", "social"]
 CHANNEL_NAMES = {"sms": "SMS", "email": "Email", "social": "Social media"}
 PLATFORM_NAMES = {"android": "Android", "ios": "iOS"}
 # Same blue/orange as the paper's diagrams; validated for colour-vision deficiency.
+# Marketing names for the model identifiers the devices report. Unknown models keep their ID.
+DEVICE_NAMES = {
+    "samsung SM-F926B": "Galaxy Z Fold3",
+    "Google Pixel 9a": "Pixel 9a",
+    "Google Pixel Tablet": "Pixel Tablet",
+    "OnePlus ONEPLUS A6013": "OnePlus 6T",
+    "iPhone13,4": "iPhone 12 Pro Max",
+}
 PLATFORM_COLOURS = {"android": "#2B6CB0", "ios": "#D9822B"}
 INK, MUTED, GRID = "#1A202C", "#4A5568", "#E2E8F0"
 MB = 1024 * 1024
@@ -67,7 +75,15 @@ def load(paths: list[str], include_simulators: bool, include_debug: bool) -> pd.
         print(f"Excluded {note}.", file=sys.stderr)
     if df.empty:
         sys.exit("No rows left to analyse.")
-    df["device"] = df["platform"].map(PLATFORM_NAMES) + " (" + df["device_model"] + ")"
+    names = df["device_model"].map(lambda m: DEVICE_NAMES.get(m, m))
+    df["device"] = df["platform"].map(PLATFORM_NAMES) + " (" + names + ")"
+    # A footprint that never changes during a run is a cached value, not a measurement (seen with
+    # Debug.getMemoryInfo on Android 11). Drop it for that run so it is not reported as real.
+    for run_id, run in df.groupby("run_id"):
+        if run["mem_footprint_bytes"].notna().any() and run["mem_footprint_bytes"].nunique() == 1:
+            print(f"Warning: {run_id}: footprint is constant across the run (cached by the OS); "
+                  "excluded from the memory results.", file=sys.stderr)
+            df.loc[df["run_id"] == run_id, "mem_footprint_bytes"] = np.nan
     return df
 
 
@@ -232,6 +248,7 @@ def plot_latency(df: pd.DataFrame, path: str):
 
 
 def plot_memory(df: pd.DataFrame, path: str):
+    df = df[df.groupby("device")["mem_footprint_bytes"].transform(lambda s: s.notna().any())]
     devices = device_order(df)
     cols = min(3, len(devices))
     rows = -(-len(devices) // cols)
@@ -249,8 +266,11 @@ def plot_memory(df: pd.DataFrame, path: str):
                 ax.axhline(base.iloc[0] / MB, color="#A0AEC0", linewidth=1)
         ax.set_title(short_label(device).replace("\n", " "), fontsize=8, color=INK)
         style_axes(ax)
-    for ax in axes[-1]:
-        ax.set_xlabel("Inference number", fontsize=8, color=INK)
+    # Label the x axis on the lowest visible panel of each column.
+    for col in range(cols):
+        visible = [r for r in range(rows) if r * cols + col < len(devices)]
+        if visible:
+            axes[visible[-1]][col].set_xlabel("Inference number", fontsize=8, color=INK)
     for ax in axes[:, 0]:
         ax.set_ylabel("Footprint (MB)", fontsize=8, color=INK)
     axes[0][0].set_ylim(bottom=0)
