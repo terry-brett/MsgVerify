@@ -69,7 +69,17 @@ android {
     versionName = "1.0"
   }
   packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
-  buildTypes { getByName("release") { isMinifyEnabled = false } }
+  buildTypes {
+    getByName("release") { isMinifyEnabled = false }
+    // Non-debuggable build for benchmarking (debuggable builds run slower on ART).
+    // Signed with the debug key so it can be installed without a release keystore.
+    create("benchmark") {
+      initWith(getByName("release"))
+      signingConfig = signingConfigs.getByName("debug")
+      matchingFallbacks += listOf("release")
+      isDebuggable = false
+    }
+  }
   compileOptions {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11

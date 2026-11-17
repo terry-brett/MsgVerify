@@ -1,0 +1,22 @@
+kotlin.NullPointerException
+    at 0   MsgVerify                           0x10284da3f        ThrowNullPointerException + 191 
+    at 1   MsgVerify                           0x1034cf973        kfun:dev.kursor.ktensorflow.impl.IosInterpreter.IosInterpreter$1.$<bridge-NNU>invoke(kotlinx.cinterop.CPointer<kotlinx.cinterop.ObjCObjectVar<platform.Foundation.NSError?>>){}cocoapods.TensorFlowLiteObjC.TFLInterpreter?#internal + 799 
+    at 2   MsgVerify                           0x1034d0ba7        kfun:dev.kursor.ktensorflow.impl#checkError(kotlin.Function1<kotlinx.cinterop.CPointer<kotlinx.cinterop.ObjCObjectVar<platform.Foundation.NSError?>>,0:0?>){0§<kotlin.Any>}0:0 + 599 
+    at 3   MsgVerify                           0x1034cc64b        kfun:dev.kursor.ktensorflow.api#Interpreter(dev.kursor.ktensorflow.api.ModelDesc;dev.kursor.ktensorflow.api.InterpreterOptions){}dev.kursor.ktensorflow.api.Interpreter + 339 
+    at 4   MsgVerify                           0x1034f8b8f        kfun:org.contextguard.lib.MLKit.messageClassification.MessagePrediction.$isSpamCOROUTINE$1.invokeSuspend#internal + 1667 
+    at 5   MsgVerify                           0x1034d5b57        kfun:org.contextguard.lib.ContentVerifierImpl.$verifyCOROUTINE$0.invokeSuspend#internal + 3883 
+    at 6   MsgVerify                           0x1034d8bdf        kfun:org.contextguard.lib.ContentVerifierImpl#verify#suspend(kotlin.String;kotlin.String;kotlin.coroutines.Continuation<org.contextguard.models.Result?>){}kotlin.Any? + 251 
+    at 7   MsgVerify                           0x10361cecf        kfun:com.terrydroid.msgverify.benchmark.BenchmarkRunner.BenchmarkRunner$run$2.$invokeCOROUTINE$0.invokeSuspend#internal + 3335 
+    at 8   MsgVerify                           0x102830617        kfun:kotlin.coroutines.native.internal.BaseContinuationImpl#resumeWith(kotlin.Result<kotlin.Any?>){} + 175 
+    at 9   MsgVerify                           0x102968d57        kfun:kotlinx.coroutines.DispatchedTask#run(){} + 1559 
+    at 10  MsgVerify                           0x10296ab57        kfun:kotlinx.coroutines.internal.LimitedDispatcher.Worker.run#internal + 283 
+    at 11  MsgVerify                           0x102985daf        kfun:kotlinx.coroutines.MultiWorkerDispatcher.MultiWorkerDispatcher$workerRunLoop$1.$invokeCOROUTINE$0.invokeSuspend#internal + 2131 
+    at 12  MsgVerify                           0x102830617        kfun:kotlin.coroutines.native.internal.BaseContinuationImpl#resumeWith(kotlin.Result<kotlin.Any?>){} + 175 
+    at 13  MsgVerify                           0x102968d57        kfun:kotlinx.coroutines.DispatchedTask#run(){} + 1559 
+    at 14  MsgVerify                           0x102920a33        kfun:kotlinx.coroutines.EventLoopImplBase#processNextEvent(){}kotlin.Long + 1107 
+    at 15  MsgVerify                           0x10297dcff        kfun:kotlinx.coroutines#runBlocking(kotlin.coroutines.CoroutineContext;kotlin.coroutines.SuspendFunction1<kotlinx.coroutines.CoroutineScope,0:0>){0§<kotlin.Any?>}0:0 + 1655 
+    at 16  MsgVerify                           0x10298511b        kfun:kotlinx.coroutines.MultiWorkerDispatcher.MultiWorkerDispatcher$1.MultiWorkerDispatcher$1$invoke$$inlined$apply$1.$<bridge-DN>invoke(){}#internal + 211 
+    at 17  MsgVerify                           0x103915d33        _ZN6Worker19processQueueElementEb + 1859 
+    at 18  MsgVerify                           0x103915537        _ZN12_GLOBAL__N_113workerRoutineEPv + 127 
+    at 19  libsystem_pthread.dylib             0x21b7e44d3        _pthread_start + 135 
+    at 20  libsystem_pthread.dylib             0x21b7e3a0f        thread_start + 7 
