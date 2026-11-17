@@ -8,7 +8,7 @@ A Kotlin Multiplatform library for offline phishing and scam detection. ContextG
 
 - Phishing and social engineering patterns in message text
 - Malicious URLs (scored 0–100 for maliciousness)
-- Suspicious link characteristics (typosquatting, malformed URLs)
+- Suspicious link characteristics (high-risk scores, malformed URLs)
 - Grammatical errors and poor formatting associated with scam content
 - Urgency tactics, credential requests, and other known scam signals
 
@@ -16,7 +16,7 @@ A Kotlin Multiplatform library for offline phishing and scam detection. ContextG
 
 ```kotlin
 // build.gradle.kts
-implementation("org.contextguard.lib:contextguard:1.0.2")
+implementation("org.contextguard.lib:contextguard:1.0.3")
 ```
 
 ### iOS (CocoaPods)
