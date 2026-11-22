@@ -52,6 +52,7 @@ DEVICE_NAMES = {
     "Google Pixel 9a": "Pixel 9a",
     "Google Pixel Tablet": "Pixel Tablet",
     "OnePlus ONEPLUS A6013": "OnePlus 6T",
+    "samsung SM-A165M": "Galaxy A16",
     "iPhone13,4": "iPhone 12 Pro Max",
     "iPhone10,4": "iPhone 8",
 }
