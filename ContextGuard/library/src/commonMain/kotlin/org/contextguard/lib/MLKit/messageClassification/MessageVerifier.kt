@@ -6,23 +6,30 @@ import dev.kursor.ktensorflow.api.ModelDesc
 import dev.kursor.ktensorflow.api.Tensor
 import dev.kursor.ktensorflow.api.TensorDataType
 import dev.kursor.ktensorflow.api.TensorShape
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 class MessageVerifier {
 
-    fun makePrediction(
+    // One interpreter is created on first use and reused for every prediction. Creating one per
+    // prediction leaked native memory on iOS, where Interpreter.close() is a no-op in
+    // ktensorflow 0.2. The mutex serialises access, since an interpreter must not run
+    // concurrently (the reason the previous code created a fresh one each time).
+    private val mutex = Mutex()
+    private var interpreter: Interpreter? = null
+
+    suspend fun makePrediction(
         modelDesc: ModelDesc,
         inputIds: IntArray,
         attentionMask: IntArray
-    ): FloatArray {
-
-        // Create fresh interpreter for each prediction to avoid state corruption
-        val interpreter = Interpreter(
+    ): FloatArray = mutex.withLock {
+        val interpreter = interpreter ?: Interpreter(
             modelDesc = modelDesc,
             options = InterpreterOptions(
                 numThreads = 4,
                 useXNNPACK = true
             )
-        )
+        ).also { interpreter = it }
 
         val inputIdsTensor = Tensor(
             data = intArrayToByteArrayNativeOrder(inputIds),
@@ -50,9 +57,7 @@ class MessageVerifier {
             outputs = listOf(outputTensor)
         )
 
-        val rawLogits = byteArrayToFloatArray(outputTensor.data)
-
-        return softmax(rawLogits)
+        softmax(byteArrayToFloatArray(outputTensor.data))
     }
 
     private fun softmax(logits: FloatArray): FloatArray {

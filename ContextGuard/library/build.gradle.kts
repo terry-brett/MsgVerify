@@ -39,6 +39,9 @@ kotlin {
                 // ktensorflow
                 implementation(libs.ktensorflow.core)
 
+                // Mutex guarding the shared interpreters
+                implementation(libs.kotlinx.coroutines.core)
+
                 // spell check
                 implementation(libs.platform.spellchecker)
             }
