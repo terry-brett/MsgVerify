@@ -53,6 +53,7 @@ DEVICE_NAMES = {
     "Google Pixel Tablet": "Pixel Tablet",
     "OnePlus ONEPLUS A6013": "OnePlus 6T",
     "iPhone13,4": "iPhone 12 Pro Max",
+    "iPhone10,4": "iPhone 8",
 }
 PLATFORM_COLOURS = {"android": "#2B6CB0", "ios": "#D9822B"}
 INK, MUTED, GRID = "#1A202C", "#4A5568", "#E2E8F0"
