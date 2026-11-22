@@ -55,6 +55,9 @@ DEVICE_NAMES = {
     "samsung SM-A165M": "Galaxy A16",
     "iPhone13,4": "iPhone 12 Pro Max",
     "iPhone10,4": "iPhone 8",
+    "iPhone12,3": "iPhone 11 Pro",
+    "iPhone15,2": "iPhone 14 Pro",
+    "iPhone17,1": "iPhone 16 Pro",
 }
 PLATFORM_COLOURS = {"android": "#2B6CB0", "ios": "#D9822B"}
 INK, MUTED, GRID = "#1A202C", "#4A5568", "#E2E8F0"
