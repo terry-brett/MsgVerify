@@ -37,3 +37,12 @@ private fun startBenchmarkIfRequested() {
         )
     )
 }
+
+/**
+ * Benchmark mode on Firebase Test Lab, started by iosApp/TestLabGameLoop.swift when Test Lab
+ * opens the app with a Game Loop URL (see benchmark/testlab/README.md). Test Lab cannot pass
+ * launch arguments, so this is the URL-based equivalent of [startBenchmarkIfRequested].
+ */
+fun startTestLabBenchmark(runId: String, passes: Int, startDelayMs: Long) {
+    BenchmarkLauncher.start(BenchmarkRequest(runId = runId, passes = passes, startDelayMs = startDelayMs))
+}

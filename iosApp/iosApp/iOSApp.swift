@@ -12,7 +12,9 @@ struct iOSApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .onAppear { TestLabGameLoop.handleLaunchArgument() }
                 .onOpenURL { url in
+                    if TestLabGameLoop.handle(url) { return }
                     guard url.scheme == "msgverify",
                           url.host == "share",
                           let text = url.queryValue(for: "text") else { return }
