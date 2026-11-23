@@ -1,5 +1,8 @@
 package com.terrydroid.msgverify.testlab
 
+import android.content.Intent
+import android.content.IntentFilter
+import android.os.BatteryManager
 import android.os.Build
 import android.os.ParcelFileDescriptor
 import android.os.SystemClock
@@ -20,8 +23,14 @@ import org.junit.runner.RunWith
  * which benchmark/testlab/run_testlab.sh pulls with `--directories-to-pull`.
  *
  * Instrumentation arguments (gcloud `--environment-variables`), with the protocol's defaults:
- * `runs` (3), `passes` (10), `startDelayS` (60), `runTimeoutS` (900), and `runPrefix`
- * (`testlab-<device codename>`).
+ * `runs` (3), `passes` (10), `startDelayS` (60), `runTimeoutS` (900), `runPrefix`
+ * (`testlab-<device codename>`), and `waitForUnplugS` (0).
+ *
+ * On a local device, `waitForUnplugS` > 0 makes the test wait up to that many seconds for the USB
+ * cable to be unplugged before the first run, so that all runs are measured on battery, as the
+ * local protocol requires (benchmark/README.md). Start the test detached on the device, so that it
+ * continues after the cable is unplugged:
+ * `adb shell 'setsid nohup am instrument -w -e waitForUnplugS 900 ... > /data/local/tmp/log 2>&1 &'`.
  */
 @RunWith(AndroidJUnit4::class)
 class TestLabBenchmark {
@@ -35,9 +44,11 @@ class TestLabBenchmark {
     val startDelayS = intArg("startDelayS", 60)
     val runTimeoutS = intArg("runTimeoutS", 900)
     val prefix = args.getString("runPrefix") ?: "testlab-${Build.DEVICE.lowercase().safe()}"
+    val waitForUnplugS = intArg("waitForUnplugS", 0)
 
     shell("rm -rf $RESULTS_DIR")
     shell("mkdir -p $RESULTS_DIR")
+    if (waitForUnplugS > 0) waitForBattery(timeoutMs = waitForUnplugS * 1000L)
     for (run in 1..runs) {
       val runId = "$prefix-run$run"
       // The protocol keeps MsgVerify in the foreground with the screen on until the run ends.
@@ -79,6 +90,22 @@ class TestLabBenchmark {
       }
     }
   }
+
+  /** Waits until the device runs on battery (no charger, USB, wireless or dock power). */
+  private fun waitForBattery(timeoutMs: Long) {
+    log("Waiting up to ${timeoutMs / 1000}s for the cable to be unplugged")
+    val deadline = SystemClock.elapsedRealtime() + timeoutMs
+    while (pluggedType() != 0) {
+      if (SystemClock.elapsedRealtime() > deadline) fail("The device was not unplugged within ${timeoutMs / 1000}s")
+      SystemClock.sleep(1_000)
+    }
+    log("Running on battery")
+  }
+
+  /** BatteryManager.EXTRA_PLUGGED of the sticky battery broadcast: 0 when on battery. */
+  private fun pluggedType(): Int =
+      instrumentation.context.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+          ?.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1) ?: -1
 
   /** Records what the CSV does not: power, network and thermal state at the start of a run. */
   private fun saveConditions(runId: String) {
