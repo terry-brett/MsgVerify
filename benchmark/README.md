@@ -74,7 +74,7 @@ This writes the following to `benchmark/results/summary/`:
 - `memory_summary.csv`: per run, the baseline, after-first-inference, median and peak memory for each metric, plus the thermal states observed.
 - `summary.md`: all tables above in Markdown.
 - `latency.pdf`: one row per device, one column per channel.
-- `memory.pdf`: footprint across each run, one panel per device.
+- `memory.pdf`: footprint across each run, one row per platform, one panel per device.
 
 ## Known issue
 

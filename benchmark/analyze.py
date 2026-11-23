@@ -32,6 +32,7 @@ from __future__ import annotations
 import argparse
 import glob
 import os
+import re
 import sys
 
 import matplotlib
@@ -207,9 +208,15 @@ def style_axes(ax):
     ax.set_axisbelow(True)
 
 
+def natural_key(text: str) -> list:
+    # "iPhone 8" before "iPhone 11 Pro": compare runs of digits as numbers.
+    return [int(t) if t.isdigit() else t.lower() for t in re.split(r"(\d+)", text)]
+
+
 def device_order(df: pd.DataFrame) -> list[str]:
-    devices = df[["platform", "device"]].drop_duplicates().sort_values(["platform", "device"])
-    return devices["device"].tolist()
+    devices = df[["platform", "device"]].drop_duplicates()
+    return sorted(devices["device"], key=lambda d: (devices.set_index("device").loc[d, "platform"],
+                                                    natural_key(d)))
 
 
 def short_label(device: str) -> str:
@@ -223,7 +230,8 @@ def plot_latency(df: pd.DataFrame, path: str):
     steady = df[df["phase"] == "inference"]
     devices = device_order(steady)[::-1]  # first device at the top
     platform_of = dict(steady[["device", "platform"]].drop_duplicates().values)
-    fig, axes = plt.subplots(1, len(CHANNELS), figsize=(6.3, 0.42 * len(devices) + 1.2),
+    # 5.4 in is the text width of the paper, so the figure is included at its natural size.
+    fig, axes = plt.subplots(1, len(CHANNELS), figsize=(5.4, 0.27 * len(devices) + 0.9),
                              sharex=True, sharey=True)
     for ax, channel in zip(axes, CHANNELS):
         for y, device in enumerate(devices):
@@ -253,14 +261,19 @@ def plot_latency(df: pd.DataFrame, path: str):
 
 
 def plot_memory(df: pd.DataFrame, path: str):
+    """One row per platform, one panel per device, shared footprint axis."""
     df = df[df.groupby("device")["mem_footprint_bytes"].transform(lambda s: s.notna().any())]
     devices = device_order(df)
-    cols = min(3, len(devices))
-    rows = -(-len(devices) // cols)
-    fig, axes = plt.subplots(rows, cols, figsize=(6.3, 2.3 * rows), sharey=True, squeeze=False)
-    for ax in axes.flat[len(devices):]:
-        ax.set_visible(False)
-    for ax, device in zip(axes.flat, devices):
+    platform_of = dict(df[["device", "platform"]].drop_duplicates().values)
+    platforms = [p for p in PLATFORM_NAMES if p in platform_of.values()]
+    grid = [[d for d in devices if platform_of[d] == p] for p in platforms]
+    rows, cols = len(grid), max(len(r) for r in grid)
+    fig, axes = plt.subplots(rows, cols, figsize=(5.4, 1.6 * rows + 0.35), sharex=True, sharey=True,
+                             squeeze=False)
+    for r, row in enumerate(grid):
+        for c in range(len(row), cols):
+            axes[r][c].set_visible(False)
+    for ax, device in [(axes[r][c], d) for r, row in enumerate(grid) for c, d in enumerate(row)]:
         dev_df = df[df["device"] == device]
         colour = PLATFORM_COLOURS.get(dev_df["platform"].iloc[0], MUTED)
         for _, run in dev_df.groupby("run_id"):
@@ -269,20 +282,25 @@ def plot_memory(df: pd.DataFrame, path: str):
             ax.plot(inf["seq"], inf["mem_footprint_bytes"] / MB, color=colour, linewidth=1.2)
             if not base.empty:
                 ax.axhline(base.iloc[0] / MB, color="#A0AEC0", linewidth=1)
-        ax.set_title(short_label(device).replace("\n", " "), fontsize=8, color=INK)
+        # The platform is given by the row label, so the title is the device name only.
+        ax.set_title(short_label(device).split("\n")[0], fontsize=7.5, color=INK)
+        ax.set_xticks([0, 450, 900])
         style_axes(ax)
-    # Label the x axis on the lowest visible panel of each column.
+        ax.tick_params(labelsize=7)
+    # Tick labels on the lowest visible panel of each column; one x-axis label for the figure.
     for col in range(cols):
-        visible = [r for r in range(rows) if r * cols + col < len(devices)]
+        visible = [r for r in range(rows) if col < len(grid[r])]
         if visible:
-            axes[visible[-1]][col].set_xlabel("Inference number", fontsize=8, color=INK)
-    for ax in axes[:, 0]:
-        ax.set_ylabel("Footprint (MB)", fontsize=8, color=INK)
+            axes[visible[-1]][col].xaxis.set_tick_params(labelbottom=True)
+    for r, platform in enumerate(platforms):
+        axes[r][0].set_ylabel(f"{PLATFORM_NAMES[platform]}\nFootprint (MB)", fontsize=7.5, color=INK)
     axes[0][0].set_ylim(bottom=0)
     fig.text(0.99, 0.005, "Footprint: total PSS (Android), phys_footprint (iOS). "
              "Grey line: before first inference. One line per run.",
              ha="right", va="bottom", fontsize=6.5, color=MUTED)
-    fig.tight_layout(rect=(0, 0.03, 1, 1))
+    fig.tight_layout(rect=(0, 0.075, 1, 1))
+    # Shared x-axis label, placed after the layout so that it does not take a row of its own.
+    fig.text(0.5, 0.045, "Inference number", ha="center", va="bottom", fontsize=7.5, color=INK)
     fig.savefig(path)
     plt.close(fig)
 
