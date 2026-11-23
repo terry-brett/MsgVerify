@@ -50,6 +50,7 @@ PLATFORM_NAMES = {"android": "Android", "ios": "iOS"}
 # Marketing names for the model identifiers the devices report. Unknown models keep their ID.
 DEVICE_NAMES = {
     "samsung SM-F926B": "Galaxy Z Fold3",
+    "Google Pixel 9 Pro XL": "Pixel 9 Pro XL",
     "Google Pixel 9a": "Pixel 9a",
     "Google Pixel Tablet": "Pixel Tablet",
     "OnePlus ONEPLUS A6013": "OnePlus 6T",

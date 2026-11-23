@@ -80,5 +80,7 @@ This writes the following to `benchmark/results/summary/`:
 
 ContextGuard waits for the platform spellchecker with no timeout. On a device whose spell-checker service doesn't respond, each verification blocks indefinitely: the `MSGVERIFY_BENCHMARK_PROGRESS` lines in the device log stop advancing. This has been seen on a headless Android emulator.
 
+The spellcheck is part of every analysis, so its cost depends on the device's spell-checker service, not only on the hardware. On a Pixel 9 Pro XL with Gboard 18.8.0 (beta), it took most of the analysis time: median 40.2 ms per message with the spell checker on and 7.0 ms with it off (`results/diagnostic/benchmark-pixel9proxl-diag-spell*`). The recorded runs keep the device's default spell checker, as a user would have it.
+
 On Android 11 (seen on a OnePlus 6T), `Debug.getMemoryInfo` returns the same cached total PSS for every sample of a run, while resident size and the heap figures vary normally. Android caches this value for several minutes, longer than a run. `analyze.py` detects a footprint that never changes during a run and excludes it from the memory results with a warning. Reading PSS from `/proc/self/smaps_rollup` instead would avoid the cache, but that would change the method after the recorded runs.
 

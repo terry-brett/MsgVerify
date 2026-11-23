@@ -1,0 +1,41 @@
+run_id=pixel9proxl-fix-run3
+device=Google Pixel 9 Pro XL (komodo), Android 17
+fingerprint=google/komodo/komodo:17/CP4A.261105.040.A1/16581829:user/release-keys
+airplane_mode_on=1
+low_power=0
+--- dumpsys battery
+Current Battery Service state:
+  AC powered: false
+  USB powered: false
+  Wireless powered: false
+  Dock powered: false
+  Max charging current: 0
+ Time when the latest updated value of the Max charging current was sent via battery changed broadcast: +10d0h8m20s96ms
+  Max charging voltage: 0
+  Charge counter: 2725000
+  status: 3
+  health: 2
+  present: true
+  level: 65
+  scale: 100
+  voltage: 3993
+ Time when the latest updated value of the voltage was sent via battery changed broadcast: +10d0h12m21s914ms
+ The last voltage value sent via the battery changed broadcast: 3993
+  temperature: 297
+  technology: Li-ion
+  Charging state: 1
+  Charging policy: 1
+  Capacity level: 3
+--- dumpsys thermalservice (head)
+IsStatusOverride: false
+ThermalEventListeners:
+	callbacks: 10
+	killed: false
+	broadcasts count: -1
+ThermalStatusListeners:
+	callbacks: 25
+	killed: false
+	broadcasts count: -1
+Thermal Status: 0
+Cached temperatures:
+	Temperature{mValue=55.000004, mType=0, mName=LITTLE, mStatus=0}
