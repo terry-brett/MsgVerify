@@ -1,5 +1,6 @@
 package org.contextguard
 
+import org.contextguard.lib.MLKit.urlClassification.constants.Constants
 import org.contextguard.lib.spellcheck.Spellcheck
 import org.contextguard.models.Reason
 
@@ -8,7 +9,7 @@ internal suspend fun MutableList<Reason>.checkUrlAndSpelling(
     platformContext: Any,
     urlPredictionScores: List<Float>
 ): List<Reason> {
-    val hasSuspiciousLink = urlPredictionScores.any { it > 0.5f }
+    val hasSuspiciousLink = urlPredictionScores.any { it > Constants.HIGH_RISK_URL_SCORE }
 
     Spellcheck.init(platformContext)
     val hasSpellingIssues = Spellcheck.isMisspelled(content)

@@ -98,11 +98,11 @@ class HomeViewModel(private val msgVerifyRepository: MsgVerifyRepository) : View
         )
   }
 
+  // maliciousScore is already on ContextGuard's 0-100 scale, the same scale as the thresholds.
   private fun getClassificationColor(maliciousScore: Float): ClassificationColor {
-    val scorePercent = maliciousScore * 100
     return when {
-      scorePercent > MsgVerifyConfig.highRiskThreshold -> ClassificationColor.Red
-      scorePercent >= MsgVerifyConfig.mediumRiskThreshold -> ClassificationColor.Yellow
+      maliciousScore > MsgVerifyConfig.highRiskThreshold -> ClassificationColor.Red
+      maliciousScore >= MsgVerifyConfig.mediumRiskThreshold -> ClassificationColor.Yellow
       else -> ClassificationColor.Green
     }
   }
