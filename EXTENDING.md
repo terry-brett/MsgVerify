@@ -22,7 +22,7 @@ MsgVerify is designed as an extensible research platform. While it ships with de
 ├─────────────────────────────────────────────────────────────┤
 │  ContextGuard Library (Detection Engine)                    │
 │  ├── URL Classifier (Neural Network)                        │
-│  ├── Text Classifier (DistilBERT)                           │
+│  ├── Text Classifier (BERT)                                 │
 │  └── Heuristic Labels (Pattern Matching)                    │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -71,9 +71,7 @@ mocks/
 ```json
 [
   {
-    "sender": "+1234567890",
-    "content": "Your package is waiting. Track here: http://example.com/track",
-    "timestamp": "2024-01-15T10:30:00Z"
+    "message": "Your package is waiting. Track here: http://example.com/track"
   }
 ]
 ```
@@ -84,8 +82,7 @@ mocks/
   {
     "sender": "security@example.com",
     "subject": "Urgent: Verify your account",
-    "content": "Click here to verify your account immediately...",
-    "timestamp": "2024-01-15T10:30:00Z"
+    "message": "Click here to verify your account immediately..."
   }
 ]
 ```
@@ -114,8 +111,6 @@ The UI layer uses Compose Multiplatform with Material3 theming, allowing customi
 @Composable
 fun MsgVerifyTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Add custom parameters for A/B testing
-    warningColorScheme: WarningColorScheme = WarningColorScheme.Default,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -131,15 +126,18 @@ fun MsgVerifyTheme(
 }
 ```
 
+To A/B test warning designs, add your own parameters to `MsgVerifyTheme` (for example a warning colour scheme) and pass them down to the components that render the indicators.
+
 **Risk indicator colours are defined in:**
 `composeApp/src/commonMain/kotlin/com/terrydroid/msgverify/home/HomeViewModel.kt`
 
 ```kotlin
-fun getClassificationColor(score: Int): Color {
+private fun getClassificationColor(maliciousScore: Float): ClassificationColor {
+    val scorePercent = maliciousScore * 100
     return when {
-        score >= MsgVerifyConfig.highRiskThreshold -> Color.Red
-        score >= MsgVerifyConfig.mediumRiskThreshold -> Color.Yellow
-        else -> Color.Green
+      scorePercent > MsgVerifyConfig.highRiskThreshold -> ClassificationColor.Red
+      scorePercent >= MsgVerifyConfig.mediumRiskThreshold -> ClassificationColor.Yellow
+      else -> ClassificationColor.Green
     }
 }
 ```
@@ -155,13 +153,21 @@ The heuristic label system generates human-readable explanations for detected th
 
 **File:** `ContextGuard/library/src/commonMain/kotlin/org/contextguard/lib/MLKit/messageClassification/heuristics/MessageReasoningLabels.kt`
 
-**Default labels:**
+**Default labels** (evaluated only when the text classifier flags the message as spam):
 - `Impersonation` — Sender claims to be a known entity
+- `Marketing` — Promotional or marketing language
+- `Adult Content` — Adult content patterns
 - `Urgency/Intimidation` — Time pressure or threatening language
-- `Link Click Pressure` — Aggressive prompts to click links
+- `Link Click Pressure` — The message contains a URL
 - `Financial or Personal Information` — Requests for sensitive data
 - `Too Good to Be True` — Unrealistic offers or prizes
 - `Credential Verification Request` — Fake login/verification requests
+- `Uncategorized Spam` — Fallback when no other label matches
+
+Added independently of the text classification (in `ContentVerifier.kt` and `ListOfReasonsMapper.kt`):
+- `Suspicious Link` — A URL scored as high risk
+- `Malformed URL: <url>` — A URL that could not be parsed
+- `Grammatical Errors/Poor Formatting` — The platform spellchecker reports a misspelling
 
 #### Using HeuristicProvider and HeuristicRegistry
 
@@ -302,10 +308,12 @@ struct MsgVerifyShortcuts: AppShortcutsProvider {
 ```
 
 **iOS Automation workflows:**
-Users can configure iOS Automations to trigger MsgVerify analysis automatically:
-1. When a message arrives from an unknown sender
-2. At scheduled intervals for batch processing
-3. When specific keywords are detected
+Users can configure a personal automation in the Shortcuts app with the **Message** trigger:
+1. Restrict the trigger by sender and/or by text the message must contain
+2. Choose **Run After Confirmation** or **Run Immediately**
+3. Add the **Verify Message** action with the received message as its input
+
+Limitations: automations are created by the user on the device and cannot be installed by the app; triggers exist only for Messages (and Mail); and because the intent sets `openAppWhenRun`, each run brings MsgVerify to the foreground.
 
 #### URL Scheme Integration
 
@@ -347,6 +355,8 @@ interface LiveDataProvider {
 ```
 
 **Example: SMS Monitor Provider**
+
+Receiving SMS requires the `RECEIVE_SMS` permission (add it to the manifest and request it at runtime). Google Play restricts this permission to default SMS apps, so this approach suits study builds distributed outside the Play Store.
 
 ```kotlin
 class SmsMonitorProvider(private val context: Context) : LiveDataProvider {
@@ -426,27 +436,30 @@ For deeper customisation, you can modify or replace the ContextGuard library com
 
 ```kotlin
 interface ContentVerifier {
-    suspend fun verify(content: String, sender: String? = null): VerificationResult
-    suspend fun verifyUrl(url: String): Float
+    suspend fun verify(content: String, sender: String): Result?
+    suspend fun verifyUrl(url: String): Result?
 }
 ```
+
+Both functions return `null` when the input is empty or the analysis could not be completed. `Result` holds `urlScores` (0–100 per extracted URL), `extractedUrls`, and `textClassificationResult`, which is either `TextClassificationResult.Safe` or `TextClassificationResult.Unsafe(listOfReasons)`.
 
 **To implement a custom verifier:**
 
 ```kotlin
 class CustomContentVerifier : ContentVerifier {
-    override suspend fun verify(content: String, sender: String?): VerificationResult {
+    override suspend fun verify(content: String, sender: String): Result? {
         // Your custom verification logic
     }
-    
-    override suspend fun verifyUrl(url: String): Float {
+
+    override suspend fun verifyUrl(url: String): Result? {
         // Your custom URL scoring logic
     }
 }
 ```
 
-**Register via Koin in:**
-`composeApp/src/commonMain/kotlin/com/terrydroid/msgverify/di/AppModule.kt`
+**Use it in place of the default:** `MsgVerifyRepository` creates the verifier (`ContentVerifierImpl`) in
+`composeApp/src/commonMain/kotlin/com/terrydroid/msgverify/data/MsgVerifyRepository.kt`.
+Replace that instance with your implementation. Koin (`di/AppModules.kt`) only provides the repository.
 
 ## Research Workflows
 
@@ -485,6 +498,7 @@ Leverage the live data source integration (Section 5) to conduct longitudinal fi
    ```kotlin
    MsgVerifyConfig.enableLogging = true
    ```
+   This turns on the `logEvent` hook in `MsgVerifyRepository.kt`, which receives the classification, highest URL score, labels and input length for every verification. The hook writes nothing by default; implement it to store or export the data your study needs.
 
 3. **Deploy to participant devices** with appropriate consent flows
 
