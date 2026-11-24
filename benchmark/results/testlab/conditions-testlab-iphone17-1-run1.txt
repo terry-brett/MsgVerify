@@ -1,0 +1,6 @@
+run_id=testlab-iphone17-1-run1
+device=iphone17-1 (iPhone), iOS 18.3.2
+battery_level=1.0
+battery_state=full
+low_power_mode=false
+thermal_state=0

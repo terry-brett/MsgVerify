@@ -1,0 +1,6 @@
+run_id=testlab-iphone12-3-run3
+device=iphone12-3 (iPhone), iOS 16.6
+battery_level=1.0
+battery_state=full
+low_power_mode=false
+thermal_state=0

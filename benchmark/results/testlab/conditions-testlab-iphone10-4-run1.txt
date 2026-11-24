@@ -1,0 +1,6 @@
+run_id=testlab-iphone10-4-run1
+device=iphone10-4 (iPhone), iOS 16.6
+battery_level=0.76
+battery_state=charging
+low_power_mode=false
+thermal_state=0
