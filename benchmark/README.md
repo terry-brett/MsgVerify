@@ -63,10 +63,10 @@ The script installs the `benchmark` build type, which uses release settings, is 
 
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -r benchmark/requirements.txt
-.venv/bin/python benchmark/analyze.py benchmark/results/interpreter-fix/*.csv
+.venv/bin/python benchmark/analyze.py benchmark/results/interpreter-fix/*.csv benchmark/results/testlab/*.csv
 ```
 
-This writes the following to `benchmark/results/summary/`:
+These are the ten devices reported in the paper: the five in `results/interpreter-fix/` and the five Firebase Test Lab devices in `results/testlab/`, which ran the same build. This writes the following to `benchmark/results/summary/`:
 
 - `latency_by_device.csv`: per device and channel, pooled over runs, the median, IQR, 95th percentile, mean and SD of steady-state latency, and the share of inferences under 100 ms. `latency_by_run.csv` has the same statistics per run.
 - `cold_start.csv`: the first inference of each run.

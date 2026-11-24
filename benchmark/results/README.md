@@ -1,9 +1,9 @@
 # Benchmark results
 
-Raw CSVs from `run_android.sh` / `run_ios.sh`, one per run, as copied from the devices. New runs are written to this folder; the subfolders hold the recorded sets. Analyse one set at a time, because the sets were measured on different code:
+Raw CSVs from `run_android.sh` / `run_ios.sh`, one per run, as copied from the devices. New runs are written to this folder; the subfolders hold the recorded sets. The paper's results combine `interpreter-fix/` and `testlab/`, which ran the same build. Do not mix these with the other sets, which were measured on different code:
 
 ```bash
-.venv/bin/python benchmark/analyze.py benchmark/results/interpreter-fix/*.csv
+.venv/bin/python benchmark/analyze.py benchmark/results/interpreter-fix/*.csv benchmark/results/testlab/*.csv
 ```
 
 | Folder | Code measured | Contents |
